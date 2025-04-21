@@ -1,80 +1,51 @@
-# L2-Unity
+# L2-Unity-L2J
 
-<p>This project aim is to create a basic playable demo of Lineage2 on Unity.</p>
+<p>Проект находится в постоянной разработке....</p>
 
-This [video](https://www.youtube.com/watch?v=IEHY37bJ7nk) inspired me to start on this project.
+Это отдельная ветка созданная на основе исходной https://gitlab.com/shnok (последняя синхронизация была 25.09.2024 года)
 
-<p>Preview of the current state of the project:</p>
+Основной упор делается на поддержку Lineage 2 Java 
 
-<img src="https://i.imgur.com/HSXQLDF.png" alt="Preview0" style="max-width: 75%; height: auto;">
-<img src="https://i.imgur.com/Dwrg15Y.png" alt="Preview" style="max-width: 75%; height: auto;">
-<img src="https://i.imgur.com/OnWL7RX.png" alt="Preview3" style="max-width: 75%; height: auto;">
-<img src="https://i.imgur.com/OqnzT1H.png" alt="Preview2" style="max-width: 75%; height: auto;">
-<img src="https://i.imgur.com/hemt26R.png" alt="Preview4" style="max-width: 75%; height: auto;">
+В данный момент проверено 2 версии разных серверов:
+Подерживаются Mobius и Acis  (Interlude)
 
-## What are the expected features?
+Видео базового функционала [video](https://jmp.sh/70qYH2gU) 
 
-For now the aim is to create a basic demo, therefore only basic features will be available:
-- Client-side Pathfinding ✅
-- Click to move and WASD movements ✅
-- Camera collision ✅
-- Basic UI
-    - Status window ✅
-    - Chat window ✅
-    - Target window ✅
-    - Nameplates ✅
-    - Skillbar
-- Basic combat ✅
-- Basic RPG features 
-    - HP Loss and regen 🛠️ (Players can fight mobs but wont regen)
-    - Exp gain on kills
-    - Leveling
-- Small range of models
-    - 2 races for players ✅ (FDarkElf, FDwarf)
-	- A few armor sets for each race ✅ (naked set, starter set)
-	- A few of weapons each type ✅
-    - All Monsters of Talking island ✅
-    - All NPCs of Talking island ✅
-- Server/Client features (servers project [Gameserver](https://github.com/shnok/unity-mmo-gameserver) [Loginserver](https://github.com/shnok/unity-mmo-loginserver))
-	- Login/Logout ✅
-	- Server select ✅
-	- Character select 🛠
-    - Player position/rotation sync ✅
-    - Animation sync ✅
-    - Chat ✅
-    - Server Ghosting/Grid system ✅
-    - NPCs ✅
-    - Monsters ✅
-    - Monsters AI with Pathfinding ✅
-- Import Lineage2's world
-    - Talking island region ✅
-        - StaticMeshes ✅
-        - Brushes ✅
-        - Terrain ✅
-        - DecoLayer ✅
-- Day/Night cycle ✅
-- Game sounds (FMOD project [here](https://github.com/shnok/l2-unity/tree/main/l2-unity-fmod))
-    - Ambient sounds ✅
-    - Step sounds (based on surface) ✅
-	- Music ✅
-    - UI sounds ✅
-    - NPC sounds ✅
+Основные отличия:
+Система движения персонажей как у оригинального клиента
+Система синхронизации персонажа с сервером
+Боевая система (только Patk)
+Система обработка html файлов от сервера
+Вход в систему с шифрованием как l2j 
+Вся система движения монстров 
+Вся система движения npc
+Система атаки player vs npc как у оригинала
+Изменена графики в более легкий вариант 
+Система использование скилов (пока в базовом варианте реализовал пару скилов но основные классы уже есть)
+Система покупки итемов в магазине
+Система обмена сообщениями сервер <-> клиент что-бы контролировать обмен
+Частично переделан Аниматор убраны старые анимации и добавлены новые т.к старая система была не поворотлива и начинала вызывать проблемы при 50+ монстрах
+Система цвета ников
+Изменение мышки при клике по персонажу
+Информацию о персонаже (все основные параметры обновляются)
+Система определения оружия (список для магазина посылает id но не посылает определения что это за оружие (sword/blunt))
+Систему ToolTip для магазинов, скилов, итемов
+Систему испольщование итемов(только базовые классы)
 
-## How to run?
+Добавлено 150 новых моделей персонажей
+Добавлено 10 новых эффектов (только для теста)
+Добавлено 900 новых текстур
+Добавлены 100 пакетов для работы с сервером
+Добавлено режим работы с шифрованием или без него
+Добавлены анимации для магов и войнов (людей и эльфов)
+Добавлена анимация исчезновения npc но на уровне unity > update  без использование шейдеров (как тестовый вариант)
 
-<ol> 
-<li>Open the "Menu" scene and drag&drop the l2_lobby scenes into your scene<br><br>
-<img src="https://i.imgur.com/aEBM3eJ.png" alt="Preview4" style="max-width: 50%; height: auto;"><br><br></li>
-<li>Add all the scenes in the build settings (0. Menu 1. L2_lobby 2. Game then the remaining scenes)<br><br>
-<img src="https://i.imgur.com/qMyP1vi.png" alt="Preview4" style="max-width: 50%; height: auto;"><br><br></li>
-<li> Download and run the <a href="https://github.com/shnok/unity-mmo-loginserver">loginserver</a> project</li>
-<li> Download and run the <a href="https://github.com/shnok/unity-mmo-gameserver">gameserver</a> project</li>
-</ol>
+и еще не меньше 800 комитов которые не попали в систему учета гит
 
-## Contributing
 
-Feel free to fork the repository and open any pull request.
+В данный момент я усиленно работаю на синхронизацией персонажей,npc,монстров. После этого я завершу все макеты для магазинов и скилов
 
-## Discord
+<img src="https://i.ibb.co/fVPrb7m2/base-walpepr-2.png" alt="Preview0" style="max-width: 75%; height: auto;">
 
-Project [discord](https://discord.gg/ra3BmraPKp).
+## Telegram
+Группа в телеграме для обсуждения  [Telegram](https://t.me/l2unityForL2j).
