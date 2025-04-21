@@ -47,7 +47,7 @@
 
 <img src="https://i.ibb.co/fVPrb7m2/base-walpepr-2.png" alt="Preview0" style="max-width: 75%; height: auto;">  
 <img src="https://i.ibb.co/js319yZ/sword-glow.png" alt="Preview0" style="max-width: 75%; height: auto;">  
-<img src="https://i.ibb.co/DgLhypg6/buy-sell.png" alt="Preview0" style="max-width: 75%; height: auto;">  
+<img src="https://i.postimg.cc/RhzrQjzS/buy-sell.png" alt="Preview0" style="max-width: 75%; height: auto;">  
 
 ## Telegram  
 Группа в телеграме для обсуждения  [Telegram](https://t.me/l2unityForL2j).  
