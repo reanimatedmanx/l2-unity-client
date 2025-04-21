@@ -1,0 +1,11 @@
+using UnityEngine;
+
+public enum MonsterIntention
+{
+    INTENTION_IDLE,
+    INTENTION_FOLLOW,
+    INTENTION_ATTACK,
+    INTENTION_MOVE_TO,
+    INTENTION_TELEPORT_TO,
+    INTENTION_STOP_MOVE,
+}

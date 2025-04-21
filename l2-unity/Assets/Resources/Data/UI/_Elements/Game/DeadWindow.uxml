@@ -1,0 +1,15 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/Data/UI/_Elements/L2StyleSheet.uss?fileID=7433441132597879392&amp;guid=72e99cc94b130bf4ba100dceaa830b13&amp;type=3#L2StyleSheet" />
+    <engine:GroupBox name="All" style="padding-top: 0; padding-bottom: 0; padding-left: 0; margin-left: 0; margin-bottom: 0; margin-right: 0; margin-top: 0; position: absolute; width: 165px; height: 177px;">
+        <engine:GroupBox name="Container" style="padding-top: 0; padding-bottom: 0; padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
+            <engine:GroupBox name="Bg" style="padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; background-image: resource(&apos;Data/UI/Windows/Windows_DF_Drawer_Bg_Darker&apos;); height: 203px; -unity-slice-left: 10; -unity-slice-top: 10; -unity-slice-right: 10; -unity-slice-bottom: 10; align-content: flex-start; align-self: auto; justify-content: flex-start; align-items: center; width: 152px;">
+                <engine:GroupBox name="Content">
+                    <engine:Button text="Log In" parse-escape-sequences="true" display-tooltip-when-elided="true" name="VillageButton" class="l2-button" style="height: 20px; background-color: rgba(188, 188, 188, 0); margin-top: 0; width: 120px; padding-top: 0;">
+                        <engine:VisualElement name="ButtonBg" class="l2-button-bg" />
+                        <engine:Label text="To Village" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0;" />
+                    </engine:Button>
+                </engine:GroupBox>
+            </engine:GroupBox>
+        </engine:GroupBox>
+    </engine:GroupBox>
+</engine:UXML>

@@ -1,0 +1,16 @@
+public enum Event
+{
+    THINK,
+    DEAD,
+    REBIRTH,
+    ARRIVED,
+    MOVE_TO,
+    MOVE_INPUT_PRESSED,
+    ATTACKED,
+    FORGET_OBJECT,
+    READY_TO_ACT,
+    CANCEL,
+    WAIT_RETURN,
+    ENTER_WORLD
+
+}

@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:GroupBox name="BoxContent" class="control-box" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: auto; height: auto; min-width: auto; min-height: auto; background-color: rgba(22, 21, 18, 0); position: absolute; opacity: 1; align-self: flex-start; justify-content: space-between; align-items: flex-start; max-height: none; max-width: none;">
+    </ui:GroupBox>
+</ui:UXML>
