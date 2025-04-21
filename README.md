@@ -7,7 +7,7 @@
 Основной упор делается на поддержку Lineage 2 Java 
 
 В данный момент проверено 2 версии разных серверов:
-Подерживаются Mobius и Acis  (Interlude)
+Поддерживается Mobius и Acis  (Interlude)
 
 Видео базового функционала [video](https://jmp.sh/70qYH2gU) 
 
