@@ -46,7 +46,7 @@
 В данный момент я усиленно работаю на синхронизацией персонажей,npc,монстров. После этого я завершу все макеты для магазинов и скилов  
 
 <img src="https://i.ibb.co/fVPrb7m2/base-walpepr-2.png" alt="Preview0" style="max-width: 75%; height: auto;">  
-<img src="https://forum.ragezone.com/attachments/1737089686107-webp.274612/" alt="Preview0" style="max-width: 75%; height: auto;">  
+<img src="https://i.ibb.co/js319yZ/sword-glow.png" alt="Preview0" style="max-width: 75%; height: auto;">  
 <img src="https://i.ibb.co/DgLhypg6/buy-sell.png" alt="Preview0" style="max-width: 75%; height: auto;">  
 
 ## Telegram  
