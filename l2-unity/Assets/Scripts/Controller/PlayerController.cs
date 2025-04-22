@@ -6,6 +6,7 @@ using System.Threading;
 using System.Timers;
 using TMPro;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEngine.EventSystems.EventTrigger;
@@ -74,7 +75,9 @@ public class PlayerController : MonoBehaviour
   
     private bool _behindPlayer = false;
     private bool _switchWalkToRun = false;
-
+    private bool _isRotateAttacker = false;
+    private Vector3 _attackerPosition;
+    public float angleThreshold = 3f;
 
     //newObject
 
@@ -111,8 +114,28 @@ public class PlayerController : MonoBehaviour
         _gearEffects = GetComponent<GearEffects>();
     }
 
+
+    public void Update()
+    {
+        if (_isRotateAttacker & !_isMove)
+        {
+            if (!IsFacingAttacker(_attackerPosition))
+            {
+                Debug.Log("Rotate to object Attacker running : ");
+                TurnTowardsAttacker(_attackerPosition);
+            }
+            else
+            {
+                Debug.Log("Rotate to object Attacker stop: ");
+                _isRotateAttacker = false;
+            }
+
+        }
+    }
     public void FixedUpdate()
     {
+      
+
         if (_isMove)
         {
             Vector3 characterPosition = VectorUtils.To2D(transform.position);
@@ -154,6 +177,29 @@ public class PlayerController : MonoBehaviour
 
         }
     }
+
+    public void RotateToAttacker(Vector3 attackerPosition)
+    {
+        _isRotateAttacker = true;
+        _attackerPosition = attackerPosition;
+    }
+
+    private void TurnTowardsAttacker(Vector3 attackerPosition)
+    {
+        Vector3 directionToAttacker = (_attackerPosition - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(directionToAttacker);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+    }
+
+    private bool IsFacingAttacker(Vector3 attackerPosition)
+    {
+        Vector3 directionToAttacker = (attackerPosition - transform.position).normalized;
+        Vector3 forwardDirection = transform.forward;
+        float angle = Vector3.Angle(forwardDirection, directionToAttacker);
+        Debug.Log("Rotate to object Attacker running angle : " + angle);
+        return angle < angleThreshold;
+    }
+
 
     private void SetPositionServer(MovementTarget _movementTarget , Vector3 targetPosition)
     {
@@ -223,47 +269,6 @@ public class PlayerController : MonoBehaviour
 
 
  
-
-
-    //public void FixedUpdate()
-    //{
-    //   _flatTransformPos = new Vector3(transform.position.x, 0, transform.position.z);
-
-    //   float deltaTime = Time.deltaTime;
-    //   _elapsedTime = Time.time;
-
-    //  if (_runningToDestination) _isRotate = false;
-
-    // Debug.Log(" FaltTransfrom position 1 " + _flatTransformPos);
-    // RefreshBuilder(_flatTransformPos, _targetPositionVector);
-
-    // MoveToVector(_flatTransformPos , deltaTime, _elapsedTime, _runningToDestination);
-    // }
-
-    //private void MoveToVector(Vector3 _flatTransformPos , float deltaTime , float _elapsedTime , bool runningToDestination)
-    //{
-    //  _baseRotate.EventRotateMomental(ref _monster, ref _isRotate, ref _turnsAround, transform);
-    //  _moveDirection = _baseMove.EventRunningVector3(ref _elapsedTime, ref _moveTimeStamp , runningToDestination);
-
-
-    // if (_lookAtTarget != null) UpdateFinalAngleToLookAt(_lookAtTarget);
-
-    //  if (!_runningToDestination) return;
-
-
-    // float speedRotate = GetSpeedRotate();
-    //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(Vector3.up * _finalAngle), speedRotate);
-    //_isFirst = false;
-
-
-    //Debug.Log("Move Directium test " + _moveDirection);
-    //_moveDirection = ApplyGravity(_moveDirection);
-    //_controller.Move(_moveDirection * deltaTime);
-
-    //SendServerValidPositionEveryMeter(_flatTransformPos , transform.position, _moveDirection);
-    //MeasureSpeed();
-    //}
-
 
     public void MoveToPoint(MovementTarget movementTarget)
     {

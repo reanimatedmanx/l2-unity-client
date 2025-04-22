@@ -11,6 +11,7 @@ public enum Event
     READY_TO_ACT,
     CANCEL,
     WAIT_RETURN,
+    MY_TARGET_SELECT,
     ENTER_WORLD
 
 }

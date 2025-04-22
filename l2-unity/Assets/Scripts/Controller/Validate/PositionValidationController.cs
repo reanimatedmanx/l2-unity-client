@@ -37,47 +37,55 @@ public class PositionValidationController : MonoBehaviour
     
     void Update()
     {
-        if (_validateList.Count == 0) return;
-
-        for (int i = 0; i < _validateList.Count; i++)
+        try
         {
-            ValidateLocation validateLocation = _validateList[i];
+            if (_validateList.Count == 0) return;
 
-            if (validateLocation != null)
+            for (int i = 0; i < _validateList.Count; i++)
             {
-                Entity entity = World.Instance.GetEntityNoLockSync(validateLocation.ObjectId);
+                ValidateLocation validateLocation = _validateList[i];
 
-                if(entity != null & !entity.IsDead())
+                if (validateLocation != null)
                 {
-                    Vector3 activePosition = entity.transform.position;
-                    Vector3 newPosition = validateLocation.Position;
-                    float distance = VectorUtils.Distance2D(activePosition, newPosition);
+                    Entity entity = World.Instance.GetEntityNoLockSync(validateLocation.ObjectId);
 
-
-                    if (distance > 0.15f && distance < _trigger)
+                    if (entity != null && !entity.IsDead())
                     {
-                        StartWalk(entity, newPosition);
+                        Vector3 activePosition = entity.transform.position;
+                        Vector3 newPosition = validateLocation.Position;
+                        float distance = VectorUtils.Distance2D(activePosition, newPosition);
+
+
+                        if (distance > 0.15f && distance < _trigger)
+                        {
+                            StartWalk(entity, newPosition);
+                        }
+                        else if (distance > _trigger)
+                        {
+                            Jump(entity, newPosition);
+                        }
+
+                        _validateRemove.Add(validateLocation);
+
+                    }
+                    else
+                    {
                         _validateRemove.Add(validateLocation);
                     }
-                    else if (distance > _trigger)
-                    {
-                        Jump(entity, newPosition);
-                        _validateRemove.Add(validateLocation);
-                    }
+                    Debug.Log("Position Validate Controller---> " + entity.IdentityInterlude.Name);
 
                 }
-                else
-                {
-                    _validateRemove.Add(validateLocation);
-                }
-  
-
             }
+
+            _validateList.RemoveAll(n => _validateRemove.Contains(n));
+
+            _validateRemove.Clear();
         }
-
-        _validateList.RemoveAll(n => _validateRemove.Contains(n));
-
-        _validateRemove.Clear();
+        catch (System.Exception e)
+        {
+            Debug.LogError(e);
+        }
+       
     }
 
     private void Jump(Entity entity, Vector3 newPosition)
@@ -89,8 +97,13 @@ public class PositionValidationController : MonoBehaviour
             //set gravity
             monsterEntity.transform.position = new Vector3(newPosition.x , monsterEntity.transform.position.y , newPosition.z);
             monsterEntity.ShowObject();
+            
             var stateMachine = monsterEntity.GetStateMachine();
-            ReStartAnimation(stateMachine);
+            if (stateMachine != null) ReStartAnimation(stateMachine);
+        }else if (entity.GetType() == typeof(PlayerEntity))
+        {
+            //PlayerEntity monsterEntity = (PlayerEntity)entity;
+            PlayerController.Instance.transform.position = new Vector3(newPosition.x, PlayerController.Instance.transform.position.y, newPosition.z);
         }
     }
 
@@ -113,6 +126,7 @@ public class PositionValidationController : MonoBehaviour
             if (stateMachine == null || (stateMachine.State == MonsterState.WALKING || stateMachine.State == MonsterState.RUNNING)) return;
             stateMachine.ChangeIntention(MonsterIntention.INTENTION_MOVE_TO , newPosition);
         }
+
     }
     public void AddValidateLocation(ValidateLocation validateLocation)
     {

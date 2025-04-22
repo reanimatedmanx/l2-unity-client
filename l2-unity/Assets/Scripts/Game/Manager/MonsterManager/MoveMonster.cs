@@ -59,20 +59,7 @@ public class MoveMonster : MonoBehaviour
         return _isFollow;
     }
 
-    public bool IsSpecialDetectedIsMoveObject()
-    {
-        if (_isFollow == true | _isMove == true) return true;
-
-        if(transform.position == _lastPosSpecial)
-        {
-            return false;
-        }
-
-        _lastPosSpecial = transform.position;
-
-        return _detectedIsMove;
-    }
-
+  
     public void SetFollow(bool follow)
     {
        _isFollow = follow;
@@ -136,6 +123,7 @@ public class MoveMonster : MonoBehaviour
             }
             else if (_isMove == true)
             {
+                
                 if (_targetMove == null)
                     return;
                     MoveToPoint(_targetMove , false);
@@ -162,10 +150,7 @@ public class MoveMonster : MonoBehaviour
 
     public void CancelMove()
     {
-        if (_isMove)
-        {
-            _isMove = false;
-        }
+        _isMove = false;
     }
 
     public float stoppingDistance = 0.1f; // 
@@ -190,14 +175,16 @@ public class MoveMonster : MonoBehaviour
 
                  direction = ApplyGravity(direction);
 
-                 _detectedIsMove = true;
-                
-                _controller.Move(direction * monsterSpeed * Time.deltaTime);
 
 
+                  if (_isMove)
+                  {
+                    Debug.Log("Move Monstr движение вперед");
+                    _controller.Move(direction * monsterSpeed * Time.deltaTime);
                     Quaternion lookRotation = Quaternion.LookRotation(direction);
                     transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5.0f); // Плавный поворот
-                
+                  }
+
 
                 if (_lastPos == transform.position)
                 {
@@ -222,8 +209,7 @@ public class MoveMonster : MonoBehaviour
         //{
             var teset = new Vector3(target.x, 0, target.z);
             transform.position = teset;
-        //}
-        _detectedIsMove = false;
+
         _stateMachine.NotifyEvent(Event.ARRIVED);
         //Debug.Log("MoveTagetPosition END Vector3  Vector " + transform.position);
     }

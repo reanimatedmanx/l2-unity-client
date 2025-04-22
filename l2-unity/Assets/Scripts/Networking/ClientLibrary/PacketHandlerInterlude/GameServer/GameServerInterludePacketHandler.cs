@@ -404,9 +404,26 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         }
         else
         {
-             _eventProcessor.QueueEvent(() =>{World.Instance.SpawnNpcInterlude(npcInfo.Identity, npcInfo.Status, npcInfo.Stats);});
+             _eventProcessor.QueueEvent(() =>{
+                 UpdateNpc(npcInfo);
+             });
         }
     }
+
+    private void UpdateNpc(NpcInfo npcInfo)
+    {
+        Entity entity = World.Instance.GetEntityNoLockSync(npcInfo.Identity.Id);
+
+        if (entity == null)
+        {
+            World.Instance.SpawnNpcInterlude(npcInfo.Identity, npcInfo.Status, npcInfo.Stats);
+        }
+        else
+        {
+            World.Instance.UpdateNpcInfo(entity, npcInfo);
+        }
+    }
+
 
     public void OnDeleteObject(byte[] data)
     {

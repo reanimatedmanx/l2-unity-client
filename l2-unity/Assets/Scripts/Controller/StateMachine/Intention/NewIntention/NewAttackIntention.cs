@@ -1,3 +1,4 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -21,12 +22,17 @@ public class NewAttackIntention : IntentionBase
         {
             Debug.Log("NewAttackIntention > State " + PlayerStateMachine.Instance.State);
             Attack myModel = (Attack)arg0;
-            
+
+            Entity entity = World.Instance.GetEntityNoLockSync(myModel.TargetId);
+            PlayerController.Instance.RotateToAttacker(entity.transform.position);
+
             _stateMachine.ChangeState(PlayerState.ATTACKING);
             _stateMachine.NotifyEvent(Event.READY_TO_ACT);
 
         }
     }
+
+
 
     public override void Exit() { }
     public override void Update()

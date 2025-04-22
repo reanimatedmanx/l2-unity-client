@@ -16,8 +16,11 @@ using static UnityEngine.GraphicsBuffer;
 
 public class GsInterludeCombatHandler : ServerPacketHandler
 {
-
-    
+    private PlayerPositionSender _pp_sender;
+    public GsInterludeCombatHandler()
+    {
+        _pp_sender = new PlayerPositionSender();
+    }
     public override void HandlePacket(IData itemQueue)
     {
         ItemServer item = (ItemServer)itemQueue;
@@ -50,9 +53,11 @@ public class GsInterludeCombatHandler : ServerPacketHandler
     public void OnMyTargetSelected(byte[] data)
     {
         MyTargetSelect tagetPacket = new MyTargetSelect(data);
-        EventProcessor.Instance.QueueEvent(() => TargetManager.Instance.NextTargetById(tagetPacket.ObjectId , tagetPacket.Color));
-        //Debug.Log("Пришел пакет MytargetSelected " + tagetPacket.ObjectId + " | " + tagetPacket.Color);
-        
+
+        EventProcessor.Instance.QueueEvent(() =>{
+            TargetManager.Instance.NextTargetById(tagetPacket.ObjectId, tagetPacket.Color);
+            _pp_sender.SendServerArrivedPosition(PlayerController.Instance.transform.position);
+        });
     }
 
 

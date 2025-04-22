@@ -11,9 +11,11 @@ public class StopMoveMonsterIntention : MonsterIntentionBase
         if (arg0.GetType() == typeof(StopMove))
         {
             StopMove stopMovePacket = (StopMove)arg0;
+
+            Debug.Log("Move Monstr посылаем запрос на остановку!   ");
+            _stateMachine.MoveMonster.CancelMove();
             _stateMachine.ChangeState(MonsterState.IDLE);
             _stateMachine.NotifyEvent(Event.ARRIVED);
-            Debug.Log("StopMoveMonsterIntention>>>>StopMove !!!!");
         }
 
     }

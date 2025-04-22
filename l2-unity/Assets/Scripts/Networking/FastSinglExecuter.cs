@@ -116,11 +116,12 @@ public class FastSinglExecuter : MonoBehaviour
         if (attakerEntity.GetType() == typeof(PlayerEntity) & targetEntity.GetType() == typeof(MonsterEntity))
         {
             // WorldCombat.Instance.InflictAttack(attakerEntity.transform, targetEntity.transform);
-
+            //Пока не нудно включать вызывает баг когда атакуешь из-за конфликта пакетов. В этом месте я пытаюсь предугадать действие,
+            //а нужно ждать ответа от сервера и просто двигаться дальше
             MonsterStateMachine targetMonster = targetEntity.GetComponent<MonsterStateMachine>();
             if (targetMonster.State == MonsterState.RUNNING | targetMonster.State == MonsterState.WALKING)
             {
-                targetMonster.NotifyEvent(Event.CANCEL);
+               // targetMonster.NotifyEvent(Event.CANCEL);
             }
 
         }

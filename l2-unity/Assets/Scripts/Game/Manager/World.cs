@@ -184,12 +184,12 @@ public class World : MonoBehaviour {
             //Debug режим добавляет только 1 гремлина и все !!!!
            //if (isSinglSpawn | !npcName.Name.Equals("Elder Keltir")) return;
 
-            //if (!isSinglSpawn)
+           // if (!isSinglSpawn)
             //{
-               // isSinglSpawn = true;
+              //  isSinglSpawn = true;
                 
                // if (identity.EntityType == EntityType.NPC)
-                //{
+               // {
                 //    return;
                //}
             //}
@@ -271,6 +271,18 @@ public class World : MonoBehaviour {
         }
 
         
+    }
+
+    public void UpdateNpcInfo(Entity entity , NpcInfo npcInfo)
+    {
+        if(entity.GetType() == typeof(MonsterEntity))
+        {
+            MonsterEntity m_entity = (MonsterEntity) entity;
+            m_entity.UpdateNpcPAtkSpd((int)npcInfo.Stats.PAtkRealSpeed);
+            m_entity.UpdateNpcRunningSpd(npcInfo.Stats.RunRealSpeed);
+            m_entity.UpdateNpcWalkSpd(npcInfo.Stats.WalkRealSpeed);
+            m_entity.Running = npcInfo.Identity.IsRunning;
+        }
     }
 
     private void InitMonster(Entity npc , GameObject npcGo)

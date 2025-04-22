@@ -6,7 +6,7 @@ public class IdleMosterState : MonsterBase
 {
     public IdleMosterState(MonsterStateMachine stateMachine) : base(stateMachine)
     {
-
+        Debug.Log("IDLE State ");
     }
 
     public override void Enter()

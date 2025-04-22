@@ -20,7 +20,11 @@ public class AttackMonsterIntention : MonsterIntentionBase
             //{
                 Attack attack = (Attack)arg0;
                 Entity entity = World.Instance.GetEntityNoLockSync(attack.TargetId);
-
+                
+                if(_stateMachine.State ==  MonsterState.WALKING | _stateMachine.State == MonsterState.RUNNING)
+                {
+                    Debug.Log("AttackMonsterIntention: Enter: " + _stateMachine.State);
+                }
 
                 if (entity == null) return;
 
