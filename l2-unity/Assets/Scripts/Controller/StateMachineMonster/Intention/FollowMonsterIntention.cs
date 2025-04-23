@@ -1,5 +1,6 @@
 using UnityEditorInternal;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class FollowMonsterIntention : MonsterIntentionBase
 {
@@ -8,25 +9,26 @@ public class FollowMonsterIntention : MonsterIntentionBase
     public override void Enter(object arg0)
     {
 
-        if (arg0.GetType() == typeof(ModelMovePawn))
+        if (arg0.GetType() == typeof(MoveToPawn))
         {
-            //PlayerEntity _target = (PlayerEntity)arg0;
-            ModelMovePawn _target = (ModelMovePawn)arg0;
-            //_stateMachine.SetTarget(_target);
-            //Vector3 tarPos = _target.transform.position;
-            Vector3 monsterPos = _stateMachine.MonsterObject.transform.position;
-            //float dist = VectorUtils.Distance2D(tarPos, monsterPos);
-            //10 metr distance tar and defens
-           // if (dist == 0 | dist <= 50)
-            //{
-               
-                _stateMachine.Entity.Running = true;
-                _stateMachine.ChangeState(MonsterState.RUNNING);
 
-                // _stateMachine.MoveMonster.FollowToTarget(_target.transform);
-                _stateMachine.MoveMonster.MoveToPawn(_target);
-           // }
+                MoveToPawn moveToPawn = (MoveToPawn)arg0;
 
+
+                Entity pEntity = World.Instance.GetEntityNoLockSync(moveToPawn.TarObjid);
+
+
+                if (pEntity.GetType() == typeof(PlayerEntity))
+                {
+                    if (!pEntity.GetDead() & !_stateMachine.Entity.GetDead())
+                    {
+                        PlayerEntity pEntity1 = pEntity as PlayerEntity;
+                        _stateMachine.SetTarget(pEntity1);
+                        //_stateMachine.MoveMonster.MoveToPawn(new MovementTarget(pEntity.transform, moveToPawn.Distance));
+                        _stateMachine.Entity.Running = true;
+                        _stateMachine.ChangeState(MonsterState.RUNNING);
+                    }
+                }
         }
         Debug.Log("Debug EVENT =========== MoveMonsterIntention");
     }

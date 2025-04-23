@@ -1,3 +1,4 @@
+using System.Xml;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -19,9 +20,11 @@ public class AttackMonsterIntention : MonsterIntentionBase
             //if(dist == 0 | dist <= 10)
             //{
                 Attack attack = (Attack)arg0;
+
                 Entity entity = World.Instance.GetEntityNoLockSync(attack.TargetId);
-                
-                if(_stateMachine.State ==  MonsterState.WALKING | _stateMachine.State == MonsterState.RUNNING)
+                Entity monster = _stateMachine.Entity;
+
+                if (_stateMachine.State ==  MonsterState.WALKING | _stateMachine.State == MonsterState.RUNNING)
                 {
                     Debug.Log("AttackMonsterIntention: Enter: " + _stateMachine.State);
                 }
@@ -31,6 +34,9 @@ public class AttackMonsterIntention : MonsterIntentionBase
                 if(entity.GetType() == typeof(PlayerEntity))
                 {
                     _stateMachine.SetTarget((PlayerEntity)entity);
+
+                    MoveAllCharacters.Instance.AddRotate(monster.IdentityInterlude.Id, new RotateData(entity, monster));
+
                     _stateMachine.ChangeState(MonsterState.ATTACKING);
                     _stateMachine.NotifyEvent(Event.READY_TO_ACT);
                 }

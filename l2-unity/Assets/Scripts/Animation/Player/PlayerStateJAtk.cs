@@ -37,7 +37,7 @@ public class PlayerStateJAtk : StateMachineBehaviour
 
         StopAnimationTrigger(animator , parameterName);
 
-        //Debug.Log(" Attack Sate to Intention TIMEOUT Запуск е1 " + PlayerEntity.Instance.CurrentAttackCount + " end time " + _endTime + "  start time " + _startTime +  " timeAtk " + timeAtk);
+        Debug.Log(" Attack Sate to Intention TIMEOUT Запуск е1 " + PlayerEntity.Instance.CurrentAttackCount + " end time " + _endTime + "  start time " + _startTime +  " timeAtk " + timeAtk);
     }
      
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -45,21 +45,25 @@ public class PlayerStateJAtk : StateMachineBehaviour
         float currentTime = Time.time;
         float timeOut = currentTime - _startTime;
 
-        if (timeOut >= _endTime) SwitchToIdle(stateInfo);
+        
 
         float normalizedTime = timeOut / _endTime;
         float speed = _animationCurve.Evaluate(normalizedTime);
+
+        Debug.Log("Сколько осталось до завершения анимации evalute " + speed);
+        if (timeOut >= _endTime) SwitchToIdle(stateInfo);
 
         PlayerAnimationController.Instance.SetPAtkSpeed(speed);
     }
 
     private void SwitchToIdle(AnimatorStateInfo stateInfo)
     {
+        //  float currentNormalizedTime = stateInfo.normalizedTime;
         float currentNormalizedTime = stateInfo.normalizedTime;
-        //Debug.Log("Сколько осталось до завершения анимации " + currentNormalizedTime);
+        Debug.Log("Сколько осталось до завершения анимации " + currentNormalizedTime);
         if (!_isSwitchIdle & currentNormalizedTime > 0.9f)
         {
-           // Debug.Log("Сколько осталось до завершения мы переключаемся в idle" + currentNormalizedTime);
+            Debug.Log("Сколько осталось до завершения мы переключаемся в idle" + currentNormalizedTime);
             _isSwitchIdle = true;
             PlayerStateMachine.Instance.ChangeIntention(Intention.INTENTION_IDLE);
             PlayerStateMachine.Instance.NotifyEvent(Event.WAIT_RETURN);

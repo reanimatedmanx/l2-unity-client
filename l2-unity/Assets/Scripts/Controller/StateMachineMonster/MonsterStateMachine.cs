@@ -21,7 +21,6 @@ public class MonsterStateMachine : MonoBehaviour
     private int _monsterId;
     private int _npcId;
     private GameObject _go;
-    private MoveMonster _moveMonster;
     private PlayerEntity _target;
     private Entity _entity;
     private GravityMonster _gravityMonster;
@@ -47,8 +46,6 @@ public class MonsterStateMachine : MonoBehaviour
     }
     public GameObject MonsterObject { get { return _go; } }
 
-    public MoveMonster MoveMonster { get { return _moveMonster; } }
-
     public Entity Entity { get { return _entity; } }
 
 
@@ -56,14 +53,12 @@ public class MonsterStateMachine : MonoBehaviour
     public virtual void Initialize(int mosterId, 
         int npcId,
         GameObject go, 
-        MoveMonster moveMonster,
         Entity entity , 
         GravityMonster gravityMonster)
     {
         _monsterId = mosterId;
         _npcId = npcId;
         _go = go;
-        _moveMonster = moveMonster;
         _entity = entity;
         _gravityMonster = gravityMonster;
 

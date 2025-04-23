@@ -146,7 +146,7 @@ public class FastSinglExecuter : MonoBehaviour
     private void MoveToPawn(byte[] data)
     {
         MoveToPawn moveToPawnPacket = new MoveToPawn(data);
-        Debug.Log("MoveToPawn Combat Event");
+
         synchronizationContext.Post(_ => {
             Entity entity = World.Instance.GetEntityNoLockSync(moveToPawnPacket.ObjId);
             if (entity != null)
@@ -159,12 +159,7 @@ public class FastSinglExecuter : MonoBehaviour
                 else if (entity.GetType() == typeof(MonsterEntity))
                 {
                     MonsterEntity mEntity = (MonsterEntity)entity;
-                    Entity targetObject = World.Instance.GetEntityNoLockSync(moveToPawnPacket.TarObjid);
-                    if (!mEntity.GetDead())
-                    {
-                        MonsterMoveToPawn(moveToPawnPacket, mEntity, targetObject);
-                    }
-
+                    MonsterMoveToPawn(moveToPawnPacket , mEntity);
                 }
             }
         }, null);
@@ -174,16 +169,10 @@ public class FastSinglExecuter : MonoBehaviour
         PlayerController.Instance.InitMoveToPawn(moveToPawnPacket);
     }
 
-    public void MonsterMoveToPawn(MoveToPawn moveToPawnPacket, MonsterEntity mEntity, Entity targetObject)
+    public void MonsterMoveToPawn(MoveToPawn moveToPawnPacket , MonsterEntity mEntity)
     {
-        if (targetObject != null)
-        {
-            MonsterStateMachine msm = mEntity.GetComponent<MonsterStateMachine>();
-            //msm.ChangeIntention(MonsterIntention.INTENTION_FOLLOW , targetObject);
-            //msm.ChangeIntention(MonsterIntention.INTENTION_FOLLOW, new ModelMovePawn(moveToPawnPacket.TarPos, moveToPawnPacket.Distance));
-            //Debug.Log(" BEGIN NEW FOLLOW MY Distance " + moveToPawnPacket.Distance);
-        }
-
+          MonsterStateMachine msm = mEntity.GetComponent<MonsterStateMachine>();
+          msm.ChangeIntention(MonsterIntention.INTENTION_FOLLOW , moveToPawnPacket);
     }
 
     public async void StopMove(byte[] data)
@@ -199,6 +188,8 @@ public class FastSinglExecuter : MonoBehaviour
     private void StopMoveUpdate(StopMove stopMovePacket)
     {
         Entity entity = World.Instance.GetEntityNoLockSync(stopMovePacket.ObjId);
+
+        if(entity == null) return;
 
         if (entity.GetType() == typeof(PlayerEntity))
         {

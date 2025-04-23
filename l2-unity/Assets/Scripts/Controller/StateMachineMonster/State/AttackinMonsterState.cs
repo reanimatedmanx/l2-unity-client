@@ -8,7 +8,7 @@ public class AttackinMonsterState : MonsterBase
     public AttackinMonsterState(MonsterStateMachine stateMachine) : base(stateMachine) { }
     public override void Enter() { }
     public override void Exit() {
-        _stateMachine.MoveMonster.StopRotateObject();
+
     }
     public override void Update() { }
     public override void HandleEvent(Event evt)
@@ -30,7 +30,7 @@ public class AttackinMonsterState : MonsterBase
 
     private void OnAttack()
     {
-        _stateMachine.MoveMonster.RotateInTargetObject(_stateMachine.GetTarget().transform);
+       
         MonsterEntity entity = (MonsterEntity)_stateMachine.Entity;
         NetworkAnimationController nac = entity.GetAnimatorController();
         AnimationManager.Instance.PlayMonsterAnimation(entity.IdentityInterlude.Id, nac, AnimationNames.MONSTER_ATK01.ToString());

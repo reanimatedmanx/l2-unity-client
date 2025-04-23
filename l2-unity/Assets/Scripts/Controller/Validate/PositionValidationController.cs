@@ -99,7 +99,8 @@ public class PositionValidationController : MonoBehaviour
             monsterEntity.ShowObject();
             
             var stateMachine = monsterEntity.GetStateMachine();
-            if (stateMachine != null) ReStartAnimation(stateMachine);
+            if (stateMachine != null) ReStartAnimation(monsterEntity.IdentityInterlude.Id , stateMachine);
+
         }else if (entity.GetType() == typeof(PlayerEntity))
         {
             //PlayerEntity monsterEntity = (PlayerEntity)entity;
@@ -108,9 +109,9 @@ public class PositionValidationController : MonoBehaviour
     }
 
 
-    private void ReStartAnimation(MonsterStateMachine stateMachine)
+    private void ReStartAnimation(int mObjId , MonsterStateMachine stateMachine)
     {
-        if (stateMachine.MoveMonster.IsMoving())
+        if (MoveAllCharacters.Instance.IsMoving(mObjId))
         {
             if (stateMachine.State == MonsterState.WALKING) stateMachine.ChangeState(MonsterState.WALKING);
             if (stateMachine.State == MonsterState.RUNNING) stateMachine.ChangeState(MonsterState.RUNNING);

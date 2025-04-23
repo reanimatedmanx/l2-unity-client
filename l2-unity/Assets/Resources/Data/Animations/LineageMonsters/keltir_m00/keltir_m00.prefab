@@ -592,7 +592,6 @@ MonoBehaviour:
     _npcId: 0
     _npcClass: 
     _playerClass: 0
-    _isMage: 0
     _position: {x: 4724, y: -68, z: -1731}
     _heading: 0
     _owned: 0
@@ -606,11 +605,9 @@ MonoBehaviour:
     _maxHp: 0
     _maxMp: 0
     _maxCp: 0
-    _walkingSpeed: 0
-    _runSpeed: 0
     _scaledRunSpeed: 0
     _scaledWalkSpeed: 0
-    _scaledPAtckSpeed: 0
+    _basePAtkSpeed: 0
   _appearance:
     _collisonHeight: 0
     _collisionRadius: 0
@@ -625,7 +622,6 @@ MonoBehaviour:
   _attackTarget: {fileID: 0}
   _stopAutoAttackTime: 0
   _startAutoAttackTime: 0
-  _sitting: 0
 --- !u!114 &-6957038487279800056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -748,13 +744,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4167410998973950065}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfb424ba45404e74f943e268c34b087b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _isFollow: 0
   rotationThreshold: 0.01
+  angleThreshold: 3
   stoppingDistance: 0.1
 --- !u!114 &-3441076736915462104
 MonoBehaviour:

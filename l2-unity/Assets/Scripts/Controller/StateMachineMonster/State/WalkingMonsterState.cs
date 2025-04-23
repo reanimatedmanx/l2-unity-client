@@ -10,7 +10,7 @@ public class WalkingMonsterState : MonsterBase
     }
     public override void Exit() {
         //Debug.Log("EXIT WALKING MONSTER!!!!!!!!!!!!!");
-        _stateMachine.MoveMonster.StopRotateObject();
+       // _stateMachine.MoveMonster.StopRotateObject();
     }
     public override void Update() { }
     public override void HandleEvent(Event evt)

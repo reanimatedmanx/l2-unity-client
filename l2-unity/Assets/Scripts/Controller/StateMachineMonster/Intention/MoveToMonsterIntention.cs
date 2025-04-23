@@ -1,3 +1,5 @@
+using System.Xml;
+using UnityEditorInternal;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
@@ -18,7 +20,9 @@ public class MoveToMonsterIntention : MonsterIntentionBase
 
             if (distance > defaultIgnore)
             {
-                _stateMachine.MoveMonster.MoveToTargetPosition(_targetPos);
+                // _stateMachine.MoveMonster.MoveToTargetPosition(new MovementTarget(_targetPos , 0.1f));
+                MovementTarget movementTarget = new MovementTarget(_targetPos, 0.1f);
+                MoveAllCharacters.Instance.AddMoveData(_stateMachine.Entity.IdentityInterlude.Id, new MovementData(monsterEntity, movementTarget));
 
                 if (monsterEntity.Running)
                 {

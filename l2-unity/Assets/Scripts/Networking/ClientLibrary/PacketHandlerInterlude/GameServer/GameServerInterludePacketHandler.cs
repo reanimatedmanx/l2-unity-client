@@ -265,11 +265,20 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         }
         else
         {
-            EventProcessor.Instance.QueueEvent(() => World.Instance.UserInfoUpdate(userInfo));
+            EventProcessor.Instance.QueueEvent(() =>
+            {
+                World.Instance.UserInfoUpdateCharacter(userInfo);
+                UserInfoCharacterCombat(userInfo);
+            });
             Debug.Log("GameServerPacket OnCharUserInfo : Завершили обработку пакета UserInfo noraml packet");
         }
 
 
+    }
+
+    private void UserInfoCharacterCombat(UserInfo userInfo)
+    {
+        World.Instance.UpdateUserInfo(PlayerEntity.Instance , userInfo);
     }
 
     private void OnCharSkillCoolTime(byte[] data)

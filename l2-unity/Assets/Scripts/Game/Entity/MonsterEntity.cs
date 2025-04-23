@@ -1,11 +1,10 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem.XR;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 [RequireComponent(typeof(NetworkAnimationController)),
-    RequireComponent(typeof(NetworkTransformReceive)),
-    RequireComponent(typeof(NetworkCharacterControllerReceive)),
     RequireComponent(typeof(MonsterAnimationAudioHandler))]
 public class MonsterEntity : NetworkEntity
 {
@@ -15,7 +14,7 @@ public class MonsterEntity : NetworkEntity
     private MonsterStateMachine _stateMachine;
     private float _defaultRunSpeed;
     private float _defaultWalkSpeed;
-
+    private CharacterController _characterController;
     private readonly string _walk = "walk";
     private readonly string _run = "run";
     private readonly string _wait = "wait";
@@ -30,7 +29,7 @@ public class MonsterEntity : NetworkEntity
         base.Initialize();
         _monsterAnimationAudioHandler = GetComponent<MonsterAnimationAudioHandler>();
         _stateMachine = GetComponent<MonsterStateMachine>();
-
+        _characterController = GetComponent<CharacterController>();
         EntityLoaded = true;
     }
 
@@ -38,6 +37,11 @@ public class MonsterEntity : NetworkEntity
     public MonsterStateMachine GetStateMachine()
     {
         return _stateMachine;
+    }
+
+    public  CharacterController GetCharacterController()
+    {
+        return _characterController;
     }
 
     public ObjectData GetByIdUseLocator(int id , Vector3 sourcePosition)

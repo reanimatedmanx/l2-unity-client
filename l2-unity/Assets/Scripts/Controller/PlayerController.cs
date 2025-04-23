@@ -24,23 +24,17 @@ public class PlayerController : MonoBehaviour
      private Vector3 _moveDirection;
      private bool _running = true;
 
-    private Vector3 _currentPos;
-    private Vector3 _lastPos;
-    private Vector2 _axis;
-    //private 
     /* Gravity */
     private float _verticalVelocity = 0;
     [SerializeField] private float _jumpForce = 10;
     [SerializeField] private float _gravity = 28;
-    //private int _indexMetr = 1;
-    private float _indexDistance = -1;
+
 
     /* Target */
     private MovementTarget _movementTarget;
 
-     private bool _isMove = false;
-     private Transform _lookAtTarget;
-
+    private bool _isMove = false;
+    private Transform _lookAtTarget;
     private GearEffects _gearEffects;
 
 
@@ -119,22 +113,25 @@ public class PlayerController : MonoBehaviour
     {
         if (_isRotateAttacker & !_isMove)
         {
-            if (!IsFacingAttacker(_attackerPosition))
+            if (!VectorUtils.IsFacingAttacker(transform , _attackerPosition , angleThreshold))
             {
-                Debug.Log("Rotate to object Attacker running : ");
+               // Debug.Log("Rotate to object Attacker running : ");
                 TurnTowardsAttacker(_attackerPosition);
             }
             else
             {
-                Debug.Log("Rotate to object Attacker stop: ");
+               //Debug.Log("Rotate to object Attacker stop: ");
                 _isRotateAttacker = false;
             }
 
         }
     }
+ 
     public void FixedUpdate()
     {
-      
+        //Если мы не двигаемся но мы в состоянии MoveToPawn == true тогда мы следим за обьектом двинется он или нет если двинется мы подбегаем к нему
+        //Если мы получим MoveToPawn == false мы останавливаем слежение
+        RestartMoveElseMoveToPawnTrue(ref _isMove);
 
         if (_isMove)
         {
@@ -160,6 +157,7 @@ public class PlayerController : MonoBehaviour
                 Quaternion targetRotation = GetNewRotate(finalAngle);
                 float r_speed = _calcSpeed.GetSpeedRotate(_behindPlayer);
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation , r_speed);
+                
                 _controller.Move(newPositionPlusGravity * Time.deltaTime);
 
 
@@ -169,12 +167,38 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                SetPositionServer(_movementTarget, targetPosition);
-                PlayerStateMachine.Instance.NotifyEvent(Event.ARRIVED);
-                StopMove();
+                 //Debug.Log("IsMoveToPawn мы на месте " + VectorUtils.Distance2D(characterPosition, targetPosition));
+                 SetPositionServer(_movementTarget, targetPosition);
+                 NotifyEvent(PlayerStateMachine.Instance.State);
+                 StopMove();
+
+               // Debug.Log("IsMoveToPawn запуск повтора т.е StopMove " + PlayerStateMachine.Instance.IsMoveToPawn + " state " + PlayerStateMachine.Instance.State);
             }
            
 
+        }
+    }
+
+    private void NotifyEvent(PlayerState state)
+    {
+        if (state == PlayerState.RUNNING | state == PlayerState.WALKING)
+        {
+            PlayerStateMachine.Instance.NotifyEvent(Event.ARRIVED);
+        }
+    }
+
+
+    public void RestartMoveElseMoveToPawnTrue(ref bool _isMove)
+    {
+        if (PlayerStateMachine.Instance.IsMoveToPawn & _isMove == false)
+        {
+            Vector3 targetPosition = VectorUtils.To2D(_movementTarget.GetTarget());
+            float distance = VectorUtils.Distance2D(transform.position, targetPosition);
+            if (distance > _movementTarget.GetDistance())
+            {
+                Debug.Log("IsMoveToPawn запуск повтора т.е IsMoveToPawn " + PlayerStateMachine.Instance.IsMoveToPawn + " state " + PlayerStateMachine.Instance.State + " Distance " + distance);
+                _isMove = true;
+            }
         }
     }
 
@@ -191,24 +215,15 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
 
-    private bool IsFacingAttacker(Vector3 attackerPosition)
-    {
-        Vector3 directionToAttacker = (attackerPosition - transform.position).normalized;
-        Vector3 forwardDirection = transform.forward;
-        float angle = Vector3.Angle(forwardDirection, directionToAttacker);
-        Debug.Log("Rotate to object Attacker running angle : " + angle);
-        return angle < angleThreshold;
-    }
+   
 
 
     private void SetPositionServer(MovementTarget _movementTarget , Vector3 targetPosition)
     {
         if (_movementTarget.GetDistance() == 0.1f)
         {
-            //apply static gravity
             var _targetPosition = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
             transform.position = _targetPosition;
-            Debug.Log("PlayerController>Arrived: Refresh Player Position to Server Position");
         }
     }
     private void SwitchWalkToRun(ref bool switchWalkToRun , int countTrigger)
@@ -303,10 +318,6 @@ public class PlayerController : MonoBehaviour
 
   
 
-    public bool IsFirstRun()
-    {
-        return _isFirst;
-    }
 
 
     public bool IsTurnsAround()
@@ -323,51 +334,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    //public void SetDestinationVector(Vector3 position, float distance)
-    //{
-
-    // if (!_runningToDestination)
-    // {
-    //   _switchWalkToRun = false;
-    //    _isFirst = true;
-    // }
-
-    // _targetPositionVector = position;
-    // _runningToDestination = true;
-    //_stopAtRange = distance;
-    // var _target2D = VectorUtils.To2D(position);
-    //_isFinish = false;
-    // _indexDistance = Vector3.Distance(_flatTransformPos, _target2D) - 1;
-    //_startTime = _elapsedTime;
-    //_maxAngle = VectorUtils.GetMaxAngle(_target2D, transform);
-    //_behindPlayer = VectorUtils.IsTargetBehindPlayer(position, transform);
-    //Debug.Log("Точка находится за спиной? " + VectorUtils.IsTargetBehindPlayer(position, transform));
-    // }
-
-
-
-
-
-    //public void ResetDestination()
-    //{
-    //  _moveTimeStamp = 0;
-    //  _runningToDestination = false;
-    //  _targetPositionVector = _flatTransformPos;
-    //  _isFirst = true;
-    // _switchWalkToRun = false;
-    //  ClickManager.Instance.HideLocator();
-    // }
-
-
-
-    //private void MeasureSpeed()
-    //{
-    //    _currentPos = transform.position;
-    //    _measuredSpeed = (_currentPos - _lastPos).magnitude / Time.deltaTime;
-    //    _lastPos = _currentPos;
-   // }
-
-
+    
  
 
     public void ThinkMoveToPawn( ModelMovePawn model)
@@ -416,22 +383,6 @@ public class PlayerController : MonoBehaviour
 
   
 
-
-
- 
-    public void StartLookAt(Transform target)
-    {
-        UpdateFinalAngleToLookAt(target);
-
-        // Wait for a small delay to lock on to target
-        _lookAtTarget = target;
-    }
-
-    public void StopLookAt()
-    {
-        UpdateFinalAngleToLookAt(_lookAtTarget);
-        _lookAtTarget = null;
-    }
 
     public void UpdateFinalAngleToLookAt(Transform target)
     {

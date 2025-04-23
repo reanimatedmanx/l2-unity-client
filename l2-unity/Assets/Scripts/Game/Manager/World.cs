@@ -145,7 +145,11 @@ public class World : MonoBehaviour {
 
         // Debug.Log("PLAYER SPAWN RunSpeed " + statsIntr.RunSpeed);
         //Debug.Log("PLAYER SPAWN PAtkSpd " + statsIntr.PAtkSpd);
-        player.UpdatePAtkSpeedPlayer((int)statsIntr.BasePAtkSpeed);
+        // player.UpdatePAtkSpeedPlayer((int)statsIntr.BasePAtkSpeed);
+
+        //416 - нормальная атака
+        //554 - с ускорением
+        player.UpdatePAtkSpeedPlayer(554);
         player.UpdateMAtkSpeed((int)statsIntr.MAtkSpd);
         //go.transform.SetParent(_usersContainer.transform);
 
@@ -285,10 +289,31 @@ public class World : MonoBehaviour {
         }
     }
 
+
+    public void UpdateUserInfo(Entity entity, UserInfo userInfo)
+    {
+        if (entity.GetType() == typeof(PlayerEntity))
+        {
+            PlayerEntity p_entity = (PlayerEntity)entity;
+            //player.GetComponent<NetworkTransformReceive>().Initialize();
+            var statsIntr = userInfo.PlayerInfoInterlude.Stats;
+            Debug.Log("UserInfo update Run Readl Speed " + statsIntr.RunRealSpeed);
+            p_entity.UpdateRunSpeed(statsIntr.RunRealSpeed);
+            p_entity.UpdateWalkSpeed(statsIntr.WalkRealSpeed);
+
+            // Debug.Log("PLAYER SPAWN RunSpeed " + statsIntr.RunSpeed);
+            //Debug.Log("PLAYER SPAWN PAtkSpd " + statsIntr.PAtkSpd);
+            Debug.Log("UserInfo update PAtk Speed " + 554);
+            //p_entity.UpdatePAtkSpeedPlayer((int)statsIntr.BasePAtkSpeed);
+            p_entity.UpdateMAtkSpeed((int)statsIntr.MAtkSpd);
+        }
+    }
+
+
     private void InitMonster(Entity npc , GameObject npcGo)
     {
         npc.GetComponent<NetworkAnimationController>().Initialize();
-        MoveMonster mm = npcGo.GetComponent<MoveMonster>();
+        //MoveMonster mm = npcGo.GetComponent<MoveMonster>();
         GravityMonster gm = npcGo.GetComponent<GravityMonster>();
         npcGo.GetComponent<Gear>().Initialize(npc.IdentityInterlude.Id, npc.RaceId);
         npc.Initialize();
@@ -303,7 +328,7 @@ public class World : MonoBehaviour {
             npc.UpdateNpcRunningSpd(npc.Stats.RunRealSpeed);
             npc.UpdateNpcWalkSpd(npc.Stats.WalkRealSpeed);
             npc.Running = npc.IdentityInterlude.IsRunning;
-            msm.Initialize(npc.IdentityInterlude.Id, npc.IdentityInterlude.NpcId, npcGo, mm, npc, gm);
+            msm.Initialize(npc.IdentityInterlude.Id, npc.IdentityInterlude.NpcId, npcGo, npc, gm);
         }
     }
 
@@ -510,7 +535,7 @@ public class World : MonoBehaviour {
         });
     }
 
-    public Task UserInfoUpdate(UserInfo user)
+    public Task UserInfoUpdateCharacter(UserInfo user)
     {
         return ExecuteWithEntityAsync(user.PlayerInfoInterlude.Identity.Id, e => {
             WorldCombat.Instance.StatusUpdate(e, user.PlayerInfoInterlude.Stats, user.PlayerInfoInterlude.Status , user.PlayerInfoInterlude.Identity.Id);

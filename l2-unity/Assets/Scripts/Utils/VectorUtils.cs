@@ -43,6 +43,17 @@ public class VectorUtils : MonoBehaviour {
         return angle > 90f;
     }
 
+    public static bool IsFacingAttacker(Transform transform , Vector3 attackerPosition , float angleThreshold)
+    {
+        Vector3 directionToAttacker = (attackerPosition - transform.position).normalized;
+        Vector3 forwardDirection = transform.forward;
+        float angle = Vector3.Angle(forwardDirection, directionToAttacker);
+
+        return angle < angleThreshold;
+    }
+
+
+
 
     //Вычисляет сколько процентов игрок повернулся к заданой цели. Процент вычисляет между двумя векторами
     public static float InFaceProcent(Vector3 target, Transform transform , float maxAngle)
