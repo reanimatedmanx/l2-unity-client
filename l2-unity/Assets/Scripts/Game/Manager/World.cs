@@ -149,7 +149,7 @@ public class World : MonoBehaviour {
 
         //416 - нормальная атака
         //554 - с ускорением
-        player.UpdatePAtkSpeedPlayer(554);
+        player.UpdatePAtkSpeedPlayer((int)statsIntr.BasePAtkSpeed);
         player.UpdateMAtkSpeed((int)statsIntr.MAtkSpd);
         //go.transform.SetParent(_usersContainer.transform);
 
@@ -304,7 +304,7 @@ public class World : MonoBehaviour {
             // Debug.Log("PLAYER SPAWN RunSpeed " + statsIntr.RunSpeed);
             //Debug.Log("PLAYER SPAWN PAtkSpd " + statsIntr.PAtkSpd);
             Debug.Log("UserInfo update PAtk Speed " + 554);
-            //p_entity.UpdatePAtkSpeedPlayer((int)statsIntr.BasePAtkSpeed);
+            p_entity.UpdatePAtkSpeedPlayer((int)statsIntr.BasePAtkSpeed);
             p_entity.UpdateMAtkSpeed((int)statsIntr.MAtkSpd);
         }
     }

@@ -141,6 +141,10 @@ public class FilterAccessType
         {
             return true;
         }
+        else if (type == GSInterludeCombatPacketType.ActionFailed)
+        {
+            return true;
+        }
         else if (type == GSInterludeCombatPacketType.AUTO_ATTACK_START)
         {
             return true;

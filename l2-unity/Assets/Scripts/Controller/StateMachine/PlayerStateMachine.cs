@@ -23,6 +23,8 @@ public class PlayerStateMachine : MonoBehaviour
     public bool IsMoveToPawn { get; set; }
     public PlayerState State { get { return _currentState; } }
 
+
+
     private StateBase _stateInstance;
     private IntentionBase _intentionInstance;
     private Dictionary<PlayerState, StateBase> _dictState = new Dictionary<PlayerState, StateBase>();
@@ -33,6 +35,7 @@ public class PlayerStateMachine : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
+         
         }
         else
         {

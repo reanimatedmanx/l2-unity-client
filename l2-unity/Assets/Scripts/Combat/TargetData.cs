@@ -18,6 +18,7 @@ public class TargetData
     public ObjectData Data { get { return _data; } }
     public float Distance { get { return _distance; } set { _distance = value; } }
 
+    private Entity _entity;
     public StyleColor GetColorName()
     {
         StyleColor styleColor = new StyleColor();
@@ -27,6 +28,10 @@ public class TargetData
         return styleColor;
     } 
 
+    public bool IsDead()
+    {
+       return _entity.IsDead();
+    }
     public void SetColor(string hexColor)
     {
         this.hexColor = hexColor;

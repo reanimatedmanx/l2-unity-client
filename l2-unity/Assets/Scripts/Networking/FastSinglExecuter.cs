@@ -45,11 +45,28 @@ public class FastSinglExecuter : MonoBehaviour
             case GSInterludeCombatPacketType.ATTACK:
                 Attack(itemQueue.DecodeData());
                 break;
+            case GSInterludeCombatPacketType.ActionFailed:
+                ActionFailed(itemQueue.DecodeData());
+                break;
         }
 
   
     }
 
+
+    public void ActionFailed(byte[] data)
+    {
+        ActionFailed attackPacket = new ActionFailed(data);
+
+        //synchronizationContext.Post(_ =>
+        //{
+         //   if (PlayerStateMachine.Instance.State == PlayerState.ATTACKING)
+          //  {
+           //     PlayerStateMachine.Instance.NotifyEvent(Event.CANCEL);
+           // }
+        //}, null);
+
+    }
 
     private void Attack(byte[] data)
     {
@@ -225,14 +242,7 @@ public class FastSinglExecuter : MonoBehaviour
         }
     }
 
-    private float GetDistance(Entity entity, StopMove stopMovePacket)
-    {
-        //monsterStatemachine.MoveMonster.SetFollow(false);
-        var gravityOffTransform = new Vector3(entity.transform.position.x, 0, entity.transform.position.z);
-        var gravityOffTarget = new Vector3(stopMovePacket.StopPos.x, 0, stopMovePacket.StopPos.z);
 
-        return Vector2.Distance(gravityOffTarget, gravityOffTransform);
-    }
 
     private void Die(byte[] data)
     {

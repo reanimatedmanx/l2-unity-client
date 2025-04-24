@@ -26,6 +26,8 @@ public class NewAttackIntention : IntentionBase
             Entity entity = World.Instance.GetEntityNoLockSync(myModel.TargetId);
             PlayerController.Instance.RotateToAttacker(entity.transform.position);
 
+            PlayerEntity.Instance.IsAttack = true;
+
             _stateMachine.ChangeState(PlayerState.ATTACKING);
             _stateMachine.NotifyEvent(Event.READY_TO_ACT);
 

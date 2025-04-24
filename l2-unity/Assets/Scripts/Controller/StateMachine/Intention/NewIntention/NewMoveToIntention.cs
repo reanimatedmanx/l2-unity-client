@@ -44,7 +44,7 @@ public class NewMoveToIntention : IntentionBase
 
     private void StartAnimMoveTo()
     {
-        if (_stateMachine.State == PlayerState.IDLE)
+        if (_stateMachine.State == PlayerState.IDLE | _stateMachine.State == PlayerState.ATTACKING)
         {
             _stateMachine.ChangeState(PlayerState.WALKING);
             _stateMachine.NotifyEvent(Event.MOVE_TO);

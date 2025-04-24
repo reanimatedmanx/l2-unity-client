@@ -19,12 +19,14 @@ public class NewAttackState : StateBase
         switch (evt)
         {
             case Event.READY_TO_ACT:
-                Debug.Log(" Attack Sate to Intention Create " + PlayerEntity.Instance.CurrentAttackCount);
+                Debug.Log("Attack Sate to Intention> начало новой атакие пришел запрос от сервера");
                 PlayerEntity.Instance.RefreshRandomPAttack();
                 AnimationManager.Instance.PlayAnimation(PlayerEntity.Instance.RandomName.ToString(), true);
                 break;
             case Event.CANCEL:
-                Debug.Log("NewAttackState > Cancel not implements ");
+                Debug.Log("Attack Sate to Intention> Отмена скорее всего запрос пришел из ActionFaild");
+                PlayerStateMachine.Instance.ChangeIntention(Intention.INTENTION_IDLE);
+                PlayerStateMachine.Instance.NotifyEvent(Event.WAIT_RETURN);
                 break;
 
         }
