@@ -52,6 +52,38 @@ public class VectorUtils : MonoBehaviour {
         return angle < angleThreshold;
     }
 
+    //graph setting
+    private static float _verticalVelocity = 0;
+    private static float _gravity = 28;
+    public static Vector3 ApplyGravityGround(Vector3 position, float elapsedTime)
+    {
+
+        RaycastHit hit;
+        bool isGrounded = Physics.Raycast(position, Vector3.down, out hit, Mathf.Infinity, World.Instance.GroundMask);
+
+        if (isGrounded)
+        {
+            // ≈сли на земле, устанавливаем Y на уровень земли
+            position.y = hit.point.y;
+            _verticalVelocity = 0;
+        }
+        else
+        {
+            // ≈сли не на земле, примен€ем гравитацию
+            _verticalVelocity -= _gravity * elapsedTime;
+            position.y += _verticalVelocity * elapsedTime;
+        }
+
+        // ƒополнительно провер€ем, не опустилс€ ли игрок ниже уровн€ земли
+        if (position.y < hit.point.y)
+        {
+            position.y = hit.point.y;
+            _verticalVelocity = 0;
+        }
+
+        return position;
+    }
+
 
 
 

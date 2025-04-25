@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IAnimationManager
@@ -12,4 +13,8 @@ public interface IAnimationManager
     void PlayMonsterAnimation(int objId, NetworkAnimationController controllerAnimator, string animationName);
 
     void StopMonsterCurrentAnimation(Animator animator, string animationName);
+
+    Dictionary<string, float> PlayerGetAllFloat();
+
+    void PlayerSetAllFloat(Dictionary<string, float> floatValues);
 }

@@ -38,6 +38,42 @@ public class PlayerAnimationController : BaseAnimationController
         }
     }
 
+    public Dictionary<string, float> GetParametrs()
+    {
+        Dictionary<string, float> floatValues = new Dictionary<string, float>();
+
+
+        foreach (var parameter in _animator.parameters)
+        {
+
+            if (parameter.type == AnimatorControllerParameterType.Float)
+            {
+                floatValues[parameter.name] = _animator.GetFloat(parameter.name);
+            }
+        }
+        return floatValues;
+    }
+
+    public void SetParametrs(Dictionary<string, float> floatValues)
+    {
+
+        foreach (var parameter in _animator.parameters)
+        {
+
+            if (parameter.type == AnimatorControllerParameterType.Float)
+            {
+
+                if (floatValues.TryGetValue(parameter.name, out float value))
+                {
+
+                    _animator.SetFloat(parameter.name, value);
+
+                }
+
+            }
+        }
+    }
+
 
 }
 

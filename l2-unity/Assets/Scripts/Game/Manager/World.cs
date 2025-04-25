@@ -295,15 +295,13 @@ public class World : MonoBehaviour {
         if (entity.GetType() == typeof(PlayerEntity))
         {
             PlayerEntity p_entity = (PlayerEntity)entity;
-            //player.GetComponent<NetworkTransformReceive>().Initialize();
+
             var statsIntr = userInfo.PlayerInfoInterlude.Stats;
-            Debug.Log("UserInfo update Run Readl Speed " + statsIntr.RunRealSpeed);
+
             p_entity.UpdateRunSpeed(statsIntr.RunRealSpeed);
             p_entity.UpdateWalkSpeed(statsIntr.WalkRealSpeed);
 
-            // Debug.Log("PLAYER SPAWN RunSpeed " + statsIntr.RunSpeed);
-            //Debug.Log("PLAYER SPAWN PAtkSpd " + statsIntr.PAtkSpd);
-            Debug.Log("UserInfo update PAtk Speed " + 554);
+
             p_entity.UpdatePAtkSpeedPlayer((int)statsIntr.BasePAtkSpeed);
             p_entity.UpdateMAtkSpeed((int)statsIntr.MAtkSpd);
         }

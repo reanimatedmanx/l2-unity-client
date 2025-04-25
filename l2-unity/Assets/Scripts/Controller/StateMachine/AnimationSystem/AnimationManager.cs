@@ -33,6 +33,7 @@ public class AnimationManager : IAnimationManager
         }
     }
 
+    
  
     public void PlayAnimation(string animationName, bool disableTriggerAfterStart)
     {
@@ -41,7 +42,6 @@ public class AnimationManager : IAnimationManager
         SetRecentName(finalAnimName);
         AddDebugInfo(finalAnimName);
         PlayerAnimationController.Instance.SetBool(finalAnimName, true);
-        //Debug.Log("Walking State PlayAnimation " + finalAnimName);
     }
 
 
@@ -73,6 +73,21 @@ public class AnimationManager : IAnimationManager
         //Debug.Log("MosterAnimation> stop animation " + animationName + " animatorName " + animator.name);
         animator.SetBool(animationName, false);
     }
+
+
+
+
+    public Dictionary<string, float>  PlayerGetAllFloat()
+    {
+       return  PlayerAnimationController.Instance.GetParametrs();
+    }
+
+
+    public void  PlayerSetAllFloat(Dictionary<string, float> floatValues)
+    {
+        PlayerAnimationController.Instance.SetParametrs(floatValues);
+    }
+
 
 
     public void PlayOriginalAnimation(string animationName)

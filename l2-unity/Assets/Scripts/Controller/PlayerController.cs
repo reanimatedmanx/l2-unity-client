@@ -362,7 +362,7 @@ public class PlayerController : MonoBehaviour
     }
 
     
-    private Vector3 ApplyGravity(Vector3 dir , float elapsedTime)
+    public Vector3 ApplyGravity(Vector3 dir , float elapsedTime)
     {
         /* Handle gravity */
         if (_controller.isGrounded)
@@ -381,7 +381,7 @@ public class PlayerController : MonoBehaviour
         return dir;
     }
 
-  
+   
 
 
     public void UpdateFinalAngleToLookAt(Transform target)

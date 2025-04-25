@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.EventSystems.EventTrigger;
 using static UnityEngine.Rendering.DebugUI;
 using static UnityEngine.UI.CanvasScaler;
@@ -94,8 +95,7 @@ public class PositionValidationController : MonoBehaviour
         {
             MonsterEntity monsterEntity = (MonsterEntity)entity;
             monsterEntity.HideObject();
-            //set gravity
-            monsterEntity.transform.position = new Vector3(newPosition.x , monsterEntity.transform.position.y , newPosition.z);
+            NewCalcGravityMonster(monsterEntity, newPosition);
             monsterEntity.ShowObject();
             
             var stateMachine = monsterEntity.GetStateMachine();
@@ -103,11 +103,38 @@ public class PositionValidationController : MonoBehaviour
 
         }else if (entity.GetType() == typeof(PlayerEntity))
         {
-            //PlayerEntity monsterEntity = (PlayerEntity)entity;
-            PlayerController.Instance.transform.position = new Vector3(newPosition.x, PlayerController.Instance.transform.position.y, newPosition.z);
+            Dictionary<string, float> floatValues  = AnimationManager.Instance.PlayerGetAllFloat();
+            entity.HideObject();
+            NewCalcGravity(PlayerController.Instance , newPosition);
+            entity.ShowObject();
+
+            AnimationManager.Instance.PlayerSetAllFloat(floatValues);
+            ReStartAnimationPlayer(PlayerStateMachine.Instance);
         }
     }
+    private void NewCalcGravityMonster(MonsterEntity monsterEntity , Vector3 newPosition)
+    {
+        newPosition.y = 0;
+        Vector3 newPositionPlusGravity = VectorUtils.ApplyGravityGround(newPosition, Time.time);
+        monsterEntity.transform.position = newPositionPlusGravity;
+    }
+    private void NewCalcGravity(PlayerController playerController , Vector3 newPosition)
+    {
+        //reset gravity
+        newPosition.y = 0;
+        Vector3 newPositionPlusGravity = VectorUtils.ApplyGravityGround(newPosition, Time.time);
+        playerController.transform.position = newPositionPlusGravity;
+    }
 
+    private void ReStartAnimationPlayer(PlayerStateMachine stateMachine)
+    {
+        if (PlayerController.Instance.RunningToDestination)
+        {
+            if (stateMachine.State == PlayerState.WALKING) stateMachine.ChangeState(PlayerState.WALKING);
+            if (stateMachine.State == PlayerState.RUNNING) stateMachine.ChangeState(PlayerState.RUNNING);
+            stateMachine.NotifyEvent(Event.MOVE_TO);
+        }
+    }
 
     private void ReStartAnimation(int mObjId , MonsterStateMachine stateMachine)
     {

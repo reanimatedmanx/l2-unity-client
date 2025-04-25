@@ -134,9 +134,14 @@ public class BaseAnimationController : MonoBehaviour
         {
             _lastAnimationVariableName = name;
         }
-
+        
         _animator.SetBool(name, value);
 
+    }
+
+    public void Rebind()
+    {
+        _animator.Rebind();
     }
 
     public void debugPrint()
