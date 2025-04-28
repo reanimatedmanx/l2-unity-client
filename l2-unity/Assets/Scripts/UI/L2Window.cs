@@ -48,7 +48,7 @@ public abstract class L2Window : MonoBehaviour
                 if (_isCenter) return;
 
                 _isCenter = true;
-                // _windowEle.style.position = Position.Absolute;
+
                 float width = _windowEle.resolvedStyle.width;
                 float height = _windowEle.resolvedStyle.height;
 
@@ -57,7 +57,7 @@ public abstract class L2Window : MonoBehaviour
 
                 _windowEle.style.left = (parentWidth - width) / 2;
                 _windowEle.style.top = (parentHeight - height) / 2;
-                //_windowEle.style.position = Position.Absolute;
+
             });
         }
     

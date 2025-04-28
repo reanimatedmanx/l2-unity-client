@@ -81,6 +81,7 @@ public class ChatWindow : L2Window {
 
         yield return new WaitForEndOfFrame();
         diagonalResizeManipulator.SnapSize();
+
     }
 
 

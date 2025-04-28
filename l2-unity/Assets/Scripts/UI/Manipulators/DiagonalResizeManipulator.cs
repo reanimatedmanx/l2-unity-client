@@ -87,6 +87,7 @@ public class DiagonalResizeManipulator : PointerManipulator {
     public void SnapSize() {
         /* Initial snap */
         float snappedY = _minHeight - _minHeight % _snapSize;
-        _root.style.height = snappedY + _snapOffset;
+        float position =  snappedY + _snapOffset;
+        _root.style.height = position;
     }
 }

@@ -75,6 +75,11 @@ public class L2GameUI : L2UI
             DeadWindow.Instance.AddWindow(_rootVisualContainer);
             DeadWindow.Instance.HideWindow();
         }
+        if (BufferPanel.Instance != null)
+        {
+            BufferPanel.Instance.AddWindow(_rootVisualContainer);
+            BufferPanel.Instance.ShowWindow();
+        }
         if (SkillbarWindow.Instance != null)
         {
             SkillbarWindow.Instance.AddWindow(_rootVisualContainer);
