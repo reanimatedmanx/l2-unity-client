@@ -1,4 +1,5 @@
 using L2_login;
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -134,7 +135,11 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
                 //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
                 OnTargetUnselected(itemQueue.DecodeData());
                 break;
-                
+            case GameInterludeServerPacketType.AbnormalStatusUpdate:
+                //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
+                OnAbnormalStatusUpdate(itemQueue.DecodeData());
+                break;
+
 
         }
 
@@ -194,6 +199,17 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             CharacterSelector.Instance.SelectInterludeCharacter(packet.SelectedSlotId);
             LoginClient.Instance.Disconnect();
             GameClient.Instance.OnAuthAllowed();
+        });
+    }
+
+    public void OnAbnormalStatusUpdate(byte[] data)
+    {
+        AbnormalStatusUpdate packet = new AbnormalStatusUpdate(data);
+        EventProcessor.Instance.QueueEvent(() => {
+            foreach (var item in packet.ListEffect)
+            {
+                BufferPanel.Instance.AddDataCellToTime(item._id, item._value, item._duration);
+            }
         });
     }
 
@@ -516,28 +532,13 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
     private void OnValidateLocation(byte[] data)
     {
-        //Debug.Log("GameServerPacket OnValidateLocation  : Пришел пакет");
+
         ValidateLocation validateLocation = new ValidateLocation(data);
+
         if (!InitPacketsLoadWord.getInstance().IsInit)
         {
             PositionValidationController.Instance.AddValidateLocation(validateLocation);
-            //NpcInfo npc = StorageNpc.getInstance().GetNpcInfo(validateLocation.ObjectId);
-            //if (npc != null)
-            // {
-            //    World.Instance.UpdateObjectPosition(validateLocation.ObjectId, validateLocation.Position);
-            //ebug.Log("GameServerPacket OnValidateLocation  : позиция валидирована для " + npc.Identity.Id);
-            // }
-            // else
-            // {
-            // UserInfo user = StorageNpc.getInstance().GetUserInfo(validateLocation.ObjectId);
-            // if (user != null)
-            // {
-            //     World.Instance.UpdateObjectPosition(validateLocation.ObjectId, validateLocation.Position);
-            // }
-            //}
         }
-    
-
     }
 
     private void OnFriendList(byte[] data)
@@ -548,16 +549,25 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
     private void OnEtcStatusUpdate(byte[] data)
     {
+        EtcStatusUpdate etcStatusUpdate = new EtcStatusUpdate(data);
 
-        Debug.Log("EtcStatusUpdate List SUccess");
+        if (InitPacketsLoadWord.getInstance().IsInit)
+        {
+            InitPacketsLoadWord.getInstance().AddPacketsInit(etcStatusUpdate);
+        }
+        else
+        {
+            _eventProcessor.QueueEvent(() => {
+                BufferPanel.Instance.RefreshPenalty(etcStatusUpdate);
+            });
+        }
+
     }
 
     private void OnStatusUpdate(byte[] data)
     {
         StatusUpdate packet = new StatusUpdate(data);
         EventProcessor.Instance.QueueEvent(() => World.Instance.StatusUpdate(packet.ObjectId, packet.Attributes));
-        //World.Instance.StatusUpdate(packet.ObjectId, packet.Attributes);
-        //Debug.Log("STATUS UPDATE  ОБРАБООТАЛИ   ");
     }
 
     private void OnTargetUnselected(byte[] data)

@@ -41,6 +41,7 @@ public class InitPacketsLoadWord
             UpdateInventoryBar();
             ShowMessage();
             ForEachDie();
+            EtcStatusUpdate();
         });
 
     }
@@ -83,6 +84,18 @@ public class InitPacketsLoadWord
         ForEachNpcSay();
     }
 
+    private void EtcStatusUpdate()
+    {
+        for (int i = 0; i < listPackets.Count; i++)
+        {
+            if (listPackets[i] is EtcStatusUpdate)
+            {
+                var packet = (EtcStatusUpdate)listPackets[i];
+                EventProcessor.Instance.QueueEvent(() => BufferPanel.Instance.RefreshPenalty(packet));
+            }
+        }
+    }
+
     private void ForEachMessage()
     {
         for (int i = 0; i < listPackets.Count; i++)
@@ -101,9 +114,7 @@ public class InitPacketsLoadWord
         {
             if (listPackets[i] is Die)
             {
-                //Debug.Log("DIE Init 1");
                 OnDie((Die)listPackets[i]);
-                //Debug.Log("DIE Init 2");
             }
         }
     }

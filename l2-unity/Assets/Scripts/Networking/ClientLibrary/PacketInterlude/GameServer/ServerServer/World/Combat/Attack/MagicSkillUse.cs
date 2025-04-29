@@ -81,11 +81,5 @@ public class MagicSkillUse : ServerPacket
         //DebugInfo(_aX, _aY, _aZ, _tX, _tY, _tZ);
     }
 
-    private void DebugInfo(int ax , int ay , int az , int tx , int ty , int tz)
-    {
-        var atak = new Vector3(ax , ay , az);
-        var tar = new Vector3(tx, ty, tz);
-        float distance = Vector3.Distance(atak, tar);
-        Debug.Log("DISTANCE TO SERVER L2J " + distance);
-    }
+
 }

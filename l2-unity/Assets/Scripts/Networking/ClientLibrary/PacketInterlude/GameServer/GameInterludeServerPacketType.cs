@@ -32,5 +32,6 @@ public enum GameInterludeServerPacketType : byte
     TargetUnselected = 0x2A,
     SocialAction = 0x2D,
     TeleportToLocation = 0x28,
-    Revive = 0x07
+    Revive = 0x07,
+    AbnormalStatusUpdate = 0x7f
 }
