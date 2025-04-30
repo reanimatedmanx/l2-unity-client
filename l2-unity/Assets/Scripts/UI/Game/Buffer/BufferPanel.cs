@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +13,21 @@ public class BufferPanel : L2Window
     private VisualTreeAsset _barSlotTemplate;
     private float _defaultLeftOffset = 200;
     private Dictionary<int, DataCell> _dictElement;
+
     private int[] _deathPenalty;
     private int[] _weightPenalty;
     public static BufferPanel Instance { get { return _instance; } }
     public BLink _bLink;
     public VisualElement _content;
+    private FilterData _filterData;
+
     private void Awake()
     {
         if (_instance == null)
         {
             _instance = this;
             _dictElement = new Dictionary<int, DataCell>();
+            _filterData = new FilterData(_dictElement);
             _bLink = new BLink();
         }
         else
@@ -46,17 +52,14 @@ public class BufferPanel : L2Window
         
         DragManipulator drag = new DragManipulator(dragArea, _windowEle);
         dragArea.AddManipulator(drag);
-        CreateItems();
+
+        CreateItemsPanel1();
 
         yield return new WaitForEndOfFrame();
 
         _content.style.opacity = 0;
         MovePanelToChatPosition(_defaultLeftOffset);
     }
-
-
-   
-
 
     public void RefreshPenalty(EtcStatusUpdate etcStatusUpdatePacket)
     {
@@ -70,42 +73,31 @@ public class BufferPanel : L2Window
         DeleteDataCell(_weightPenalty[0], _weightPenalty[1]);
     }
 
-    public void DeleteDataCell(int skillId, int skillLevel)
-    {
-        if(skillLevel == 0)
-        {
-            int key = FilterBySkillId(skillId);
-
-            if(key != 0)
-            {
-                DataCell data = _dictElement[key];
-                data.RefreshData(-1, false, 0);
-                data.ShowCell(false);
-            }
-        }
-    }
-    public void AddDataCell(int  skillId , int skillLevel)
+    public void AddDataCell(int skillId, int skillLevel)
     {
         if (skillLevel == 0) return;
-        if(_content.style.opacity == 0) _content.style.opacity = 1;
+        if (_content.style.opacity == 0) _content.style.opacity = 1;
+        if (_filterData.IsContain(skillId)) return;
 
-        int key = GetEmptyCell();
-        DataCell data = _dictElement[key];
+        DataCell data = _filterData.GetEmptyCell();
         data.RefreshData(skillId, true, skillLevel);
         data.ShowCell(true);
-
-        //RemoveElementAfterDelay();
     }
 
-    public void AddDataCellToTime(int skillId, int skillLevel , int time)
+    public void AddDataCellToTime(int skillId, int skillLevel, int time)
     {
-        if(SkillgrpTable.Instance.GetSkill(skillId, skillLevel) != null)
+
+        Skillgrp skill = SkillgrpTable.Instance.GetSkill(skillId, skillLevel);
+
+        if (skill != null)
         {
+
             if (skillLevel == 0) return;
             if (_content.style.opacity == 0) _content.style.opacity = 1;
+            if (_filterData.IsContain(skillId)) return;
 
-            int key = GetEmptyCell();
-            DataCell data = _dictElement[key];
+            RebindCellElseOnlyPenalty();
+            DataCell data = _filterData.GetEmptyCell();
             data.RefreshData(skillId, true, skillLevel);
             data.ShowCell(true);
         }
@@ -118,85 +110,93 @@ public class BufferPanel : L2Window
         //RemoveElementAfterDelay();
     }
 
-
-    private void CreateItems()
+  
+    public void RemoveAllEffects()
     {
-        for(int i = 1; i < 13; i++)
+        List<DataCell> list = _filterData.GetListActiveAndBusy();
+        ResetList(list);
+        HideContentElseNoElements();
+    }
+
+    private void HideContentElseNoElements()
+    {
+        if (!_filterData.HasElements())
+        {
+            _content.style.opacity = 0;
+        }
+    }
+
+    private void ResetList(List<DataCell> list)
+    {
+        if (list != null && list.Count > 0)
+        {
+            foreach (DataCell cell in list)
+            {
+                cell.ResetData();
+                cell.ShowCell(false);
+            }
+        }
+    }
+
+    public void DeleteDataCell(int skillId, int skillLevel)
+    {
+        if(skillLevel == 0)
+        {
+            DataCell data = _filterData.FilterBySkillId(skillId);
+
+            if(data != null)
+            {
+                data.RefreshData(-1, false, 0);
+                data.ShowCell(false);
+            }
+        }
+    }
+   
+
+
+    private void CreateItemsPanel1()
+    {
+        for(int i = 1; i < 25; i++)
         {
             VisualElement cell = GetElementById("SlotBuffer"+i);
+
             if (cell != null)
             {
-                //CreateCallBack(cell);
-                SetTestData(cell, i);
+                 cell.style.display = DisplayStyle.None;
+                _dictElement.Add(i, new DataCell(-1, cell, i));
             }
-
-            cell.style.opacity = 0;
-            _dictElement.Add(i, new DataCell(-1, cell));
-
         }
     }
 
-    public int GetEmptyCell()
-    {
-        return _dictElement
-            .FirstOrDefault(kvp => !kvp.Value.IsBusy())
-            .Key;
-    }
 
-    public int GetTestCell()
-    {
-        return _dictElement
-            .FirstOrDefault(kvp => kvp.Value.IsBusy())
-            .Key;
-    }
 
-    public int FilterBySkillId(int skillId)
-    {
-        return _dictElement
-            .FirstOrDefault(kvp => kvp.Value.GetSkillId() == skillId)
-            .Key;
-    }
 
-    public void RemoveElementAfterDelay()
+    private void RebindCellElseOnlyPenalty()
     {
-        if (_bLink != null)
+        if (_filterData.IsPassiveFirstRows() != null)
         {
-            int element = GetTestCell();
-
-            if (element != 0)
-            {
-                DataCell cell = _dictElement[element];
-                _bLink.StartBlinking(this, cell.GetElement(), 0.5f);
-            }
-
+            MoveAllPassiveTo2Rows();
         }
     }
 
-    //private void CreateCallBack(VisualElement cell)
-    /////{
-    //cell.RegisterCallback<MouseEnterEvent>(OnMouseEnter);
-    //cell.RegisterCallback<MouseLeaveEvent>(OnMouseLeave);
-    //}
-
-    private void SetTestData(VisualElement cell , int i)
+    public void  MoveAllPassiveTo2Rows()
     {
-        cell.userData = (int)i + 999;
+        List<DataCell> list = _filterData.GetAllPassive(1, 12);
+
+        foreach (DataCell moveCell in list)
+        {
+            //position 13 -24 (rows2)
+            DataCell empty = _filterData.GetEmptyCell(13, 24);
+            empty.RefreshData(moveCell.GetSkillId(), true, moveCell.GetLevel());
+            empty.ShowCell(true);
+
+            moveCell.ResetData();
+            moveCell.ShowCell(false);
+            _dictElement[moveCell.GetPosition()] = moveCell;
+        }
     }
 
-   // private void OnMouseEnter(MouseEnterEvent evt)
-   // {
-       // Debug.Log("Мышь вошла в элемент!");
-        // Получаем элемент под курсором мыши
-        //VisualElement hoveredElement = evt.target as VisualElement;
-
-        //if (hoveredElement != null)
-        //{
-         //   int data = (int)hoveredElement.userData;
-         //   Debug.Log("user Data");
-        //    AddDataPanel(9, 1);
-       // }
-   // }
-
+  
 
     public void MovePanelToChatPosition(float sourceY)
     {
@@ -208,6 +208,8 @@ public class BufferPanel : L2Window
     private void OnDestroy()
     {
         _instance = null;
+        _dictElement.Clear();
+        _dictElement = null;
     }
 
 }

@@ -12,7 +12,7 @@ public class NewDeadIntention : IntentionBase
         if (arg0.GetType() == typeof(Die))
         {
             Die myModel = (Die)arg0;
-
+            BufferPanel.Instance.RemoveAllEffects();
             DeadWindow.Instance.ShowWindow();
 
             _stateMachine.ChangeState(PlayerState.DEAD);
