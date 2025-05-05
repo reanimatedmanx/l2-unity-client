@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Experimental.GraphView.Port;
+using static UnityEngine.Rendering.DebugUI;
 
 
 public class DataCell
@@ -10,7 +12,15 @@ public class DataCell
     private VisualElement _element;
     private int _position = 0;
     private Skillgrp _skill;
+    private float _activeTime = 0;
+    private float _startTime;
 
+    //Smooth movement counter
+    private bool _switchHide = false;
+    private bool _switchShow = false;
+    private float _durationSmooth = 0;
+    //procent of the total
+    public float _intervalUse = 0.25f;
     public DataCell(int idSkill , VisualElement element , int position)
     {
         _idSkill = idSkill;
@@ -24,9 +34,11 @@ public class DataCell
         SetSkillId(-1);
         SetLevel(-1);
         SetBusy(false);
+        ResetDurationSmooth();
         _skill = null;
     }
 
+ 
     public void RefreshData(int skillId , bool isbusy ,int level)
     {
         _skill = SkillgrpTable.Instance.GetSkill(skillId , level);
@@ -50,6 +62,11 @@ public class DataCell
     public void SetLevel(int level)
     {
         _level = level;
+    }
+
+    public void ResetDurationSmooth()
+    {
+        _durationSmooth = 0;
     }
 
     public int GetLevel()
@@ -91,6 +108,41 @@ public class DataCell
         
     }
 
+    public bool IsHideElements()
+    {
+        float opacity = _element.resolvedStyle.opacity;
+
+        if (opacity >= 1 & _switchHide != true)
+        {
+            _switchHide = true;
+            _switchShow = false;
+            _durationSmooth = 0;
+        }
+        
+        return _switchHide;
+    }
+
+    public bool IsShowElements()
+    {
+        if (_element.resolvedStyle.opacity <= 0.4f & _switchShow != true)
+        {
+            _switchShow = true;
+            _switchHide = false;
+            _durationSmooth = 0;
+        }
+
+        return _switchShow;
+    }
+
+    public void SetTimeDeltaTime(float deltatime)
+    {
+        _durationSmooth += deltatime;
+    }
+    public float GetSmoothTime()
+    {
+        return _durationSmooth;
+    }
+
     public VisualElement GetElement()
     {
         return _element;
@@ -107,6 +159,24 @@ public class DataCell
         var icon = IconManager.Instance.LoadTextureByName(_skill.Icon);
         var foundChild = _element.Query<VisualElement>(name: "SlotBg").First();
         if(foundChild != null) foundChild.style.backgroundImage = icon;
+    }
+
+    public float GetRemainingTime(float time)
+    {
+        float elapsedTime = time - _startTime;
+        float timeEnd = _activeTime - elapsedTime;
+        return Mathf.Max(0, timeEnd);
+    }
+
+    public void SetActiveTime(float activeTime)
+    {
+        _activeTime  = activeTime;
+        _startTime = Time.time;
+    }
+
+    public int GetIntervalUse()
+    {
+        return Mathf.RoundToInt(_activeTime * _intervalUse);
     }
 
 

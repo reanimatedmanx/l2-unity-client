@@ -28,7 +28,7 @@ public class BufferPanel : L2Window
             _instance = this;
             _dictElement = new Dictionary<int, DataCell>();
             _filterData = new FilterData(_dictElement);
-            _bLink = new BLink();
+            _bLink = new BLink(this);
         }
         else
         {
@@ -100,6 +100,8 @@ public class BufferPanel : L2Window
             DataCell data = _filterData.GetEmptyCell();
             data.RefreshData(skillId, true, skillLevel);
             data.ShowCell(true);
+            data.SetActiveTime(time);
+            _bLink.StartBlinking(data);
         }
         else
         {
@@ -210,6 +212,7 @@ public class BufferPanel : L2Window
         _instance = null;
         _dictElement.Clear();
         _dictElement = null;
+        _bLink.OnDisable();
     }
 
 }
