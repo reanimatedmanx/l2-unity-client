@@ -71,7 +71,7 @@ public class MonsterStateMachine : MonoBehaviour
     public void ChangeState(MonsterState newState)
     {
         //if (_enableLogs) Debug.Log("[Monster:StateMachine][STATE] " + newState);
-        Debug.Log("[Monster:StateMachine][STATE] " + newState);
+        //Debug.Log("[Monster:StateMachine][STATE] " + newState);
         _stateInstance?.Exit();
         _currentState = newState;
         InitializeState();

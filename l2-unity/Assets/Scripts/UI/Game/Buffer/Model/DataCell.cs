@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEditor.Experimental.GraphView.Port;
@@ -21,21 +22,35 @@ public class DataCell
     private float _durationSmooth = 0;
     //procent of the total
     public float _intervalUse = 0.25f;
-    public DataCell(int idSkill , VisualElement element , int position)
+    private Label _label;
+    private Label _labelShadow;
+    private VisualElement _labelTemplate;
+    public DataCell(int idSkill , VisualElement element  ,  VisualElement labelTemplate, int position)
     {
         _idSkill = idSkill;
         _element = element;
         _isBusy = false;
         _position = position;
+        _label = labelTemplate.Q<Label>("LabelText");
+        _labelShadow = labelTemplate.Q<Label>("LabelTextShadow");
+        _labelTemplate = labelTemplate;
+        RegisterLabelChange(_label);
     }
+
 
     public void ResetData()
     {
         SetSkillId(-1);
         SetLevel(-1);
         SetBusy(false);
+        SetText("");
         ResetDurationSmooth();
         _skill = null;
+    }
+
+    public void SetText(string text)
+    {
+        _label.text = text;
     }
 
  
@@ -100,10 +115,12 @@ public class DataCell
         {
             
             _element.style.display = DisplayStyle.Flex;
+            _labelTemplate.style.display = DisplayStyle.Flex;
         }
         else
         {
             _element.style.display = DisplayStyle.None;
+            _labelTemplate.style.display = DisplayStyle.None;
         }
         
     }
@@ -177,6 +194,15 @@ public class DataCell
     public int GetIntervalUse()
     {
         return Mathf.RoundToInt(_activeTime * _intervalUse);
+    }
+
+    private void RegisterLabelChange(Label label)
+    {
+        label.RegisterValueChangedCallback(evt =>
+        {
+            _label.text = evt.newValue;
+            _labelShadow.text = evt.newValue;
+        });
     }
 
 

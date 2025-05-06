@@ -161,11 +161,14 @@ public class BufferPanel : L2Window
         for(int i = 1; i < 25; i++)
         {
             VisualElement cell = GetElementById("SlotBuffer"+i);
+            VisualElement labelTemplate = GetElementById("LabelBuffer" + i);
+            
 
             if (cell != null)
             {
                  cell.style.display = DisplayStyle.None;
-                _dictElement.Add(i, new DataCell(-1, cell, i));
+                 labelTemplate.style.display = DisplayStyle.None;
+                _dictElement.Add(i, new DataCell(-1, cell , labelTemplate ,  i));
             }
         }
     }

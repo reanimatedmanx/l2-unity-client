@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.Rendering.DebugUI;
 
 
 
@@ -58,6 +60,7 @@ public class BLink
             float elapsedTime = Time.time;
             FilterElementElseNoTimeOut(elapsedTime, filter , _dict);
             RemoveFilterElements(filter);
+            SetTextTimeToElement(_dict, elapsedTime);
 
             HideElements(_dict , elapsedTime);
             ShowElements(_dict , elapsedTime);
@@ -65,7 +68,22 @@ public class BLink
         }
     }
 
+    private void SetTextTimeToElement(Dictionary<int, DataCell> _dict, float elapsedTime)
+    {
+        foreach (KeyValuePair<int, DataCell> entry in _dict)
+        {
+            DataCell cell = entry.Value;
+            float time = cell.GetRemainingTime(elapsedTime);
 
+            if(time <= 60)
+            {
+                int roundTime = (int)Math.Round(time);
+                cell.SetText(roundTime.ToString());
+            }
+        
+        }
+        
+    }
     private void HideElements(Dictionary<int, DataCell> _dict , float elapsedTime)
     {
         foreach (KeyValuePair<int, DataCell> entry in _dict)
