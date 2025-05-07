@@ -1,10 +1,12 @@
+using System.Xml;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class MovementData
 {
-    private MonsterEntity _mEntity;
+    private Entity _entity;
     private MovementTarget _movementTarget;
 
     private float _verticalVelocity = 0;
@@ -16,14 +18,14 @@ public class MovementData
 
     public MovementData(Entity mEntity , MovementTarget movementTarget)
     {
-        _mEntity = (MonsterEntity)mEntity;
+        _entity = mEntity;
         _movementTarget = movementTarget;
         _isMove = true;
     }
 
     public bool IsEntity()
     {
-        return _mEntity != null;
+        return _entity != null;
     }
 
     public void SetLastPosition(Vector3 lastPos)
@@ -43,7 +45,7 @@ public class MovementData
 
     public Transform GetTransform()
     {
-        return _mEntity.transform;
+        return _entity.transform;
     }
 
     public float GetDistance()
@@ -62,31 +64,58 @@ public class MovementData
 
     public float GetSpeed()
     {
-        return (_mEntity.Running) ? _mEntity.Stats.UnitySpeedRun : _mEntity.Stats.UnitySpeedWalking;
+        return (_entity.Running) ? _entity.Stats.UnitySpeedRun : _entity.Stats.UnitySpeedWalking;
     }
 
     public void Move(Vector3 direction , float speed)
     {
         direction = ApplyGravity(direction);
-        _mEntity.GetCharacterController().Move(direction * speed * Time.deltaTime);
+        CharacterMove(_entity, direction, speed);
         Quaternion lookRotation = Quaternion.LookRotation(direction);
-        _mEntity.transform.rotation = Quaternion.Slerp(_mEntity.transform.rotation, lookRotation, Time.deltaTime * 5.0f);
+        _entity.transform.rotation = Quaternion.Slerp(_entity.transform.rotation, lookRotation, Time.deltaTime * 5.0f);
+
     }
+
+    private void CharacterMove(Entity entity , Vector3 direction , float speed)
+    {
+        CharacterController character = GetControllerToTypeEntity(entity);
+        StartMove(character, direction, speed);
+        
+    }
+
+   
+
+    private void StartMove(CharacterController character , Vector3 direction, float speed)
+    {
+        
+        if (character != null)
+        {
+            character.Move(direction * speed * Time.deltaTime);
+        }
+    }
+
     private Vector3 ApplyGravity(Vector3 dir)
     {
         /* Handle gravity */
-        if (_mEntity.GetCharacterController().isGrounded)
+        var character = GetControllerToTypeEntity(_entity);
+
+        if(character != null)
         {
-            if (_verticalVelocity < -1.25f)
+            if (character.isGrounded)
             {
-                _verticalVelocity = -1.25f;
+                if (_verticalVelocity < -1.25f)
+                {
+                    _verticalVelocity = -1.25f;
+                }
             }
+            else
+            {
+                _verticalVelocity -= _gravity * Time.deltaTime;
+            }
+            dir.y = _verticalVelocity;
+
+            return dir;
         }
-        else
-        {
-            _verticalVelocity -= _gravity * Time.deltaTime;
-        }
-        dir.y = _verticalVelocity;
 
         return dir;
     }
@@ -94,8 +123,42 @@ public class MovementData
     public void OnFinish(Vector3 target)
     {
         _isMove = false;
-        _mEntity.transform.position = new Vector3(target.x, 0, target.z); ;
-        _mEntity.GetStateMachine().NotifyEvent(Event.ARRIVED);
+        _entity.transform.position = new Vector3(target.x, 0, target.z); ;
+        SetEventToTypeEntity(_entity);
+    }
+
+
+    public void SetEventToTypeEntity(Entity entity)
+    {
+        if (entity.GetType() == typeof(MonsterEntity))
+        {
+            var _mEntity = (MonsterEntity)entity;
+           _mEntity.GetStateMachine().NotifyEvent(Event.ARRIVED);
+
+        }
+        else if (entity.GetType() == typeof(NpcEntity))
+        {
+            var _mEntity = (NpcEntity)entity;
+            _mEntity.GetStateMachine().NotifyEvent(Event.ARRIVED);
+        }
+    }
+    public CharacterController GetControllerToTypeEntity(Entity entity)
+    {
+        CharacterController character = null;
+
+        if (entity.GetType() == typeof(MonsterEntity))
+        {
+            var _mEntity = (MonsterEntity)entity;
+            character = _mEntity.GetCharacterController();
+
+        }
+        else if (entity.GetType() == typeof(NpcEntity))
+        {
+            var _mEntity = (NpcEntity)entity;
+            character = _mEntity.GetCharacterController();
+
+        }
+        return character;
     }
 
 }

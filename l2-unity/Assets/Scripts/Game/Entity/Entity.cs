@@ -15,6 +15,7 @@ public class Entity : MonoBehaviour {
     [SerializeField] private CharacterRace _race;
     [SerializeField] private CharacterRaceAnimation _raceId;
 
+
     [Header("Combat")]
     [SerializeField] private int _targetId;
     [SerializeField] private Transform _target;

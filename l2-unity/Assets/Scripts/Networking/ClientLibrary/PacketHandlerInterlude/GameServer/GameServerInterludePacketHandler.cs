@@ -7,8 +7,10 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.Rendering.GPUSort;
 
 public class GameServerInterludePacketHandler : ServerPacketHandler
 {
@@ -62,6 +64,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             case GameInterludeServerPacketType.NpcHtmlMessage:
                 //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
                 OnNpcHtmlMessage(itemQueue.DecodeData());
+                break;
+            case GameInterludeServerPacketType.TutorialShowHtml:
+                //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
+                OnTutorialShowHtml(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.BuyList:
                 //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
@@ -163,9 +169,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             }
             if (packet.UseBlowfish)
             {
-                Debug.LogWarning("Gameserver enable crypt blowfish");
                 byte[] equalsKey = BlowFishStaticKey.GetCreateFullKeyBlowFish(packet.BlowFishKey);
-                Debug.Log($"Blowfishkey1 >>> : {StringUtils.ByteArrayToString(equalsKey)}");
                 GameClient.Instance.EnableCrypt(equalsKey);
             }
             
@@ -313,16 +317,57 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
     private void OnNpcHtmlMessage(byte[] data)
     {
-        //Debug.Log("GameServerPacket OnCharMacroList : ќбработали но не сохранили т.к не реализован механизм ");
+
         NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(data);
 
         EventProcessor.Instance.QueueEvent(() => {
-            HtmlWindow.Instance.InjectToWindow(npcHtmlMessage.Elements());
-            HtmlWindow.Instance.ShowWindow();
-        });
+            Entity npc = World.Instance.GetEntityNoLockSync(npcHtmlMessage.GetNpcId());
 
-        
-        //Debug.Log("GameServerPacket OnCharMacroList : «авершено ");
+            if (npc == null) return;
+
+            var nsm = npc.GetComponent<NpcStateMachine>();
+
+            if(nsm != null)
+            {
+                nsm.ChangeIntention(NpcIntention.STARTED_TALKING, npcHtmlMessage);
+            }
+            else
+            {
+                Vector3 position = PlayerEntity.Instance.transform.position;
+                //Debug.Log("Position Player: " + position);
+                ManualRotate(npc.transform, position);
+                HtmlWindow.Instance.InjectToWindow(npcHtmlMessage.Elements());
+                HtmlWindow.Instance.ShowWindow();
+            }
+           
+        });
+    }
+
+    private void ManualRotate(Transform npc  , Vector3 player)
+    {
+        Vector3 direction = player - npc.position;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        npc.rotation = lookRotation;
+    }
+
+    private void OnTutorialShowHtml(byte[] data)
+    {
+
+        TutorialShowHtml htmlMessage = new TutorialShowHtml(data);
+
+        if (InitPacketsLoadWord.getInstance().IsInit)
+        {
+            InitPacketsLoadWord.getInstance().AddPacketsInit(htmlMessage);
+
+        }
+        else
+        {
+            EventProcessor.Instance.QueueEvent(() => {
+                HtmlWindow.Instance.InjectToWindow(htmlMessage.Elements());
+                HtmlWindow.Instance.ShowWindow();
+            });
+        }
+
     }
 
     private void OnBuyList(byte[] data)
@@ -464,12 +509,16 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         {
                 EventProcessor.Instance.QueueEvent(() => MoveTo(charMoveToLocation.ObjId, charMoveToLocation.NewPosition ,  charMoveToLocation.OldPosition , charMoveToLocation));
         }
+        else
+        {
+            InitPacketsLoadWord.getInstance().AddPacketsInit(charMoveToLocation);
+        }
     }
 
     public async Task MoveTo(int objId, Vector3 charMovePosition , Vector3 currentPosition  , CharMoveToLocation moveToLocation)
     {
-        Entity entity = await World.Instance.GetEntityNoLock(objId);
-        float distance = GetDistance(entity, charMovePosition);
+            Entity entity = await World.Instance.GetEntityNoLock(objId);
+            float distance = GetDistance(entity, charMovePosition);
 
             if (entity.name.Equals("Elpy")) return;
 
@@ -479,8 +528,8 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             }
             else if (entity.GetType() == typeof(NpcEntity))
             {
-                var monster = (NpcEntity)entity;
-                NpcMove(monster, charMovePosition);
+                var npc = (NpcEntity)entity;
+                NpcMove(npc, moveToLocation);
             }
             else if (entity.GetType() == typeof(MonsterEntity))
             {
@@ -520,12 +569,12 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         msm.ChangeIntention(MonsterIntention.INTENTION_MOVE_TO, monsterMovePosition);
     }
 
-    private async Task NpcMove(NpcEntity npc, Vector3 monsterMovePosition)
+    private async Task NpcMove(NpcEntity npc, CharMoveToLocation moveToLocation)
     {
         var nsm = npc.GetComponent<NpcStateMachine>();
         if(nsm != null)
         {
-            nsm.ChangeIntention(NpcIntention.INTENTION_MOVE_TO, monsterMovePosition);
+            nsm.ChangeIntention(NpcIntention.INTENTION_MOVE_TO, moveToLocation);
         }
         
     }

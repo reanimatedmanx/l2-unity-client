@@ -53,6 +53,10 @@ public class FilterAccessType
         {
             return true;
         }
+        else if (item.PaketType() == GameInterludeServerPacketType.TutorialShowHtml)
+        {
+            return true;
+        }
         else if (item.PaketType() == GameInterludeServerPacketType.BuyList)
         {
             return true;

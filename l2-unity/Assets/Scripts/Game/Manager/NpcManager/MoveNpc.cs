@@ -141,6 +141,7 @@ public class MoveNpc : MonoBehaviour
                 Vector3 point = gravityOffTarget - gravityOffTransform;
                 Vector3 direction = point.normalized;
                 direction = ApplyGravity(direction);
+
                 if (_isTeleport == false)
                 {
                     _detectedIsMove = true;

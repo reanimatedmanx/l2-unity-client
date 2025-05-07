@@ -334,7 +334,7 @@ public class World : MonoBehaviour {
     {
         npc.GetComponent<NetworkAnimationController>().Initialize();
         MoveNpc moveNpc = npcGo.GetComponent<MoveNpc>();
-        GravityNpc gravityNpc = npcGo.GetComponent<GravityNpc>();
+
         npcGo.GetComponent<Gear>().Initialize(npc.IdentityInterlude.Id, npc.RaceId);
         npc.Initialize();
         var nsm = npcGo.GetComponent<NpcStateMachine>();
@@ -347,7 +347,7 @@ public class World : MonoBehaviour {
             npc.UpdateNpcRunningSpd(npc.Stats.RunRealSpeed);
             npc.UpdateNpcWalkSpd(npc.Stats.WalkRealSpeed);
             npc.Running = npc.IdentityInterlude.IsRunning;
-            nsm.Initialize(npc.IdentityInterlude.Id, npc.IdentityInterlude.NpcId, npcGo, moveNpc, npc, gravityNpc);
+            nsm.Initialize(npc.IdentityInterlude.Id, npc.IdentityInterlude.NpcId, npcGo, moveNpc, npc);
         }
     }
 

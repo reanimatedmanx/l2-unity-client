@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class NpcStateMachine : MonoBehaviour
@@ -19,26 +20,19 @@ public class NpcStateMachine : MonoBehaviour
     private MoveNpc _moveNpc;
     private PlayerEntity _target;
     private Entity _entity;
+    private Dictionary<NpcState, NpcBase> _dictState = new Dictionary<NpcState, NpcBase>();
+    private Dictionary<NpcIntention, NpcIntentionBase> _dictIntention = new Dictionary<NpcIntention, NpcIntentionBase>();
 
-    private GravityNpc _gravityNpc;
+
 
     private void Start()
     {
         //_waitingForServerReply = false;
         this.enabled = false;
 
-        InitializeState();
-        InitializeIntention();
-        ChangeState(NpcState.IDLE);
-        _gravityNpc.Sync();
+
     }
 
-    public PlayerEntity GetTarget() { return _target; }
-
-    public void SetTarget(PlayerEntity target)
-    {
-        _target = target;
-    }
     public GameObject NpcObject { get { return _go; } }
 
     public MoveNpc MoveNpc { get { return _moveNpc; } }
@@ -49,15 +43,23 @@ public class NpcStateMachine : MonoBehaviour
         int npcId,
         GameObject go,
         MoveNpc moveNpc,
-        Entity entity,
-        GravityNpc gravityNpc)
+        Entity entity
+        )
     {
         _npcObjectId = npcObjectId;
         _npcId = npcId;
         _go = go;
         _moveNpc = moveNpc;
         _entity = entity;
-        _gravityNpc = gravityNpc;
+
+        InitializeState();
+        InitializeIntention();
+        ChangeState(NpcState.IDLE);
+
+        if(entity.name.Equals("Leandro") | entity.name.Equals("Remy"))
+        {
+            GravityNpc.Instance.AddGravity(entity.IdentityInterlude.Id, new GravityData(entity));
+        }
     }
 
     public void ChangeState(NpcState newState)
@@ -83,54 +85,61 @@ public class NpcStateMachine : MonoBehaviour
     }
 
 
-    public void ChangeIntention(NpcIntention newIntention, object arg0)
-    {
-        if (_enableLogs) Debug.Log("[NPC  :StateMachine][INTENTION] " + newIntention);
-        _intentionInstance?.Exit();
-        _currentIntention = newIntention;
-        InitializeIntention();
-        _intentionInstance?.Enter(arg0);
-    }
-
-
     private void InitializeState()
     {
-        _stateInstance = _currentState switch
-        {
-            NpcState.IDLE => new IdleNpcState(this),
-            NpcState.RUNNING => new RunningNpcState(this),
-            NpcState.WALKING => new WalkingNpcState(this),
-            _ => throw new ArgumentException("Invalid state")
-        };
+        _stateInstance = GetOrAddState(_dictState, _currentState);
     }
-
 
     private void InitializeIntention()
     {
-        _intentionInstance = _currentIntention switch
-        {
-
-            NpcIntention.INTENTION_IDLE => new IdleNpcIntention(this),
-            NpcIntention.INTENTION_MOVE_TO => new MoveToNpcIntention(this),
-            _ => throw new ArgumentException("Invalid intention")
-        };
+        _intentionInstance = GetOrAddIntention(_dictIntention, _currentIntention);
     }
+
+
+    private NpcBase GetOrAddState(Dictionary<NpcState, NpcBase> dict, NpcState key)
+    {
+
+        if (!dict.ContainsKey(key))
+        {
+            var state = CreatorStateNpc.GetState(key, this);
+            dict.Add(key, state);
+        }
+
+
+        return dict[key];
+    }
+
+
+    private NpcIntentionBase GetOrAddIntention(Dictionary<NpcIntention, NpcIntentionBase> dict, NpcIntention key)
+    {
+
+        if (!dict.ContainsKey(key))
+        {
+            var state = CreatorIntentionNpc.GetIntention(key, this);
+            dict.Add(key, state);
+        }
+
+
+        return dict[key];
+    }
+
+
+    public void ChangeIntention(NpcIntention newIntention, object arg0)
+    {
+       if (_enableLogs) Debug.Log("[NPC:StateMachine][INTENTION] " + newIntention);
+      _intentionInstance?.Exit();
+      _currentIntention = newIntention;
+       InitializeIntention();
+     _intentionInstance?.Enter(arg0);
+    }
+
+
 
 
     public void NotifyEvent(Event evt)
     {
         if (_enableLogs) Debug.Log("[Monster: StateMachine][EVENT] " + evt);
-
-        //if (_stateInstance.GetType() == typeof(AttackinMonsterState))
-       // {
-         //   var state = (AttackinMonsterState)_stateInstance;
-         //   state.HandleEvent(evt);
-       // }
-       // else
-        //{
-            _stateInstance?.HandleEvent(evt);
-       // }
-
+         _stateInstance?.HandleEvent(evt);
     }
 
     public override string ToString()

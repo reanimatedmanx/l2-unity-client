@@ -467,12 +467,6 @@ PrefabInstance:
       addedObject: {fileID: 39365046447556868}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29bb320b63839f34cb3ef40c6c9d823e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1254470517360113108}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29bb320b63839f34cb3ef40c6c9d823e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8715864938737684536}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 29bb320b63839f34cb3ef40c6c9d823e, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 8815432720217195116}
   m_SourcePrefab: {fileID: 100100000, guid: 29bb320b63839f34cb3ef40c6c9d823e, type: 3}
 --- !u!1 &1374546400499261350 stripped
@@ -564,7 +558,6 @@ MonoBehaviour:
     _npcId: 0
     _npcClass: 
     _playerClass: 0
-    _isMage: 0
     _position: {x: 4724, y: -68, z: -1731}
     _heading: 0
     _owned: 0
@@ -578,11 +571,9 @@ MonoBehaviour:
     _maxHp: 0
     _maxMp: 0
     _maxCp: 0
-    _walkingSpeed: 0
-    _runSpeed: 0
     _scaledRunSpeed: 0
     _scaledWalkSpeed: 0
-    _scaledPAtckSpeed: 0
+    _basePAtkSpeed: 0
   _appearance:
     _collisonHeight: 0
     _collisionRadius: 0
@@ -597,7 +588,6 @@ MonoBehaviour:
   _attackTarget: {fileID: 0}
   _stopAutoAttackTime: 0
   _startAutoAttackTime: 0
-  _sitting: 0
   _npcData:
     _npcgrp:
       _npcId: 0
@@ -797,33 +787,6 @@ MonoBehaviour:
   _shieldBone: {fileID: 0}
   _leftHand: {fileID: 0}
   _weaponAnim: 
---- !u!114 &1254470517360113108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1374546400499261350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7fe0ee5ab58fe644bca46bbb9468d62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isFollow: 0
-  rotationThreshold: 0.01
-  stoppingDistance: 0.1
---- !u!114 &8715864938737684536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1374546400499261350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 016168dbb9718874e8b416404e9ff31f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8815432720217195116
 MonoBehaviour:
   m_ObjectHideFlags: 0

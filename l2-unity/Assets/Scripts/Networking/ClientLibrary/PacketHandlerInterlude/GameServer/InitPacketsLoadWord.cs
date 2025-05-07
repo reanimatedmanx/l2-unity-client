@@ -39,9 +39,9 @@ public class InitPacketsLoadWord
             UpdateItemsInventory();
             UpdateShortCuts();
             UpdateInventoryBar();
-            ShowMessage();
-            ForEachDie();
-            EtcStatusUpdate();
+            ForEachPackets();
+            //ForEachDie();
+            //EtcStatusUpdate();
         });
 
     }
@@ -77,72 +77,78 @@ public class InitPacketsLoadWord
         }
        
     }
-    private void ShowMessage()
-    {
-        ForEachMessage();
-        ForEachCreatureSay();
-        ForEachNpcSay();
-    }
-
-    private void EtcStatusUpdate()
+    private void ForEachPackets()
     {
         for (int i = 0; i < listPackets.Count; i++)
         {
-            if (listPackets[i] is EtcStatusUpdate)
+            ServerPacket packet = listPackets[i];
+            switch (packet)
             {
-                var packet = (EtcStatusUpdate)listPackets[i];
-                EventProcessor.Instance.QueueEvent(() => BufferPanel.Instance.RefreshPenalty(packet));
+                case SystemMessagePacket systemMessage:
+                    ShowMessage(systemMessage);
+                    break;
+                case CreatureSay creatureSay:
+                    ShowMessagCreaturee(creatureSay.Message);
+                    break;
+                case NpcSay npcSay:
+                    ShowMessagCreaturee(npcSay.NpcMessage);
+                    break;
+                case Die die:
+                    OnDie(die);
+                    break;
+                case EtcStatusUpdate etcStatusUpdate:
+                    Refreshpenalty(etcStatusUpdate);
+                    break;
+                case TutorialShowHtml showTutorial:
+                    Task.Run(() => ShowTutorial(700, showTutorial));
+                    break;
+                case CharMoveToLocation moveTo:
+                    EventProcessor.Instance.QueueEvent(() => MoveTo(moveTo));
+                    break;
             }
         }
+        //ForEachMessage();
+        //ForEachCreatureSay();
+        //ForEachNpcSay();
     }
 
-    private void ForEachMessage()
+    private void Refreshpenalty(EtcStatusUpdate etcStatusUpdate)
     {
-        for (int i = 0; i < listPackets.Count; i++)
-        {
-            if (listPackets[i] is SystemMessagePacket)
-            {
-                ShowMessage((SystemMessagePacket)listPackets[i]);
-                //Thread.Sleep(10);
-            }
-        }
+        EventProcessor.Instance.QueueEvent(() => BufferPanel.Instance.RefreshPenalty(etcStatusUpdate));
+    }
+    private async Task ShowTutorial(int delayMilliseconds , TutorialShowHtml showTutorial)
+    {
+        await Task.Delay(delayMilliseconds);
+
+        EventProcessor.Instance.QueueEvent(() => {
+            HtmlWindow.Instance.InjectToWindow(showTutorial.Elements());
+            HtmlWindow.Instance.ShowWindow();
+        });
     }
 
-    private void ForEachDie()
+    public async Task MoveTo(CharMoveToLocation moveToLocation)
     {
-        for (int i = 0; i < listPackets.Count; i++)
+        Entity entity = await World.Instance.GetEntityNoLock(moveToLocation.ObjId);
+        if(entity != null)
         {
-            if (listPackets[i] is Die)
+            if (entity.GetType() == typeof(NpcEntity))
             {
-                OnDie((Die)listPackets[i]);
+                var npc = (NpcEntity)entity;
+                NpcMove(npc, moveToLocation);
             }
         }
+
     }
 
-    private void ForEachCreatureSay()
+    private async Task NpcMove(NpcEntity npc, CharMoveToLocation moveToLocation)
     {
-        for (int i = 0; i < listPackets.Count; i++)
+        var nsm = npc.GetComponent<NpcStateMachine>();
+        if (nsm != null)
         {
-            if (listPackets[i] is CreatureSay)
-            {
-                var packet = (CreatureSay)listPackets[i];
-                ShowMessagCreaturee(packet.Message);
-                //Thread.Sleep(10);
-            }
+            //nsm.ChangeIntention(NpcIntention.INTENTION_MOVE_TO, moveToLocation);
+            npc.transform.position = moveToLocation.NewPosition;
         }
-    }
 
-    private void ForEachNpcSay()
-    {
-        for (int i = 0; i < listPackets.Count; i++)
-        {
-            if (listPackets[i] is NpcSay)
-            {
-                var packet = (NpcSay)listPackets[i];
-                ShowMessagCreaturee(packet.NpcMessage);
-                //Thread.Sleep(10);
-            }
-        }
     }
 
     private void ShowMessagCreaturee(CreatureMessage creatureMessage)

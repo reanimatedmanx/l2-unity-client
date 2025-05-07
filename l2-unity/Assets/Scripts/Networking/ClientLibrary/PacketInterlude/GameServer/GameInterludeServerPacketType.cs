@@ -16,6 +16,7 @@ public enum GameInterludeServerPacketType : byte
     MacroList = 0xE7,
     BuyList = 0x11,
     NpcHtmlMessage = 0x0F,
+    TutorialShowHtml = 0xa0,
     ItemList = 0x1B,
     ShortCutInit = 0x45,
     ShortCutRegister = 0x44,

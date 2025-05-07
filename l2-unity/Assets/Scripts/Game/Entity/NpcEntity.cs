@@ -12,7 +12,8 @@ public class NpcEntity : NetworkEntity
     private static readonly string _run = "run";
     private static readonly string _wait = "wait";
     private string[] allAnim = new string[] { _walk , _run , _wait, };
-
+    private CharacterController _characterController;
+    private NpcStateMachine _stateMachine;
     [SerializeField] private NpcData _npcData;
 
     public NpcData NpcData { get { return _npcData; } set { _npcData = value; } }
@@ -21,6 +22,8 @@ public class NpcEntity : NetworkEntity
     {
         base.Initialize();
         _npcAnimationAudioHandler = GetComponent<CharacterAnimationAudioHandler>();
+        _stateMachine = GetComponent<NpcStateMachine>();
+        _characterController = GetComponent<CharacterController>();
 
         EntityLoaded = true;
     }
@@ -131,7 +134,17 @@ public class NpcEntity : NetworkEntity
         _networkAnimationReceive.SetAnimationProperty(walking ? (int)NpcAnimationEvent.Walk : (int)NpcAnimationEvent.Run, 1f);
     }
 
- 
+    public NpcStateMachine GetStateMachine()
+    {
+        return _stateMachine;
+    }
+
+    public CharacterController GetCharacterController()
+    {
+        return _characterController;
+    }
+
+
 
 
 }

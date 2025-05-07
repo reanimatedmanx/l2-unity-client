@@ -110,6 +110,16 @@ public class PositionValidationController : MonoBehaviour
 
             AnimationManager.Instance.PlayerSetAllFloat(floatValues);
             ReStartAnimationPlayer(PlayerStateMachine.Instance);
+
+        }else if (entity.GetType() == typeof(NpcEntity))
+        {
+            NpcEntity npcEntity = (NpcEntity)entity;
+            npcEntity.HideObject();
+            //NewCalcGravityMonster(npcEntity, newPosition);
+            npcEntity.ShowObject();
+
+            var stateMachine = npcEntity.GetStateMachine();
+            if (stateMachine != null) ReStartAnimationNpc(npcEntity.IdentityInterlude.Id, stateMachine);
         }
     }
     private void NewCalcGravityMonster(MonsterEntity monsterEntity , Vector3 newPosition)
@@ -145,6 +155,16 @@ public class PositionValidationController : MonoBehaviour
             stateMachine.NotifyEvent(Event.MOVE_TO);
         }
     }
+
+    private void ReStartAnimationNpc(int mObjId, NpcStateMachine stateMachine)
+    {
+        if (MoveAllCharacters.Instance.IsMoving(mObjId))
+        {
+            if (stateMachine.State == NpcState.WALKING) stateMachine.ChangeState(NpcState.WALKING);
+            if (stateMachine.State == NpcState.RUNNING) stateMachine.ChangeState(NpcState.RUNNING);
+            stateMachine.NotifyEvent(Event.MOVE_TO);
+        }
+    }
     private void StartWalk(Entity entity , Vector3 newPosition)
     {
         if (entity.GetType() == typeof(MonsterEntity))
@@ -153,6 +173,13 @@ public class PositionValidationController : MonoBehaviour
             var stateMachine = monsterEntity.GetStateMachine();
             if (stateMachine == null || (stateMachine.State == MonsterState.WALKING || stateMachine.State == MonsterState.RUNNING)) return;
             stateMachine.ChangeIntention(MonsterIntention.INTENTION_MOVE_TO , newPosition);
+
+        }else if (entity.GetType() == typeof(NpcEntity))
+        {
+            NpcEntity npcEntity = (NpcEntity)entity;
+            var stateMachine = npcEntity.GetStateMachine();
+            if (stateMachine == null || (stateMachine.State == NpcState.WALKING || stateMachine.State == NpcState.RUNNING)) return;
+            stateMachine.ChangeIntention(NpcIntention.INTENTION_MOVE_TO, newPosition);
         }
 
     }

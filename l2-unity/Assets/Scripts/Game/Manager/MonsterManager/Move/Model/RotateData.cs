@@ -3,20 +3,20 @@ using UnityEngine;
 public class RotateData
 {
     private bool _isRotate;
-    private PlayerEntity _pEntity;
-    private MonsterEntity _mEntity;
+    private Entity _pEntity;
+    private Entity _mEntity;
     private float _defaultAngle = 3f;
     public RotateData(Entity pEntity , Entity mEntity)
     {
-        _pEntity = (PlayerEntity)pEntity;
-        _mEntity = (MonsterEntity)mEntity;
+        _pEntity = pEntity;
+        _mEntity = mEntity;
         _isRotate = true;
     }
 
     public RotateData(Entity pEntity, Entity mEntity , float defaultAngle)
     {
-        _pEntity = (PlayerEntity)pEntity;
-        _mEntity = (MonsterEntity)mEntity;
+        _pEntity = pEntity;
+        _mEntity = mEntity;
         _isRotate = true;
         _defaultAngle = defaultAngle;
     }

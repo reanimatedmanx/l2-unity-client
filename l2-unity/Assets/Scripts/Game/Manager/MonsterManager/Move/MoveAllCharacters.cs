@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.SocialPlatforms;
 
-public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
+public class MoveAllCharacters : MonoBehaviour, IMoveAllCharacters
 {
     private static IMoveAllCharacters _instance;
     public static IMoveAllCharacters Instance { get { return _instance; } }
@@ -43,7 +43,7 @@ public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
 
             if (isRotate)
             {
-                if(data.IsEntityTarget() & data.IsEntityMonster())
+                if (data.IsEntityTarget() & data.IsEntityMonster())
                 {
                     Transform _targetRotation = data.GetTargetTransform();
                     Transform transform = data.GetMonsterTransform();
@@ -64,10 +64,10 @@ public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
                 {
                     _removeListRotate.Add(kvp.Key);
                 }
-              
+
             }
         }
- 
+
         RemoveFinishKeyRotate();
     }
 
@@ -87,7 +87,7 @@ public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
     {
         if (!_moveDict.ContainsKey(id))
         {
-           
+
             _moveDict.Add(id, data);
         }
         else
@@ -95,6 +95,8 @@ public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
             _moveDict[id] = data;
         }
     }
+
+
 
     public void CancelMove(int objId)
     {
@@ -133,11 +135,11 @@ public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
                 if (target == null)
                     return;
 
-                MoveToPoint(kvp.Key , target, data);
+                MoveToPoint(kvp.Key, target, data);
             }
             else
             {
-               
+
                 _removeListMove.Add(kvp.Key);
             }
 
@@ -148,7 +150,7 @@ public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
         //Debug.Log("MoveAllCharacters FixedUpdate Size " + _moveDict.Count);
     }
 
-    private void MoveToPoint(int key , Vector3 target , MovementData data)
+    private void MoveToPoint(int key, Vector3 target, MovementData data)
     {
 
         if (target != null)
@@ -157,7 +159,7 @@ public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
             float speed = data.GetSpeed();
             bool isMove = data.IsMove();
 
-            if (!data.IsEntity()){
+            if (!data.IsEntity()) {
                 _removeListMove.Add(key);
                 return;
             }
@@ -189,25 +191,26 @@ public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
                 else
                 {
                     _removeListMove.Add(key);
-                   
+
                 }
             }
             else
             {
                 data.OnFinish(target);
                 _removeListMove.Add(key);
-               
+
             }
 
             data.SetLastPosition(transform.position);
         }
     }
 
-    private void TurnTowardsAttacker(Vector3 attackerPosition , Transform mTranform)
+    private void TurnTowardsAttacker(Vector3 attackerPosition, Transform mTranform)
     {
         Vector3 directionToAttacker = (attackerPosition - mTranform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(directionToAttacker);
-        mTranform.rotation = Quaternion.Slerp(mTranform.rotation, lookRotation, Time.deltaTime * 25f);
+        //default 25
+        mTranform.rotation = Quaternion.Slerp(mTranform.rotation, lookRotation, Time.deltaTime * 15f);
     }
 
     private void RemoveFinishKeyMove()
@@ -235,4 +238,27 @@ public class MoveAllCharacters : MonoBehaviour , IMoveAllCharacters
 
         _removeListRotate.Clear();
     }
+
+    public void OnDestroy()
+    {
+        _moveDict.Clear();
+        _rotateDict.Clear();
+        _removeListMove.Clear(); 
+        _removeListRotate.Clear(); 
+        _rotateDict.Clear(); 
+        _removeListMove.Clear();
+        _removeListRotate.Clear();
+
+        _moveDict = null;
+        _rotateDict = null;
+        _removeListMove = null;
+        _removeListRotate = null;
+        _rotateDict = null;
+        _removeListMove = null;
+        _removeListRotate = null;
+
+
+        Destroy(gameObject);
+    }
+
 }
