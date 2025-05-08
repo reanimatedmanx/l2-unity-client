@@ -430,9 +430,9 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
     private void OnTeleportToLocation(byte[] data)
     {
         TeleportToLocation teleportLocation = new TeleportToLocation(data);
-        _eventProcessor.QueueEvent(() => {
-            World.Instance.TeleportTo(teleportLocation.TarObjId, teleportLocation.TeleportPos);
-        });
+        //_eventProcessor.QueueEvent(() => {
+        //    World.Instance.TeleportTo(teleportLocation.TarObjId, teleportLocation.TeleportPos);
+        //});
         
     }
 

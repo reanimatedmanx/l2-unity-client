@@ -11,6 +11,7 @@ using UnityEngine.InputSystem.XR;
 using UnityEngine.UIElements;
 using static UnityEditor.FilePathAttribute;
 using static UnityEditor.PlayerSettings;
+using static UnityEngine.EventSystems.EventTrigger;
 using static UnityEngine.GraphicsBuffer;
 
 public class World : MonoBehaviour {
@@ -29,6 +30,7 @@ public class World : MonoBehaviour {
     private Dictionary<int, Entity> _players = new Dictionary<int, Entity>();
     private Dictionary<int, Entity> _npcs = new Dictionary<int, Entity>();
     private Dictionary<int, Entity> _objects = new Dictionary<int, Entity>();
+
 
     [Header("Layer Masks")]
     [SerializeField] private LayerMask _entityMask;
@@ -262,7 +264,9 @@ public class World : MonoBehaviour {
             {
                 InitNpc(npc, npcGo);
             }
-           
+
+
+            RespawnPositionElseLoadingGame(identity, npcGo);
 
 
             _npcs.Add(identity.Id, npc);
@@ -273,9 +277,24 @@ public class World : MonoBehaviour {
         {
             Debug.LogWarning("NPC Not Found Nps!!!!! Need add server ID " + identity.Id  + " Npc Id " + identity.NpcId);
         }
-
-        
     }
+    //The only npcs that move in the game
+    //Leandro
+    //Remy
+    private void RespawnPositionElseLoadingGame(NetworkIdentityInterlude identity , GameObject npcGo)
+    {
+        if (identity.Name.Equals("Leandro") | identity.Name.Equals("Remy"))
+        {
+            CharMoveToLocation lastLocation = InitPacketsLoadWord.getInstance().GetMoveToLocation(identity.Id);
+
+            if(lastLocation != null)
+            {
+                PositionValidationController.Instance.AddInitPosition(lastLocation);
+            }
+            
+        }
+    }
+
 
     public void UpdateNpcInfo(Entity entity , NpcInfo npcInfo)
     {
@@ -286,6 +305,11 @@ public class World : MonoBehaviour {
             m_entity.UpdateNpcRunningSpd(npcInfo.Stats.RunRealSpeed);
             m_entity.UpdateNpcWalkSpd(npcInfo.Stats.WalkRealSpeed);
             m_entity.Running = npcInfo.Identity.IsRunning;
+        }
+
+        if (entity.name.Equals("Leandro"))
+        {
+            Debug.Log("");
         }
     }
 
@@ -418,19 +442,7 @@ public class World : MonoBehaviour {
         //});
     }
 
-    public Task TeleportTo(int id, Vector3 position)
-    {
-        return ExecuteWithEntityAsync(id, entity => {
-            if(entity.GetType() == typeof(PlayerEntity))
-            {
-                entity.GetComponent<PlayerTeleport>().TeleportTo(position);
-                SendValidatePosition(position);
-                Thread.Sleep(5);
-                SendAppearing();
-            }
 
-        });
-    }
 
     public Task TeleportToTest(int id, Vector3 position)
     {

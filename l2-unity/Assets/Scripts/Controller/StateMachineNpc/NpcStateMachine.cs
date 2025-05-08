@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+
+using System.Security.Cryptography;
+using System.Security.Principal;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class NpcStateMachine : MonoBehaviour
 {
@@ -56,11 +60,11 @@ public class NpcStateMachine : MonoBehaviour
         InitializeIntention();
         ChangeState(NpcState.IDLE);
 
-        if(entity.name.Equals("Leandro") | entity.name.Equals("Remy"))
-        {
-            GravityNpc.Instance.AddGravity(entity.IdentityInterlude.Id, new GravityData(entity));
-        }
+        SetGravityOnlyMoveNpc(entity);
+
     }
+
+
 
     public void ChangeState(NpcState newState)
     {
@@ -134,6 +138,13 @@ public class NpcStateMachine : MonoBehaviour
     }
 
 
+    public void SetGravityOnlyMoveNpc(Entity entity)
+    {
+        if (entity.name.Equals("Leandro") | entity.name.Equals("Remy"))
+        {
+            GravityNpc.Instance.AddGravity(entity.IdentityInterlude.Id, new GravityData(entity));
+        }
+    }
 
 
     public void NotifyEvent(Event evt)

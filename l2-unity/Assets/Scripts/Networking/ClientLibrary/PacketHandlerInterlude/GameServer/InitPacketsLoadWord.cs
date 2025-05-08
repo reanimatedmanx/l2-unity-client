@@ -1,5 +1,7 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -47,15 +49,19 @@ public class InitPacketsLoadWord
     }
     private void SpawnNpc()
     {
+        //List<int> remove = new List<int>();
         for (int i = 0; i < listPackets.Count; i++)
         {
             if (listPackets[i] is NpcInfo)
             {
                 NpcInfo npcInfo = (NpcInfo)listPackets[i];
+                //remove.Add(i);
                 EventProcessor.Instance.QueueEvent(() => { World.Instance.SpawnNpcInterlude(npcInfo.Identity, npcInfo.Status, npcInfo.Stats); });
                 Thread.Sleep(10);
             }
         }
+
+        //RemoveByListId(remove);
     }
     private void UpdateItemsInventory()
     {
@@ -79,6 +85,8 @@ public class InitPacketsLoadWord
     }
     private void ForEachPackets()
     {
+        List<int > remove = new List<int>();
+        
         for (int i = 0; i < listPackets.Count; i++)
         {
             ServerPacket packet = listPackets[i];
@@ -86,32 +94,60 @@ public class InitPacketsLoadWord
             {
                 case SystemMessagePacket systemMessage:
                     ShowMessage(systemMessage);
+                    remove.Add(i);
                     break;
                 case CreatureSay creatureSay:
                     ShowMessagCreaturee(creatureSay.Message);
+                    remove.Add(i);
                     break;
                 case NpcSay npcSay:
                     ShowMessagCreaturee(npcSay.NpcMessage);
+                    remove.Add(i);
                     break;
                 case Die die:
                     OnDie(die);
+                    remove.Add(i);
                     break;
                 case EtcStatusUpdate etcStatusUpdate:
                     Refreshpenalty(etcStatusUpdate);
-                    break;
-                case TutorialShowHtml showTutorial:
-                    Task.Run(() => ShowTutorial(700, showTutorial));
-                    break;
-                case CharMoveToLocation moveTo:
-                    EventProcessor.Instance.QueueEvent(() => MoveTo(moveTo));
+                    remove.Add(i);
                     break;
             }
         }
-        //ForEachMessage();
-        //ForEachCreatureSay();
-        //ForEachNpcSay();
+        //RemoveByListId(remove);
     }
 
+    private async Task RemoveByListId(List<int> remove)
+    {
+        await Task.Delay(3000);
+
+        for (int i = 0; i < remove.Count; i++)
+        {
+            int index = remove[i];
+            listPackets.RemoveAt(index);
+        }
+
+        Debug.Log("Init size array remove " + listPackets.Count);
+        remove.Clear();
+    }
+
+    public CharMoveToLocation GetMoveToLocation(int id)
+    {
+        List<CharMoveToLocation> list = new List<CharMoveToLocation>();
+        for (int i = 0; i < listPackets.Count; i++)
+        {
+            ServerPacket packet = listPackets[i];
+            if(packet.GetType() == typeof(CharMoveToLocation))
+            {
+                CharMoveToLocation movepack = (CharMoveToLocation)packet;
+                if (movepack.ObjId == id)
+                {
+                    list.Add(movepack);
+                }
+            }
+        }
+        return list.OrderByDescending(o => o.CreatedAt).FirstOrDefault();
+    }
     private void Refreshpenalty(EtcStatusUpdate etcStatusUpdate)
     {
         EventProcessor.Instance.QueueEvent(() => BufferPanel.Instance.RefreshPenalty(etcStatusUpdate));
@@ -125,29 +161,36 @@ public class InitPacketsLoadWord
             HtmlWindow.Instance.ShowWindow();
         });
     }
-
+    private async Task MoveToDelay(int delayMilliseconds, CharMoveToLocation moveTo)
+    {
+        await Task.Delay(delayMilliseconds);
+        EventProcessor.Instance.QueueEvent(() => MoveTo(moveTo));
+    }
     public async Task MoveTo(CharMoveToLocation moveToLocation)
     {
         Entity entity = await World.Instance.GetEntityNoLock(moveToLocation.ObjId);
+        Debug.Log("Добавлен пакет перемещаемся MoveTo Init ");
         if(entity != null)
         {
             if (entity.GetType() == typeof(NpcEntity))
             {
                 var npc = (NpcEntity)entity;
+                Debug.Log("Добавлен пакет перемещаемся есть entity 1 Entity MoveTo Init ");
                 NpcMove(npc, moveToLocation);
+                
             }
         }
-
     }
 
     private async Task NpcMove(NpcEntity npc, CharMoveToLocation moveToLocation)
     {
-        var nsm = npc.GetComponent<NpcStateMachine>();
-        if (nsm != null)
-        {
+       // var nsm = npc.GetComponent<NpcStateMachine>();
+        //if (nsm != null)
+        //{
             //nsm.ChangeIntention(NpcIntention.INTENTION_MOVE_TO, moveToLocation);
             npc.transform.position = moveToLocation.NewPosition;
-        }
+            Debug.Log("Добавлен пакет перемещаемся есть entity 2 Entity MoveTo Init ");
+        //}
 
     }
 

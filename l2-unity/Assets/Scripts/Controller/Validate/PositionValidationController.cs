@@ -15,6 +15,8 @@ public class PositionValidationController : MonoBehaviour
 
     private List<ValidateLocation> _validateList;
     private List<ValidateLocation> _validateRemove;
+    private List<CharMoveToLocation> _validateInitPosition;
+    private bool validTest = false;
     //197 unit | 3.743f metr
     private float _trigger = 3.743f;
 
@@ -28,6 +30,7 @@ public class PositionValidationController : MonoBehaviour
             _instance = this;
             _validateList = new List<ValidateLocation>();
             _validateRemove = new List<ValidateLocation>();
+            _validateInitPosition = new List<CharMoveToLocation>();
         }
         else
         {
@@ -40,6 +43,9 @@ public class PositionValidationController : MonoBehaviour
     {
         try
         {
+
+            ValidInitNpsPosition();
+
             if (_validateList.Count == 0) return;
 
             for (int i = 0; i < _validateList.Count; i++)
@@ -73,7 +79,7 @@ public class PositionValidationController : MonoBehaviour
                     {
                         _validateRemove.Add(validateLocation);
                     }
-                    Debug.Log("Position Validate Controller---> " + entity.IdentityInterlude.Name);
+                    //Debug.Log("Position Validate Controller---> " + entity.IdentityInterlude.Name);
 
                 }
             }
@@ -88,6 +94,7 @@ public class PositionValidationController : MonoBehaviour
         }
        
     }
+
 
     private void Jump(Entity entity, Vector3 newPosition)
     {
@@ -122,6 +129,15 @@ public class PositionValidationController : MonoBehaviour
             if (stateMachine != null) ReStartAnimationNpc(npcEntity.IdentityInterlude.Id, stateMachine);
         }
     }
+
+    private void NewCalcGravityNpc(Entity npcEntity, Vector3 newPosition)
+    {
+        newPosition.y = 0;
+        Vector3 newPositionPlusGravity = VectorUtils.ApplyGravityGround(newPosition, Time.time);
+        npcEntity.transform.position = newPositionPlusGravity;
+    }
+
+
     private void NewCalcGravityMonster(MonsterEntity monsterEntity , Vector3 newPosition)
     {
         newPosition.y = 0;
@@ -188,6 +204,42 @@ public class PositionValidationController : MonoBehaviour
         if (!_validateList.Contains(validateLocation))
         {
             _validateList.Add(validateLocation);
+        }
+    }
+
+    public void AddInitPosition(CharMoveToLocation location)
+    {
+        _validateInitPosition.Add(location);
+    }
+
+
+    //This function is a test function.It solves the problem with position synchronization when the server sends data that the client needs to move.
+    //But the client did not load at this moment.Therefore, we collect these packages and after loading, we find the oldest one in time and move the NPC immediately to the end of this movement vector.
+    //Ideally, you need to calculate the path traveled and move the npc there, but for the sake of 2 npc it makes no sense
+    private void ValidInitNpsPosition()
+    {
+        if (_validateInitPosition.Count > 0)
+        {
+            for (int i = 0; i < _validateInitPosition.Count; i++)
+            {
+                CharMoveToLocation location =  _validateInitPosition[i];
+                Entity entity = World.Instance.GetEntityNoLockSync(location.ObjId);
+
+                if(entity != null)
+                {
+                    // Debug.Log("object position 1 " + entity.transform.position + " go name " + entity.name + " end position " + location.NewPosition);
+                    if (entity.isActiveAndEnabled)
+                    {
+                        entity.HideObject();
+                        NewCalcGravityNpc(entity, location.NewPosition);
+                        entity.ShowObject();
+                    }
+                    //Debug.Log("object position 2 " + entity.transform.position + " go name " + entity.name + " end position " + location.NewPosition);
+                }
+
+            }
+
+            _validateInitPosition.Clear();
         }
     }
 

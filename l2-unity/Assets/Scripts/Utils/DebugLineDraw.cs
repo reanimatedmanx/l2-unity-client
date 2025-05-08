@@ -19,7 +19,7 @@ public class DebugLineDraw
 
         //var vector1 = new Vector3(transform.x, transform.y, transform.z);
         //var vector2 = new Vector3(targetObj.x, transform.y, targetObj.z);
-         //_debugLine.DrawNewLineV2(objId, source, targetObj, color);
+         _debugLine.DrawNewLineV2(objId, source, targetObj, color);
     }
 
     public static void RemoveDrawLineDebug(int objId)

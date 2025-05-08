@@ -14,6 +14,7 @@ public class ValidateLocation : ServerPacket
     public int ObjectId {  get { return objectId; } }
     public Vector3 Position { get { return location; } }
     public int Heading { get { return heading; } }
+
     public ValidateLocation(byte[] d) : base(d)
     {
         Parse();

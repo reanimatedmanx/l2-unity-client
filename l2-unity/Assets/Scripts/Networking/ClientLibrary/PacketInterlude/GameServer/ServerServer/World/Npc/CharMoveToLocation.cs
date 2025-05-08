@@ -18,8 +18,11 @@ public class CharMoveToLocation : ServerPacket
     public Vector3 NewPosition { get; private set; }
     public Vector3 OldPosition { get; private set; }
     public int ObjId { get; private set; }
+
+    public DateTime CreatedAt { get; private set; }
     public CharMoveToLocation(byte[] d) : base(d)
     {
+        CreatedAt = DateTime.Now;
         Parse();
     }
 
@@ -39,4 +42,6 @@ public class CharMoveToLocation : ServerPacket
         OldPosition = VectorUtils.ConvertPosToUnity(new Vector3(x, y, z));
         
     }
+
+  
 }
