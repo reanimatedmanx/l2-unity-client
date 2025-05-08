@@ -23,7 +23,7 @@ public class MonsterStateMachine : MonoBehaviour
     private GameObject _go;
     private PlayerEntity _target;
     private Entity _entity;
-    private GravityMonster _gravityMonster;
+   // private GravityMonster _gravityMonster;
 
 
     private Dictionary<MonsterState, MonsterBase> _dictState = new Dictionary<MonsterState, MonsterBase>();
@@ -53,19 +53,20 @@ public class MonsterStateMachine : MonoBehaviour
     public virtual void Initialize(int mosterId, 
         int npcId,
         GameObject go, 
-        Entity entity , 
-        GravityMonster gravityMonster)
+        Entity entity
+        )
     {
         _monsterId = mosterId;
         _npcId = npcId;
         _go = go;
         _entity = entity;
-        _gravityMonster = gravityMonster;
+        //_gravityMonster = gravityMonster;
 
         ChangeIntention(MonsterIntention.INTENTION_IDLE);
         ChangeState(MonsterState.IDLE);
         NotifyEvent(Event.ENTER_WORLD);
-        _gravityMonster.Sync();
+        GravityNpc.Instance.AddGravity(entity.IdentityInterlude.Id, new GravityData(entity));
+        // _gravityMonster.Sync();
     }
 
     public void ChangeState(MonsterState newState)

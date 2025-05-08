@@ -336,7 +336,7 @@ public class World : MonoBehaviour {
     {
         npc.GetComponent<NetworkAnimationController>().Initialize();
         //MoveMonster mm = npcGo.GetComponent<MoveMonster>();
-        GravityMonster gm = npcGo.GetComponent<GravityMonster>();
+       // GravityMonster gm = npcGo.GetComponent<GravityMonster>();
         npcGo.GetComponent<Gear>().Initialize(npc.IdentityInterlude.Id, npc.RaceId);
         npc.Initialize();
         var msm = npcGo.GetComponent<MonsterStateMachine>();
@@ -350,7 +350,7 @@ public class World : MonoBehaviour {
             npc.UpdateNpcRunningSpd(npc.Stats.RunRealSpeed);
             npc.UpdateNpcWalkSpd(npc.Stats.WalkRealSpeed);
             npc.Running = npc.IdentityInterlude.IsRunning;
-            msm.Initialize(npc.IdentityInterlude.Id, npc.IdentityInterlude.NpcId, npcGo, npc, gm);
+            msm.Initialize(npc.IdentityInterlude.Id, npc.IdentityInterlude.NpcId, npcGo, npc);
         }
     }
 
@@ -382,8 +382,9 @@ public class World : MonoBehaviour {
         {
             if (entity.IsDead())
             {
-                DeadMonster deadEvent = entity.GetComponent<DeadMonster>();
-                deadEvent.OnDeadAntiGravity(objectId, true, this);
+                //DeadMonster deadEvent = entity.GetComponent<DeadMonster>();
+                //deadEvent.OnDeadAntiGravity(objectId, true, this);
+                DeadManager.Instance.AddDeadAndRemove(objectId , new DeadData(true, entity));
             }
             else
             {

@@ -40,7 +40,7 @@ public class GravityNpc : MonoBehaviour, IGravity
     private void FixedUpdate()
     {
         if (_dict.Count == 0) return;
-
+        //Debug.Log("GravityData size " + _dict.Count);
         foreach (KeyValuePair<int, GravityData> kvp in _dict)
         {
             GravityData data = kvp.Value;

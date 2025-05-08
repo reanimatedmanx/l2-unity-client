@@ -19,10 +19,7 @@ public class DeadMonster : MonoBehaviour
     private World _world;
     private int _monster_id;
 
-    void Start()
-    {
 
-    }
 
 
   
@@ -30,11 +27,6 @@ public class DeadMonster : MonoBehaviour
     {
         if (_useAntiGravity)
         {
-            
-
-            // ѕлавно перемещаем персонажа к целевой высоте
-            //float newY = Mathf.Lerp(transform.position.y, targetHeight, speed * Time.deltaTime);
-            //float newY2 = transform.position.y - transform.position.y;
             float newY3 = transform.position.y;
             float newY4 = newY3 * 2;
             float zeroPosition = newY3 - newY4;
@@ -51,15 +43,6 @@ public class DeadMonster : MonoBehaviour
         {
             if (_isRefresh)
             {
-               
-                
-                
-                //if(transform.position.y > 0)
-                //{
-
-                //transform.position = new Vector3(transform.position.x, 5, transform.position.z);
-                //   IsRefresh = false;
-                //}
                 if (transform.position.y <= 3)
                 {
                     originalColor = GetOriginalColor(_monsterRenderer);
@@ -67,13 +50,6 @@ public class DeadMonster : MonoBehaviour
                     {
                         float lerp = Mathf.Lerp(transform.position.y, currentPos, speed * Time.deltaTime);
                         float alpha = Mathf.Lerp(originalColor.a, 0f, 1f * Time.deltaTime);
-                        //Debug.Log("NEWWWWWWWW currentPos refresh realPos" + transform.position.y);
-                       // Debug.Log("NEWWWWWWWW currentPos refresh y currentPos" + currentPos);
-                        //Debug.Log("NEWWWWWWWW currentPos refresh y zeroPos" + zeroPos);
-                        //Debug.Log("NEWWWWWWWW currentPos refresh y lerp" + lerp);
-                       // Debug.Log("NEWWWWWWWW currentPos refresh y opacity " + alpha);
-                        //Debug.Log("NEWWWWWWWW currentPos refresh y original color" + originalColor.a);
-                        //transform.position = new Vector3(transform.position.x, -65, transform.position.z);
                         transform.position = new Vector3(transform.position.x, lerp, transform.position.z);
                         SetOpacity(_monsterRenderer, alpha);
                     }
