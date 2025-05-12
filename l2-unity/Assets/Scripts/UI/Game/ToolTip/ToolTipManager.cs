@@ -50,7 +50,11 @@ public class ToolTipManager
     {
         if (IsIndexValid(_buyProduct, positionIndex))
         {
-            return _buyProduct[positionIndex];
+            if(_buyProduct[positionIndex] != null)
+            {
+                return _buyProduct[positionIndex];
+            }
+            
         }
         return null;
     }

@@ -6,6 +6,7 @@ public class IconManager
 {
     private string _iconFolder = "Data\\SysTextures\\Icon";
     private string _cursorFolder = "Data\\UI\\Assets\\Cursor";
+    private string _defaultNameIconBackground = "ItemWindow_DF_SlotBox_Default";
 
     private Texture2D _noImageIcon;
 
@@ -73,6 +74,11 @@ public class IconManager
         //Debug.LogWarning($"Missing icon: {name}.");
 
         return _noImageIcon;
+    }
+
+    public Texture2D GetInvetoryDefaultBackground()
+    {
+        return LoadTextureByName(_defaultNameIconBackground);
     }
 
     public Texture2D LoadCursorByName(string name)

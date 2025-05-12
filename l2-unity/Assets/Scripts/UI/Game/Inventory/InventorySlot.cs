@@ -34,19 +34,39 @@ public class InventorySlot : L2DraggableSlot
         _empty = true;
     }
  
+    public void AssignEmpty()
+    {
+        //_slotElement.AddToClassList("empty");
+        _empty = true;
+        _id = 0;
+        _name = "Unkown";
+        _description = "Unkown item.";
+
+        if (_slotElement != null)
+        {
+            StyleBackground background = new StyleBackground(IconManager.Instance.GetInvetoryDefaultBackground());
+            _slotBg.style.backgroundImage = background;
+            _slotDragManipulator.enabled = false;
+        }
+    }
+
+    public Product product;
     public void AssignProduct(Product item)
     {
         _slotElement.RemoveFromClassList("empty");
+        
 
         if (item != null)
         {
             _id = item.ItemId;
+            _empty = false;
         }
         else
         {
             _id = 0;
             _name = "Unkown";
             _description = "Unkown item.";
+            _empty = true;
         }
 
         if (_slotElement != null)
@@ -55,6 +75,13 @@ public class InventorySlot : L2DraggableSlot
             _slotBg.style.backgroundImage = background;
             _slotDragManipulator.enabled = false;
         }
+
+        product = item;
+    }
+
+    public void ManualHideToolTips()
+    {
+        ToolTipSimple.Instance.ManualHide();
     }
     public void AssignItem(ItemInstance item)
     {

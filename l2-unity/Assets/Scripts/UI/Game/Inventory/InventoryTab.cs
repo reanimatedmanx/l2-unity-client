@@ -26,14 +26,11 @@ public class InventoryTab : L2Tab
     {
         _inventorySlots = null;
         _inventorySlots = inventory;
-
-       // for (int i = 0; i < 24; i++)
-        //{
-        //    VisualElement slotElement = InventoryWindow.Instance.InventorySlotTemplate.Instantiate()[0];
-         //   InventorySlot slot = new InventorySlot(i, slotElement, this, SlotType.Inventory);
-         //   _inventorySlots[i] = slot;
-       // }
     }
+
+ 
+    
+    
     public void UpdateItemList(List<ItemInstance> items)
     {
         // Clear slots

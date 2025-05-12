@@ -103,13 +103,19 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             int type = Int32.Parse(ids[1]);
 
             Product product = GetProductClickLeft(type, position);
+
             AddTestDataWeaponToolTip(template, product);
         }
 
         
     }
 
-    
+
+    public void ManualHide()
+    {
+        Debug.Log("HIIIDEEE NULL TOOLTIPS!!");
+        StartCoroutine(AllHide());
+    }
     public void RegisterCallback(SlotType type , List<VisualElement> list)
     {
 
@@ -191,6 +197,11 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         _showToolTip.Hide(ve);
         yield return new WaitForEndOfFrame();
     }
+    public IEnumerator AllHide()
+    {
+        _windowEle.style.display = DisplayStyle.None;
+        yield return new WaitForEndOfFrame();
+    }
     private IEnumerator StartNewPosition(VisualElement ve)
     {
         string[] ids = GetUniquePosition(ve);
@@ -200,7 +211,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             _windowEle.style.display = DisplayStyle.Flex;
             _contentInside.MarkDirtyRepaint();
 
-            Debug.Log("TooTipAction StartNewPosition disabled 2 " + _contentInside.worldBound.height);
+            //Debug.Log("TooTipAction StartNewPosition disabled 2 " + _contentInside.worldBound.height);
 
             AddData(ids, template);
             _selectShow = ve;
@@ -213,8 +224,6 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 yield return new WaitForEndOfFrame();
             }
         }
-
-
     }
 
     private TemplateContainer SwitchToolTip(string[] ids , bool isClickLeft)

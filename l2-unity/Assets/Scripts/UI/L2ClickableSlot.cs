@@ -74,6 +74,8 @@ public class L2ClickableSlot : L2Slot
           if(SlotType.PriceBuy == _slotType | SlotType.PriceSell == _slotType)
           {
                 DealerWindow.Instance.EventDoubleClick(slotElement);
+
+   
           }
 
       }

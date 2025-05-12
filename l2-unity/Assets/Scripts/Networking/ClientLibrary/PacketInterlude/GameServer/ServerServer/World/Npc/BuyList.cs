@@ -91,7 +91,7 @@ public class Product
 
     public int Type2 { get { return _itemType2; } }
 
-   
+    public int ObjId { get { return _objId; } }
 
     public Product(int itemType1, int objId, int count, int itemType2, int isEquip, int bodyPart, int enchant, int price, int itemId)
     {
@@ -106,10 +106,34 @@ public class Product
         _itemId = itemId;
     }
 
+    public int GetWeight()
+    {
+        if(GetTypeItem() == EnumType2.TYPE2_WEAPON)
+        {
+            return WeapongrpTable.Instance.GetWeapon(_itemId).Weight;
+        }
+        else if (GetTypeItem() ==  EnumType2.TYPE2_ACCESSORY)
+        {
+            Armorgrp armpr = ArmorgrpTable.Instance.GetArmor(_itemId);
+
+            if (armpr != null)
+            {
+                return armpr.Weight;
+            }
+        }
+
+        return 0;
+    }
     public Weapongrp GetWeapon()
     {
         return WeapongrpTable.Instance.GetWeapon(_itemId);
     }
+
+    public Armorgrp GetEtcItem()
+    {
+        return ArmorgrpTable.Instance.GetArmor(_itemId);
+    }
+
     public EnumType2 GetTypeItem()
     {
         if (_itemType2 == (int)EnumType2.TYPE2_WEAPON)
@@ -178,6 +202,22 @@ public class Product
         ItemName item = ItemNameTable.Instance.GetItemName(_itemId);
         if (string.IsNullOrEmpty(item.Description)) return "Not Found description";
         return item.Description;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+            return false;
+
+        Product other = (Product)obj;
+        return  other.ItemId == _itemId && other.ObjId == _objId;
+    }
+
+    public override int GetHashCode()
+    {
+        int _objId1 = _objId.GetHashCode();
+        int _itemId1 = _itemId.GetHashCode();
+        return _objId1 ^ _itemId1; 
     }
 
 

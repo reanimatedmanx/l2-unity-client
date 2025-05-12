@@ -25,6 +25,12 @@ public class ArmorgrpTable {
         ReadArmorGrpDat();
     }
 
+    public  Armorgrp GetArmor(int armor)
+    {
+        if(_armorgrps.ContainsKey(armor)) return _armorgrps[armor];
+        return null;
+    }
+
     private void ReadArmorGrpDat() {
         _armorgrps = new Dictionary<int, Armorgrp>();
         string dataPath = Path.Combine(Application.streamingAssetsPath, "Data/Meta/Armorgrp_Classic.txt");
@@ -132,7 +138,10 @@ public class ArmorgrpTable {
                             break;
                         case "mp_bonus": //mp_bonus=0
                             armorgrp.MpBonus = int.Parse(value);
-                            break;                     
+                            break;
+                        case "weight": //weight
+                            armorgrp.Weight = int.Parse(value);
+                            break;
                     }
                 }
 

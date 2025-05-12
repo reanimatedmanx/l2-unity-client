@@ -1,9 +1,14 @@
+using FMOD.Studio;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using static L2Slot;
@@ -26,6 +31,7 @@ public class DealerWindow : L2PopupWindow
     private InventoryTab _tabSell;
     private InventoryTab _tabBuy;
     private InventorySlot[] _inventorySlotsBuy;
+    private InventorySlot[] _inventorySlotsSell;
     private VisualElement _weiBar;
     private VisualElement _weiBarBg;
     private int _currentDataWeight = 0;
@@ -89,6 +95,7 @@ public class DealerWindow : L2PopupWindow
 
         CreateSell(listBuy);
         CreateBuy();
+        UpdateAllPrice();
    }
 
     public void UpdateDataForm( int adena, double weightPercent, int currentWeight, int maxWeight)
@@ -107,8 +114,17 @@ public class DealerWindow : L2PopupWindow
         int type = Int32.Parse(ids[1]);
         SlotType slot = DetectedClickPanel(type);
         Move—ellElsePriceType(slot , _listBuy , position);
+        RefreshToolTips(slotElement , slot);
    }
 
+    public void RefreshToolTips(VisualElement slotElement , SlotType slot)
+    {
+        if(SlotType.PriceBuy == slot)
+        {
+            ToolTipManager.GetInstance().EventLeftClickSlot(slotElement);
+        }
+        
+    }
    
 
     private string[] GetUniquePosition(VisualElement ve)
@@ -130,19 +146,30 @@ public class DealerWindow : L2PopupWindow
         return SlotType.Other;
     }
 
+    private int positionMove = 0;
     private void Move—ellElsePriceType(SlotType type , List<Product> listBuy, int position)
     {
         if (type == SlotType.PriceBuy)
         {
+            if (_listSell == null) return;
+            if (!IsIndexValid(_listSell, position)) return;
 
+            Product source = _listSell[position];
+
+            MoveSell(position);
+            _listSell = RemoveProduct(_listSell, source);
+            UpdateAllPrice();
+            UpdateWeight();
         }
         else if (type == SlotType.PriceSell)
         {
             Product source = listBuy[position];
 
+            if (source == null) return;
+
             _listSell = AddProduct(_listSell, source);
-            int positionMove = 0;
-            if (_listSell.Count != 0) positionMove = _listSell.Count - 1;
+
+            if (_listSell.Count != 0) positionMove = GetNewPosition(_inventorySlotsBuy);
 
             ToolTipManager.GetInstance().SetBuyData(_listSell);
             MoveBuy(positionMove, source);
@@ -151,15 +178,39 @@ public class DealerWindow : L2PopupWindow
         }
     }
 
+    public bool IsIndexValid(List<Product> _listSell, int index)
+    {
+        return index >= 0 && index < _listSell.Count;
+    }
+
+    private int GetNewPosition(InventorySlot[] slots)
+    {
+        //return slots.FirstOrDefault(p =>  p == null | p.IsEmpty == true).Position;
+        return _listSell.Count - 1;
+    }
+
     private List<Product> AddProduct(List<Product> listSell , Product source)
     {
         if (listSell == null)
         {
             return new List<Product>() { source };
-           //return _listSell;
         }
 
+       
         listSell.Add(source);
+
+
+        return listSell;
+    }
+
+    private List<Product> RemoveProduct(List<Product> listSell, Product source)
+    {
+        if (listSell == null)
+        {
+            return new List<Product>() { source };
+        }
+
+        listSell.Remove(source);
         return listSell;
     }
 
@@ -168,18 +219,89 @@ public class DealerWindow : L2PopupWindow
         _inventorySlotsBuy[newPosition].AssignProduct(product);
         _tabBuy.UpdateInventorySlots(_inventorySlotsBuy);
     }
+    //We do not move the target from sell -> buy because we believe that there is already something there and re-updating the cell is not required.We simply clear it
+    //and shift all positions to the left if we delete an element
+    public void MoveSell(int newPosition)
+    {
+        ShiftElementsLeft(newPosition);
+        _tabSell.UpdateInventorySlots(_inventorySlotsSell);
+    }
+
+    public void ShiftElementsLeft(int newPosition)
+    {
+        for(int i =0; i < _inventorySlotsBuy.Length; i++)
+        {
+            if(i == newPosition)
+            {
+                var currentSlot = _inventorySlotsBuy[i];
+                var nextSlot = GetNextSlot( i, _inventorySlotsBuy);
+                HandleCurrentPosition(currentSlot, nextSlot);
+            }
+            else if (i > newPosition)
+            {
+                var currentSlot = _inventorySlotsBuy[i];
+                var nextSlot = GetNextSlot(i, _inventorySlotsBuy);
+                if (nextSlot == null) return;
+                HandleSlotsAfterCurrent(currentSlot, nextSlot);
+            }
+        }
+    }
+
+
+
+    private void HandleCurrentPosition(InventorySlot currentSlot, InventorySlot nextSlot)
+    {
+        _inventorySlotsBuy[currentSlot.Position].AssignProduct(nextSlot.product);
+
+        if (nextSlot.IsEmpty)
+        {
+            nextSlot.ManualHideToolTips();
+            _inventorySlotsBuy[currentSlot.Position].AssignEmpty();
+        }
+    }
+
+
+    private void HandleSlotsAfterCurrent(InventorySlot currentSlot, InventorySlot nextSlot)
+    {
+        ElseNextSlotEmpty(nextSlot, currentSlot);
+    }
+
+
+    private void ElseNextSlotEmpty(InventorySlot nextSlot, InventorySlot slot)
+    {
+        if (nextSlot.IsEmpty)
+        {
+            _inventorySlotsBuy[slot.Position].AssignEmpty();
+        }
+        else
+        {
+            _inventorySlotsBuy[slot.Position].AssignProduct(nextSlot.product);
+        }
+    }
+
+    private InventorySlot GetNextSlot(int i , InventorySlot[] _inventorySlotsBuy)
+    {
+        return (i + 1 < _inventorySlotsBuy.Length) ? _inventorySlotsBuy[i + 1] : null;
+    }
     private void UpdateAllPrice()
     {
         int allPrice = 0;
 
-        if(_listSell != null)
+        if (_listSell != null)
         {
             for (int i = 0; i < _listSell.Count; i++)
             {
-                allPrice = allPrice + _listSell[i].Price;
+                if (_listSell[i] != null)
+                {
+                    allPrice = allPrice + _listSell[i].Price;
+                }
             }
 
             UpdatePrice(allPrice);
+        }
+        else
+        {
+            UpdatePrice(0);
         }
  
     }
@@ -192,7 +314,10 @@ public class DealerWindow : L2PopupWindow
         {
             for (int i = 0; i < _listSell.Count; i++)
             {
-                addWeight = addWeight + _listSell[i].GetWeapon().Weight;
+                if (_listSell[i] != null)
+                {
+                    addWeight = addWeight + _listSell[i].GetWeight();
+                }             
             }
 
             UpdateAllWeight(_currentDataWeight + addWeight , _maxWeight);
@@ -261,11 +386,13 @@ public class DealerWindow : L2PopupWindow
         }
 
 
+
+
     }
   
     private void CreateEmptySell(InventoryTab tabSell)
     {
-        var _inventorySlotsSell = new InventorySlot[_deaultCount];
+        _inventorySlotsSell = new InventorySlot[_deaultCount];
 
         for (int i = 0; i < _deaultCount; i++)
         {
@@ -283,20 +410,20 @@ public class DealerWindow : L2PopupWindow
         if(listBuy.Count <= 24)
         {
 
-            InventorySlot[] slotsSell = InitEmpty(_deaultCount, tabSell);
+            _inventorySlotsSell  = InitEmpty(_deaultCount, tabSell);
 
             for (int i = 0; i < listBuy.Count; i++)
             {
-                slotsSell[i].AssignProduct(listBuy[i]);
+                _inventorySlotsSell[i].AssignProduct(listBuy[i]);
             }
         }
         else
         {
-            InventorySlot[] slotsSell = InitEmpty(listBuy.Count, tabSell);
+            InventorySlot[] _inventorySlotsSell = InitEmpty(listBuy.Count, tabSell);
 
             for (int i = 0; i < listBuy.Count; i++)
             {
-                slotsSell[i].AssignProduct(listBuy[i]);
+                _inventorySlotsSell[i].AssignProduct(listBuy[i]);
             }
         }
         
