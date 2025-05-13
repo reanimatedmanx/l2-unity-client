@@ -81,9 +81,9 @@ public class DeadManager : MonoBehaviour, IDead
 
             }
         }
-        Debug.Log("DeadManager size 1 " + _dict.Count);
+        //Debug.Log("DeadManager size 1 " + _dict.Count);
         Remove(_remove);
-        Debug.Log("DeadManager size 2 " + _dict.Count);
+        //Debug.Log("DeadManager size 2 " + _dict.Count);
     }
 
 

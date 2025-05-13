@@ -36,12 +36,12 @@ public class TargetData
     {
         this.hexColor = hexColor;
     }
-
+    public Entity GetEntity() { return _entity; }
     public TargetData(ObjectData target) {
         _data = target;
-        Entity e = _data.ObjectTransform.GetComponent<Entity>();
-
-        _identity = e.IdentityInterlude;
+        //Entity e = _data.ObjectTransform.GetComponent<Entity>();
+        _entity  = _data.ObjectTransform.GetComponent<Entity>();
+        _identity = _entity.IdentityInterlude;
 
         //switch (_identity.EntityType) {
         //    case EntityType.Player:
@@ -57,8 +57,8 @@ public class TargetData
         //        _status = _data.ObjectTransform.GetComponent<MonsterEntity>().Status;
         //        break;
         //}
-        _status = e.Status;
-        _stats = e.Stats;
+        _status = _entity.Status;
+        _stats = _entity.Stats;
     }
 
     public TargetData() { }

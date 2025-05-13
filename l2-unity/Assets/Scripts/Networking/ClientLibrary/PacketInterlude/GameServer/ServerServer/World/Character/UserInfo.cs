@@ -26,7 +26,7 @@ public class UserInfo : ServerPacket
 
         //Vector3 unityPos = VectorUtils.ConvertPosToUnity(new Vector3(x,y,z));
         _info.Identity.SetL2jPos(x, y, z);
-        int vehicle = ReadI();
+        _info.Identity.Heading = VectorUtils.ConvertHeadingL2jToUnity(ReadI());
         _info.Identity.Id = ReadI();
      
         _info.Identity.Name = ReadOtherS();

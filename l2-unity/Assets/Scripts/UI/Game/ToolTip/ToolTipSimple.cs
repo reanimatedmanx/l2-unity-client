@@ -18,18 +18,13 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
     private VisualElement _content;
     private VisualTreeAsset _windowTemplateWeapon;
     private VisualTreeAsset _windowTemplateSimple;
+    private VisualTreeAsset _windowTemplateAcccesories;
     private VisualElement _contentInside;
-    //Block
-    //private Label _nameText;
-    //private Label _descriptedText;
-
-    //private VisualElement _icon;
-   // private VisualElement _groubBoxIcon;
     private float _lastHeightContent = 0;
     private float _heightContent = 0;
     private float _widtchContent = 0;
     private VisualElement _selectShow;
-    //private Dictionary<int, VisualElement> _dictElements;
+    private TooltipDataProvider _dataProvider;
 
     public static ToolTipSimple Instance { get { return _instance; } }
 
@@ -40,8 +35,9 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         if (_instance == null)
         {
             _instance = this;
-           // _dictElements = new Dictionary<int, VisualElement>();
+ 
              _showToolTip = new ShowToolTip(this);
+            _dataProvider = new TooltipDataProvider();
         }
         else
         {
@@ -54,6 +50,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         _windowTemplate = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipObject");
         _windowTemplateSimple = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipSimple");
         _windowTemplateWeapon = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipWeapon");
+        _windowTemplateAcccesories = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipAccessories");
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)
@@ -66,30 +63,8 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
 
 
         _content = GetElementByClass("control-box");
-        
-       //_content.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
-        //_content.RegisterCallback<AttachToPanelEvent>(OnAttachChanged);
-        //_content.style.flexGrow = 1; // Позволяет GroupBox расти
-        //_content.style.flexShrink = 1; // Позволяет GroupBox сжиматься
-
-        //var weaponToolTips = _windowTemplateSimple.CloneTree();
-       // weaponToolTips.style.flexGrow = 1;
-        //_content.Add(weaponToolTips);
-
-        //_contentInside = weaponToolTips.Q<VisualElement>(className: "content");
-        //_contentInside.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
-        //_contentInside.MarkDirtyRepaint();
-        //_nameText = (Label)GetElementByClass("Heading");
-        //_descriptedText = (Label)GetElementByClass("DescriptedLabel");
-        //_icon = GetElementByClass("Icon");
-        //_groubBoxIcon = GetElementByClass("Grow");
-
-        //_heightContent = _contentInside.worldBound.height;
-        //_widtchContent = _contentInside.worldBound.width;
         _windowEle.style.display = DisplayStyle.None;
-        //_descriptedText.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
-        //var test1 = _windowTemplateWeapon.Instantiate()[0];
-        //_content.Add(test1);
+
     }
 
 
@@ -103,17 +78,28 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             int type = Int32.Parse(ids[1]);
 
             Product product = GetProductClickLeft(type, position);
+            AddData(product, template);
 
-            AddTestDataWeaponToolTip(template, product);
         }
 
         
     }
 
 
+    private void AddData(Product product , TemplateContainer template)
+    {
+        if (product.GetTypeItem() == EnumType2.TYPE2_WEAPON)
+        {
+            _dataProvider.AddDataWeapon(template, product);
+        }
+        else if (product.GetTypeItem() == EnumType2.TYPE2_ACCESSORY)
+        {
+            _dataProvider.AddDataAccessories(template, product);
+        }
+    }
+
     public void ManualHide()
     {
-        Debug.Log("HIIIDEEE NULL TOOLTIPS!!");
         StartCoroutine(AllHide());
     }
     public void RegisterCallback(SlotType type , List<VisualElement> list)
@@ -211,8 +197,6 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             _windowEle.style.display = DisplayStyle.Flex;
             _contentInside.MarkDirtyRepaint();
 
-            //Debug.Log("TooTipAction StartNewPosition disabled 2 " + _contentInside.worldBound.height);
-
             AddData(ids, template);
             _selectShow = ve;
             //esle position layout != 0 <--- (EndNewPosition add new Vector2(0,0))
@@ -240,6 +224,9 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                     if (product.GetTypeItem() == EnumType2.TYPE2_WEAPON)
                     {
                         return SwitchToWeapon();
+                    }else if (product.GetTypeItem() == EnumType2.TYPE2_ACCESSORY)
+                    {
+                        return SwitchToAccessories();
                     }
                 }
 
@@ -251,6 +238,10 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                     if (product.GetTypeItem() == EnumType2.TYPE2_WEAPON)
                     {
                         return SwitchToWeapon();
+                    }
+                    else if (product.GetTypeItem() == EnumType2.TYPE2_ACCESSORY)
+                    {
+                        return SwitchToAccessories();
                     }
                 }
   
@@ -300,41 +291,19 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         _contentInside = weapon.Q<VisualElement>(className: "content");
         _contentInside.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
         return weapon;
-        //AddTestDataWeaponToolTip(weapon, ids);
     }
 
-    private void AddTestDataWeaponToolTip(TemplateContainer container ,  Product product)
+    private TemplateContainer SwitchToAccessories()
     {
-
-        if (product != null)
-        {
-            Weapongrp weapon = product.GetWeapon();
-            IDataTips text = ToolTipManager.GetInstance().GetProductText(product);
-
-            var nameWeapon = container.Q<Label>("nameWeapon").text = text.GetName();
-
-            if(ItemGrade.none != weapon.Grade)
-            {
-                var gradeWeapon = container.Q<Label>("gradeWeapon");
-                gradeWeapon.text = ItemGradeParser.Converter(weapon.Grade);
-            }
-            
-            var typeWeapon = container.Q<Label>("typeWeapon").text = WeaponTypeParser.WeaponTypeName(weapon.WeaponType);
-            var physLabel = container.Q<Label>("physLabel").text = weapon.PAtk.ToString();
-            var magLabel = container.Q<Label>("magLabel").text = weapon.Matk.ToString();
-            var spdLabel = container.Q<Label>("spdLabel").text = weapon.GetSpeedName();
-            var critLabel = container.Q<Label>("critLabel").text = weapon.CriticalRate.ToString();
-            var soullabel = container.Q<Label>("soullabel").text = "X"+weapon.Soulshot.ToString();
-            var spiritlabel = container.Q<Label>("spiritlabel").text = "X" + weapon.Spiritshot.ToString();
-            var weightlabel = container.Q<Label>("weightlabel").text = weapon.Weight.ToString();
-            var descriptedLabel = container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
-            var icon = container.Q<VisualElement>("icon");
-            icon.style.backgroundImage = IconManager.Instance.LoadTextureByName(weapon.Icon);
-        }
-       
-
-
+        _content.Clear();
+        var _accessories = _windowTemplateAcccesories.CloneTree();
+        _content.Add(_accessories);
+        _contentInside = _accessories.Q<VisualElement>(className: "content");
+        _contentInside.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+        return _accessories;
     }
+
+    
 
     private string[] GetUniquePosition(VisualElement ve)
     {
@@ -460,13 +429,13 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
 
             _descriptedText.style.fontSize = 12;
             _nameText.style.paddingLeft = 0;
-            _descriptedText.style.color = GetColorPrice(text.GetDiscription());
+            _descriptedText.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
 
             var icon = template.Q<VisualElement>(null, "Icon");
             var groubBoxIcon = template.Q<VisualElement>(null, "Grow");
 
             SetIcon(icon , groubBoxIcon , null);
-            SetDataTooTip(_nameText , _descriptedText , text.GetName(), "Price: " + ConvertToPrice(Int32.Parse(text.GetDiscription())) + " Adena");
+            SetDataTooTip(_nameText , _descriptedText , text.GetName(), "Price: " + ToolTipsUtils.ConvertToPrice(Int32.Parse(text.GetDiscription())) + " Adena");
         }
         else
         {
@@ -475,24 +444,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         }
     }
 
-    private Color GetColorPrice(string price)
-    {
-        if(price.Length == 6)
-        {
-            return new Color(255f / 255f, 126f / 255f, 255f / 255f);
-            //return new Color(0, 251, 255);
-        }
-        else if (price.Length == 5)
-        {
-            return new Color(0, 251, 255);
-        }
-        return new Color(169, 180, 196);
-    }
-    private string ConvertToPrice(int wholeNumber)
-    {
-        string formattedNumber = wholeNumber.ToString("N0", CultureInfo.InvariantCulture);
-        return  formattedNumber.Replace('.', ',');
-    }
+
     private void SetIcon(VisualElement icon , VisualElement groubBoxIcon, string nameIcon)
     {
         
@@ -502,9 +454,6 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         }
         else
         {
-            //_icon.style.backgroundImage = null;
-            // _groubBoxIcon.style.backgroundImage = null;
-            //icon.style.display = DisplayStyle.None;
             groubBoxIcon.style.display = DisplayStyle.None;
         }
        

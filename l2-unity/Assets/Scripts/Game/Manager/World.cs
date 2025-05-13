@@ -1,18 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Security.Principal;
-using System.Threading;
 using System.Threading.Tasks;
-using UnityEditor;
-using UnityEditorInternal;
+
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.UIElements;
-using static UnityEditor.FilePathAttribute;
-using static UnityEditor.PlayerSettings;
-using static UnityEngine.EventSystems.EventTrigger;
-using static UnityEngine.GraphicsBuffer;
+using UnityEngine.UIElements.Experimental;
+
+
 
 public class World : MonoBehaviour {
     [SerializeField] private GameObject _player;
@@ -97,12 +90,6 @@ public class World : MonoBehaviour {
         }
     }
 
-    public void SpawnPlayerOfflineMode() {
-
-    }
-
-
-
     public void SpawnPlayerInterlude(NetworkIdentityInterlude identity, PlayerStatusInterlude status, PlayerInterludeStats stats, PlayerInterludeAppearance appearance)
     {
         identity.SetPosY(GetGroundHeight(identity.Position));
@@ -113,9 +100,11 @@ public class World : MonoBehaviour {
 
         GameObject go = CharacterBuilder.Instance.BuildCharacterBaseInterlude(raceId, appearance, identity.EntityType);
         go.transform.SetParent(_usersContainer.transform);
-        go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, identity.Heading, transform.eulerAngles.z);
+        //go.transform.eulerAngles = new Vector3(transform.eulerAngles.x, identity.Heading, transform.eulerAngles.z);
+       
         go.transform.position = identity.Position;
-       // go.transform.name = "_Player";
+        go.transform.rotation = identity.Heading;
+        // go.transform.name = "_Player";
         go.transform.name = identity.Name;
         PlayerEntity player = go.GetComponent<PlayerEntity>();
 
@@ -158,8 +147,6 @@ public class World : MonoBehaviour {
         CameraController.Instance.enabled = true;
         CameraController.Instance.SetTarget(go);
 
-        //ChatWindow.Instance.ReceiveChatMessage(new MessageLoggedIn(identity.Name));
-
         CharacterInfoWindow.Instance.UpdateValues();
         PlayerStateMachine.Instance.Player = player;
 
@@ -169,6 +156,7 @@ public class World : MonoBehaviour {
 
 
     bool isSinglSpawn = false;
+
     public void SpawnNpcInterlude(NetworkIdentityInterlude identity, NpcStatusInterlude status, Stats stats)
     {
         if (_npcs.ContainsKey(identity.Id)) return;
@@ -201,8 +189,11 @@ public class World : MonoBehaviour {
             //}
             
             identity.SetPosY(GetGroundHeight(identity.Position));
-            GameObject npcGo = Instantiate(go, identity.Position, Quaternion.identity);
+            //GameObject npcGo = Instantiate(go, identity.Position, Quaternion.identity);
+            GameObject npcGo = Instantiate(go, identity.Position, identity.Heading);
             NpcData npcData = new NpcData(npcName, npcgrp);
+
+           
 
             identity.EntityType = EntityTypeParser.ParseEntityType(npcgrp.ClassName);
             Entity npc;
@@ -250,8 +241,8 @@ public class World : MonoBehaviour {
 
             npc.Appearance = appearance;
 
-            npcGo.transform.eulerAngles = new Vector3(npcGo.transform.eulerAngles.x, identity.Heading, npcGo.transform.eulerAngles.z);
-
+            // npcGo.transform.eulerAngles = new Vector3(npcGo.transform.eulerAngles.x, identity.Heading, npcGo.transform.eulerAngles.z);
+            //npcGo.transform.rotation = identity.Heading;
             npcGo.transform.name = identity.Name;
 
             npcGo.SetActive(true);
@@ -268,6 +259,7 @@ public class World : MonoBehaviour {
 
             RespawnPositionElseLoadingGame(identity, npcGo);
 
+           
 
             _npcs.Add(identity.Id, npc);
             _objects.Add(identity.Id, npc);

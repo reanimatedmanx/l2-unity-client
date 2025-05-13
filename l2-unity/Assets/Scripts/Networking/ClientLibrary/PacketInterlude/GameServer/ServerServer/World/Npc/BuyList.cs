@@ -114,7 +114,7 @@ public class Product
         }
         else if (GetTypeItem() ==  EnumType2.TYPE2_ACCESSORY)
         {
-            Armorgrp armpr = ArmorgrpTable.Instance.GetArmor(_itemId);
+            Armorgrp armpr = GetArmor();
 
             if (armpr != null)
             {
@@ -124,15 +124,17 @@ public class Product
 
         return 0;
     }
+
+    public Armorgrp GetArmor()
+    {
+        return ArmorgrpTable.Instance.GetArmor(_itemId);
+    }
     public Weapongrp GetWeapon()
     {
         return WeapongrpTable.Instance.GetWeapon(_itemId);
     }
 
-    public Armorgrp GetEtcItem()
-    {
-        return ArmorgrpTable.Instance.GetArmor(_itemId);
-    }
+    
 
     public EnumType2 GetTypeItem()
     {
@@ -189,6 +191,24 @@ public class Product
         {
             return ItemNameTable.Instance.GetItemName(_itemId).Name;
         }
+        return "";
+    }
+
+    public string GetTypeAccessoriesName()
+    {
+        Armorgrp armor = ArmorgrpTable.Instance.GetArmor(_itemId);
+        if(armor.BodyPart == ItemSlot.neck)
+        {
+            return "Necklace";
+        }else if (armor.BodyPart == ItemSlot.rear | armor.BodyPart == ItemSlot.lear)
+        {
+            return "Earring";
+        }
+        else if (armor.BodyPart == ItemSlot.rfinger | armor.BodyPart == ItemSlot.lfinger)
+        {
+            return "Ring";
+        }
+
         return "";
     }
 

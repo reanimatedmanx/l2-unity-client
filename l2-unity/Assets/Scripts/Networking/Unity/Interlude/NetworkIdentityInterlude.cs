@@ -22,7 +22,7 @@ public class NetworkIdentityInterlude
 
     [Header("Transform")]
     [SerializeField] private Vector3 _position = new Vector3(4724, -68, -1731);
-    [SerializeField] private float _heading;
+    [SerializeField] private Quaternion _heading;
 
     [SerializeField] private bool _owned = false;
     private bool _isHideHpBar = false;
@@ -35,7 +35,7 @@ public class NetworkIdentityInterlude
     public string Title { get => _title; set => _title = value; }
     public string TitleColor { get => _titleColor; set => _titleColor = value; }
     public Vector3 Position { get => _position; set => _position = value; }
-    public float Heading { get => _heading; set => _heading = value; }
+    public Quaternion Heading { get => _heading; set => _heading = value; }
     public bool Owned { get => _owned; set => _owned = value; }
     public int PlayerClass { get => _playerClass; set => _playerClass = value; }
     //public int  BaseClass { get => _baseClass; set => _baseClass = value; }
@@ -65,6 +65,7 @@ public class NetworkIdentityInterlude
         Vector3 l2jpos = new Vector3(x, y, z);
         _position = VectorUtils.ConvertPosToUnity(l2jpos);
     }
+
 
     public void SetHideHp(int npcId)
     {

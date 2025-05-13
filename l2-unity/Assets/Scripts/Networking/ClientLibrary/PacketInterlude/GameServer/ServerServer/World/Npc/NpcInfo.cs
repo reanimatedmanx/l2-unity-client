@@ -44,7 +44,7 @@ public class NpcInfo : ServerPacket
         int y = ReadI();
         int z = ReadI();
         Identity.SetL2jPos(x, y, z);
-        Identity.Heading = ReadI();
+        Identity.Heading = VectorUtils.ConvertHeadingL2jToUnity(ReadI());
         int empty = ReadI();
 
         Stats.MAtkSpd = ReadI();

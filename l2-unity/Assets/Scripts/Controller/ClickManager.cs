@@ -132,6 +132,8 @@ public class ClickManager : MonoBehaviour
         SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
     }
 
+
+
     public void PlaceLocator(Vector3 position)
     {
         _locator.SetActive(true);

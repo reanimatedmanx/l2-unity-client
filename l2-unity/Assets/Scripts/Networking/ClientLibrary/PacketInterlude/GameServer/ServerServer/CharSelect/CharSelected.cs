@@ -21,7 +21,7 @@ public class CharSelected : ServerPacket
     public override void Parse()
     {
         CharSelectInfoPackage selectChar = CharSelectWindow.Instance.GetSelectChar();
-        _info.Identity.Heading = 0;
+        //_info.Identity.Heading = 0;
         _info.Identity.Owned = true;
         _info.Stats.Speed = 50;
         _info.Stats.AttackRange = 5;

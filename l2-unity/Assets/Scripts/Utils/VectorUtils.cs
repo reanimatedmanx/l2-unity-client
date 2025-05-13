@@ -182,4 +182,11 @@ public class VectorUtils : MonoBehaviour {
         float angle = Mathf.Atan2(directionX, directionZ) * Mathf.Rad2Deg;
         return angle;
     }
+
+    public static Quaternion ConvertHeadingL2jToUnity(float heading)
+    {
+        // ѕреобразуем heading из диапазона [0, 65535] в угол в градусах [0, 360]
+        float angleInDegrees = (heading / 182.04444444444444444444444444444f) % 360;
+        return  Quaternion.Euler(0, angleInDegrees, 0);
+    }
 }

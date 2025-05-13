@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +24,7 @@ public class ArmorgrpTable {
 
     public void Initialize() {
         ReadArmorGrpDat();
+        ReadArmorInterlude();
     }
 
     public  Armorgrp GetArmor(int armor)
@@ -154,5 +156,59 @@ public class ArmorgrpTable {
 
             Debug.Log($"Successfully imported {_armorgrps.Count} armorgrp(s)");
         }
+    }
+    //329 PDef
+    //330 Mdef
+    //331 MpBonus
+
+    private int indexPdef = 329;
+    private int indexMdef = 330;
+    private int indexMpBouns = 331;
+    public void ReadArmorInterlude()
+    {
+        //_actionsInterlude = new Dictionary<int, ActionData>();
+        string dataPath = Path.Combine(Application.streamingAssetsPath, "Data/Meta/Armorgrp_interlude.txt");
+
+        using (StreamReader reader = new StreamReader(dataPath))
+        {
+            string line;
+            int index = 0;
+            while ((line = reader.ReadLine()) != null)
+            {
+                //string[] test = line.Split('\t');
+                if (index != 0)
+                {
+                    string[] ids = line.Split('\t');
+                    int id = Int32.Parse(ids[1]);
+  
+                    if (_armorgrps.ContainsKey(id))
+                    {
+                        Armorgrp grp = _armorgrps[id];
+                        
+                        if (IsIndexValid(ids, indexPdef))
+                        {
+                            grp.PDef  = Int32.Parse(ids[indexPdef]);
+                        }
+                        if (IsIndexValid(ids, indexMdef))
+                        {
+                            grp.MDef  = Int32.Parse(ids[indexMdef]);
+                        }
+                        if (IsIndexValid(ids, indexMpBouns))
+                        {
+                            grp.MpBonus = Int32.Parse(ids[indexMpBouns]);
+                        }
+
+                    }
+                }
+
+                index++;
+            }
+
+        }
+    }
+
+    bool IsIndexValid<T>(T[] array, int index)
+    {
+        return index >= 0 && index < array.Length;
     }
 }
