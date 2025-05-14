@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -117,10 +119,32 @@ public class InventoryTab : L2Tab
     {
         if (_selectedSlot != -1)
         {
-            _inventorySlots[_selectedSlot].UnSelect();
+            //It happens that the panel will become smaller and the index may be larger than the current panel, so you need to check
+            if (IsValidIndex(_inventorySlots, _selectedSlot)){
+                _inventorySlots[_selectedSlot].UnSelect();
+            }
+
         }
         _inventorySlots[slotPosition].SetSelected();
         _selectedSlot = slotPosition;
+    }
+
+    public void UnSelectSlot()
+    {
+        if (_selectedSlot != -1)
+        {
+            _inventorySlots[_selectedSlot].UnSelect();
+        }
+    }
+
+    public void ResetSelectSlot()
+    {
+        _selectedSlot = -1;
+    }
+
+    private bool IsValidIndex(Array array, int index)
+    {
+        return index >= 0 && index < array.Length;
     }
 
     protected override void OnGeometryChanged()

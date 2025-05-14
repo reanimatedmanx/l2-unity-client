@@ -49,6 +49,10 @@ public class InventorySlot : L2DraggableSlot
             _slotDragManipulator.enabled = false;
         }
     }
+    public void RefreshPosition(int newPosition)
+    {
+        Position = newPosition;
+    }
 
     public Product product;
     public void AssignProduct(Product item)
