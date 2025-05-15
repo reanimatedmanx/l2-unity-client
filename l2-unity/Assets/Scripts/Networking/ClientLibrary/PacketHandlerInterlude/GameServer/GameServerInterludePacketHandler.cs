@@ -382,7 +382,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             UserInfo info = StorageNpc.getInstance().GetFirstUser();
             DealerWindow.Instance.SetHeaderNameSellPanel("Sell");
             DealerWindow.Instance.SetHeaderNameBuyPanel("Buy");
-            DealerWindow.Instance.UpdateBuyData(buyList.Products, false);
+            DealerWindow.Instance.UpdateBuyData(buyList.Products, false , buyList.ListID);
             DealerWindow.Instance.UpdateDataForm(buyList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
             DealerWindow.Instance.ShowWindow();
         });
@@ -398,7 +398,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             UserInfo info = StorageNpc.getInstance().GetFirstUser();
             DealerWindow.Instance.SetHeaderNameSellPanel("Inventory");
             DealerWindow.Instance.SetHeaderNameBuyPanel("Sell");
-            DealerWindow.Instance.UpdateBuyData(sellList.Products, true);
+            DealerWindow.Instance.UpdateBuyData(sellList.Products, true, sellList.ListID);
             DealerWindow.Instance.UpdateDataForm(sellList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
             DealerWindow.Instance.ShowWindow();
         });

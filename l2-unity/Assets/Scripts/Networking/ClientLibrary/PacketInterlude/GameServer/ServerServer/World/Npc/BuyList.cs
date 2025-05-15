@@ -93,6 +93,11 @@ public class Product
 
     public int ObjId { get { return _objId; } }
 
+    public void SetCount(int count)
+    {
+        _count = count;
+    }
+
     public Product(int itemType1, int objId, int count, int itemType2, int isEquip, int bodyPart, int enchant, int price, int itemId)
     {
         _itemType1 = itemType1;

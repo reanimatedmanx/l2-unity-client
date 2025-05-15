@@ -15,6 +15,6 @@ public class RequestBuyItem : ClientPacket
             WriteI(item.Count);
         }
 
-        BuildPacket();
+        BuildPacketNoPad();
     }
 }

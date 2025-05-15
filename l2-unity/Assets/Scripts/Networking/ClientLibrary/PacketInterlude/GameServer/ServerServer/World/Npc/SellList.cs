@@ -9,6 +9,7 @@ public class SellList : ServerPacket
     public int CurrentMoney { get => _money; }
     private List<Product> _listProduct;
     public List<Product> Products { get => _listProduct; }
+    public int ListID { get => _listId; }
 
     public SellList(byte[] d) : base(d)
     {

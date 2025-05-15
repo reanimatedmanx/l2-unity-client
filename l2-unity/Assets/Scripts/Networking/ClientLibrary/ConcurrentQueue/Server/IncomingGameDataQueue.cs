@@ -96,7 +96,7 @@ public class IncomingGameDataQueue : IQueue
                 //we need something that doesn’t freeze the flow processing incoming messages
                 Task.Run(() =>
                 {
-                    Debug.Log("Высокий уровень на обработку " + item.ByteType());
+                    //Debug.Log("Высокий уровень на обработку " + item.ByteType());
                     _serverPacketHandler.HandlePacket(item);
                 });
 

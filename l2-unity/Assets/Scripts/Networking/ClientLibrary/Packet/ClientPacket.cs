@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 using static UnityEngine.Rendering.DebugUI;
 
 public abstract class ClientPacket : Packet {
@@ -80,6 +82,14 @@ public abstract class ClientPacket : Packet {
 
         PadBuffer();
 
+        byte[] array = _buffer.ToArray();
+        SetData(array);
+    }
+    //Acis Ignores packet alignment to 8 or 4
+    //Necessary for correct sending of packets since there is no alignment, and Acis checks that each item is equal to 8 bytes without extra zeros
+    protected void BuildPacketNoPad()
+    {
+        _buffer.Insert(0, _packetType);
         byte[] array = _buffer.ToArray();
         SetData(array);
     }

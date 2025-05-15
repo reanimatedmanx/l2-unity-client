@@ -38,6 +38,7 @@ public class DealerWindow : L2PopupWindow
 
     private Label _panelSellHeaderName;
     private Label _panelBuyHeaderName;
+    private int _listId;
     public static DealerWindow Instance
     {
         get { return _instance; }
@@ -103,8 +104,9 @@ public class DealerWindow : L2PopupWindow
     }
 
 
-   public void UpdateBuyData(List<Product>listBuy ,bool  isModifySell)
+   public void UpdateBuyData(List<Product>listBuy ,bool  isModifySell , int listId)
    {
+        _listId = listId;
         _listBuy = listBuy;
         _isModifySell = isModifySell;
         if(_listSell != null) _listSell.Clear();
@@ -418,8 +420,22 @@ public class DealerWindow : L2PopupWindow
     private void HandleSuccessButtonClick()
     {
         HideWindow();
-        //GameClient.Instance.ClientPacketHandler.RequestRestart();
-        UnityEngine.Debug.Log("Здесь должен быть рестарт из игры!!!");
+
+        if (!_isModifySell)
+        {
+            SetAddCount1(_listSell);
+            var sendPaket = CreatorPacketsUser.CreateRequestBuyItem(_listId, _listSell);
+            SendGameDataQueue.Instance().AddItem(sendPaket, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
+        }
+       
+    }
+
+    private void SetAddCount1(List<Product> _listSell)
+    {
+        foreach (var item in _listSell)
+        {
+            item.SetCount(1);
+        }
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)
