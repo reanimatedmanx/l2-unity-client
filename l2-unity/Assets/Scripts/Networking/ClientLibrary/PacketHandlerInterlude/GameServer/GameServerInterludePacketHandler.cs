@@ -73,6 +73,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
                 //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
                 OnBuyList(itemQueue.DecodeData());
                 break;
+            case GameInterludeServerPacketType.SellList:
+                //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
+                OnSellList(itemQueue.DecodeData());
+                break;
             case GameInterludeServerPacketType.ItemList:
                // Debug.Log("GameServerPacket NpcInfo  : начало обработки ItemList ");
                 OnCharItemList(itemQueue.DecodeData());
@@ -376,11 +380,29 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
        
         EventProcessor.Instance.QueueEvent(() => {
             UserInfo info = StorageNpc.getInstance().GetFirstUser();
-            DealerWindow.Instance.UpdateBuyData(buyList.Products);
+            DealerWindow.Instance.SetHeaderNameSellPanel("Sell");
+            DealerWindow.Instance.SetHeaderNameBuyPanel("Buy");
+            DealerWindow.Instance.UpdateBuyData(buyList.Products, false);
             DealerWindow.Instance.UpdateDataForm(buyList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
             DealerWindow.Instance.ShowWindow();
         });
         Debug.Log($"Buy list: {buyList}");
+    }
+
+
+    private void OnSellList(byte[] data)
+    {
+        SellList sellList = new SellList(data);
+
+        EventProcessor.Instance.QueueEvent(() => {
+            UserInfo info = StorageNpc.getInstance().GetFirstUser();
+            DealerWindow.Instance.SetHeaderNameSellPanel("Inventory");
+            DealerWindow.Instance.SetHeaderNameBuyPanel("Sell");
+            DealerWindow.Instance.UpdateBuyData(sellList.Products, true);
+            DealerWindow.Instance.UpdateDataForm(sellList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
+            DealerWindow.Instance.ShowWindow();
+        });
+        Debug.Log($"Buy list: {sellList}");
     }
 
     private void OnCharItemList(byte[] data)

@@ -26,6 +26,11 @@ public class CreatorPacketsUser
         return new RequestDestroyItem(_objectId, _count);
     }
 
+    public static RequestBuyItem CreateRequestBuyItem(int listId, List<Product> buyList)
+    {
+        return new RequestBuyItem(listId,  buyList);
+    }
+
     public static RequestShortCutDel CreateDestroyShortCut(int slot)
     {
         return new RequestShortCutDel(slot);

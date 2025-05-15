@@ -61,6 +61,10 @@ public class FilterAccessType
         {
             return true;
         }
+        else if (item.PaketType() == GameInterludeServerPacketType.SellList)
+        {
+            return true;
+        }
         else if (item.PaketType() == GameInterludeServerPacketType.ItemList)
         {
             return true;

@@ -1,6 +1,6 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <engine:Template name="WindowTemplate" src="project://database/Assets/Resources/Data/UI/_Elements/Template/WindowTemplate.uxml?fileID=9197481963319205126&amp;guid=57919e48a99c2de4787ca2b8810527ea&amp;type=3#WindowTemplate" />
-    <engine:Instance name="WindowTemplate" template="WindowTemplate" style="overflow: hidden; width: 280px; height: 430px; bottom: 0; position: absolute; max-width: 280px; max-height: none;">
+    <engine:Instance name="WindowTemplate" template="WindowTemplate" style="overflow: hidden; width: 280px; height: 450px; bottom: 0; position: absolute; max-width: 280px; max-height: none;">
         <AttributeOverrides element-name="windows-name-label" text="Shop" />
         <engine:GroupBox name="Content" style="margin-top: 14%; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; position: absolute; align-self: center; width: 90%; height: 87%;">
             <engine:GroupBox name="SaleContent" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: auto; height: 40%;">
@@ -15,7 +15,7 @@
                     <engine:GroupBox name="ContentBuy" class="content-buy" style="position: absolute; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 100%; height: auto; align-self: flex-start; max-width: 300px; max-height: none; left: auto; min-width: auto; min-height: auto; align-items: flex-start; justify-content: flex-start; align-content: auto; flex-direction: row; flex-wrap: wrap;" />
                 </engine:ScrollView>
             </engine:GroupBox>
-            <engine:GroupBox name="Footer" style="margin-top: 10%; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: auto; height: 10%; align-items: flex-end; align-self: flex-end; flex-direction: row;">
+            <engine:GroupBox name="Footer" style="margin-top: 5%; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: auto; height: 10%; align-items: flex-end; align-self: flex-end; flex-direction: row;">
                 <engine:GroupBox name="StaticBox2" style="margin-top: -5px; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 85px; flex-direction: row; align-items: flex-start; align-self: flex-start;">
                     <engine:GroupBox name="Image" style="flex-direction: column; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; left: auto; width: 24px; height: 24px;">
                         <engine:VisualElement style="flex-grow: 1; width: 24px; height: 13px; background-image: resource(&apos;Data/UI/Inventory/icon_df_common_weight&apos;); max-width: 24px; max-height: 13px; margin-top: 8px;" />
@@ -54,6 +54,16 @@
                         </engine:GroupBox>
                     </engine:GroupBox>
                 </engine:GroupBox>
+            </engine:GroupBox>
+            <engine:GroupBox name="FooterBotton" style="margin-top: 2%; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; flex-direction: row; align-self: center;">
+                <engine:Button text="SuccessButton" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SuccessButton" class="l2-button" style="height: 20px; background-color: rgba(188, 188, 188, 0);">
+                    <engine:VisualElement name="ButtonBg" class="l2-button-bg" />
+                    <engine:Label text="Success" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0;" />
+                </engine:Button>
+                <engine:Button text="CloseButton" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CloseButton" class="l2-button" style="height: 20px; background-color: rgba(188, 188, 188, 0);">
+                    <engine:VisualElement name="ButtonBg" class="l2-button-bg" />
+                    <engine:Label text="Cancel" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0;" />
+                </engine:Button>
             </engine:GroupBox>
         </engine:GroupBox>
     </engine:Instance>

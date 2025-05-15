@@ -1,18 +1,11 @@
-using FMOD.Studio;
-using Newtonsoft.Json.Linq;
+
+using FMOD;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
-using UnityEngine.ProBuilder.Shapes;
-using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using static L2Slot;
-using static UnityEditor.Progress;
 
 public class DealerWindow : L2PopupWindow
 {
@@ -36,9 +29,15 @@ public class DealerWindow : L2PopupWindow
     private VisualElement _weiBarBg;
     private int _currentDataWeight = 0;
     private int _maxWeight = 0;
+
+    private bool _isModifySell = false;
+
     public VisualTreeAsset InventorySlotTemplate { get { return _inventorySlotTemplate; } }
     private ShopItemEvaluator _itemEvalutor;
     private ShopInventoryController _shopCellCreator;
+
+    private Label _panelSellHeaderName;
+    private Label _panelBuyHeaderName;
     public static DealerWindow Instance
     {
         get { return _instance; }
@@ -83,6 +82,15 @@ public class DealerWindow : L2PopupWindow
         _adena = (Label) GetElementById("AdenaCount");
         _currentWeight = (Label)GetElementById("CurrentWeight");
 
+        _panelSellHeaderName = (Label)GetElementById("SellH1");
+        _panelBuyHeaderName = (Label)GetElementById("BuyH1");
+
+        var succesBtn = (Button)GetElementById("SuccessButton");
+        succesBtn.RegisterCallback<ClickEvent>((evt) => HandleSuccessButtonClick());
+        RegisterCloseWindowEventByName("CloseButton");
+        _panelSellHeaderName.text = "Sell";
+        _panelSellHeaderName.text = "Buy";
+
         DragManipulator drag = new DragManipulator(dragArea, _windowEle);
         dragArea.AddManipulator(drag);
 
@@ -94,9 +102,11 @@ public class DealerWindow : L2PopupWindow
         CreateInitBuy();
     }
 
-   public void UpdateBuyData(List<Product>listBuy)
+
+   public void UpdateBuyData(List<Product>listBuy ,bool  isModifySell)
    {
         _listBuy = listBuy;
+        _isModifySell = isModifySell;
         if(_listSell != null) _listSell.Clear();
 
         _shopCellCreator.ClearSell(_tabSell);
@@ -104,6 +114,16 @@ public class DealerWindow : L2PopupWindow
         _shopCellCreator.ClearBuy(_inventorySlotsBuy, _tabBuy);
         _itemEvalutor.UpdateAllPrice(_listSell);
    }
+
+   public void SetHeaderNameSellPanel(string headerName)
+   {
+        _panelSellHeaderName.text = headerName;
+   }
+
+    public void SetHeaderNameBuyPanel(string headerName)
+    {
+        _panelBuyHeaderName.text = headerName;
+    }
 
 
 
@@ -134,8 +154,8 @@ public class DealerWindow : L2PopupWindow
 
   
 
-    private int positionMove = 0;
-    private void MoveÑellElsePriceType(SlotType type , List<Product> listBuy, int position)
+
+    private void MoveÑellElsePriceType(SlotType type , List<Product> listServer, int position)
     {
         if (type == SlotType.PriceBuy)
         {
@@ -144,26 +164,62 @@ public class DealerWindow : L2PopupWindow
 
             Product source = _listSell[position];
 
-            MoveSell(position);
+            ModifyBuy(_isModifySell, _listBuy, source);
+            ShiftBuy(position);
+
             _listSell = _shopCellCreator.RemoveProduct(_listSell, source);
             _itemEvalutor.UpdateAllPrice(_listSell);
             _itemEvalutor.UpdateWeight(_listSell, _currentDataWeight, _maxWeight);
         }
         else if (type == SlotType.PriceSell)
         {
-            if (!IsIndexValid(listBuy, position)) return;
-            Product source = listBuy[position];
-
+            if (!IsIndexValid(listServer, position)) return;
+            Product source = listServer[position];
+            
             if (source == null) return;
             _listSell = _shopCellCreator.AddProduct(_listSell, source);
 
-            if (_listSell.Count != 0) positionMove = GetNewPosition(_listSell);
+            RefreshToolTips(_listSell);
 
-            ToolTipManager.GetInstance().SetBuyData(_listSell);
-            MoveBuy(positionMove, source);
+            if (_listSell.Count != 0)
+            {
+                Move(_inventorySlotsBuy, _tabBuy, GetNewPosition(_listSell), source);
+            }
+
+            ModifySell(_isModifySell, position, listServer, source);
+
             _itemEvalutor.UpdateAllPrice(_listSell);
             _itemEvalutor.UpdateWeight(_listSell, _currentDataWeight, _maxWeight);
+            
         }
+    }
+
+    private void ModifySell(bool isModify , int position , List<Product> listServer , Product source)
+    {
+        if (isModify)
+        {
+            ShiftSell(position);
+            _listBuy = _shopCellCreator.RemoveProduct(listServer, source);
+        }
+   
+    }
+
+    private void ModifyBuy(bool isModify, List<Product> listBuy, Product source)
+    {
+        if (isModify)
+        {
+            if (_listSell.Count != 0)
+            {
+                listBuy = _shopCellCreator.AddProduct(listBuy, source);
+                Move(_inventorySlotsSell, _tabSell, GetNewPosition(listBuy), source);
+            }
+        }
+
+    }
+
+    private void RefreshToolTips(List<Product> listSell)
+    {
+        ToolTipManager.GetInstance().SetBuyData(listSell);
     }
 
     public bool IsIndexValid(List<Product> _listSell, int index)
@@ -171,76 +227,84 @@ public class DealerWindow : L2PopupWindow
         return index >= 0 && index < _listSell.Count;
     }
 
-    private int GetNewPosition(List<Product> listSell)
+    private int GetNewPosition(List<Product> list)
     {
-        //return slots.FirstOrDefault(p =>  p == null | p.IsEmpty == true).Position;
-        return listSell.Count - 1;
+        //if (list.Count == 0) return 0;
+        return list.Count - 1;
     }
 
-    
 
-    private void MoveBuy(int newPosition , Product product)
+
+
+
+    private void Move(InventorySlot[] inventorySlots , InventoryTab tab , int newPosition , Product product)
     {
-        _inventorySlotsBuy[newPosition].AssignProduct(product);
+        inventorySlots[newPosition].AssignProduct(product);
+        tab.UpdateInventorySlots(inventorySlots);
+    }
+
+    private void ShiftSell(int newPosition)
+    {
+        ShiftElementsLeft(_inventorySlotsSell, newPosition);
         _tabBuy.UpdateInventorySlots(_inventorySlotsBuy);
     }
     //We do not move the target from sell -> buy because we believe that there is already something there and re-updating the cell is not required.We simply clear it
     //and shift all positions to the left if we delete an element
-    public void MoveSell(int newPosition)
+    public void ShiftBuy(int newPosition)
     {
-        ShiftElementsLeft(newPosition);
+        ShiftElementsLeft(_inventorySlotsBuy , newPosition);
         _tabSell.UpdateInventorySlots(_inventorySlotsSell);
     }
 
-    public void ShiftElementsLeft(int newPosition)
+    public void ShiftElementsLeft(InventorySlot[] inventorySlots , int newPosition )
     {
-        for(int i =0; i < _inventorySlotsBuy.Length; i++)
+        for(int i =0; i < inventorySlots.Length; i++)
         {
             if(i == newPosition)
             {
-                var currentSlot = _inventorySlotsBuy[i];
-                var nextSlot = GetNextSlot( i, _inventorySlotsBuy);
-                HandleCurrentPosition(currentSlot, nextSlot);
+                var currentSlot = inventorySlots[i];
+                var nextSlot = GetNextSlot( i, inventorySlots);
+                HandleCurrentPosition(inventorySlots , currentSlot, nextSlot);
             }
             else if (i > newPosition)
             {
-                var currentSlot = _inventorySlotsBuy[i];
-                var nextSlot = GetNextSlot(i, _inventorySlotsBuy);
+                var currentSlot = inventorySlots[i];
+                var nextSlot = GetNextSlot(i, inventorySlots);
                 if (nextSlot == null) return;
-                HandleSlotsAfterCurrent(currentSlot, nextSlot);
+                HandleSlotsAfterCurrent(inventorySlots , currentSlot, nextSlot);
             }
         }
     }
 
 
 
-    private void HandleCurrentPosition(InventorySlot currentSlot, InventorySlot nextSlot)
+    private void HandleCurrentPosition(InventorySlot[] inventorySlots , InventorySlot currentSlot, InventorySlot nextSlot)
     {
-        _inventorySlotsBuy[currentSlot.Position].AssignProduct(nextSlot.product);
+        inventorySlots[currentSlot.Position].AssignProduct(nextSlot.product);
 
         if (nextSlot.IsEmpty)
         {
             nextSlot.ManualHideToolTips();
-            _inventorySlotsBuy[currentSlot.Position].AssignEmpty();
+            inventorySlots[currentSlot.Position].AssignEmpty();
         }
     }
 
 
-    private void HandleSlotsAfterCurrent(InventorySlot currentSlot, InventorySlot nextSlot)
+    private void HandleSlotsAfterCurrent(InventorySlot[] inventorySlots , InventorySlot currentSlot, InventorySlot nextSlot)
     {
-        ElseNextSlotEmpty(nextSlot, currentSlot);
+        ElseNextSlotEmpty(inventorySlots , nextSlot, currentSlot);
     }
 
 
-    private void ElseNextSlotEmpty(InventorySlot nextSlot, InventorySlot slot)
+    private void ElseNextSlotEmpty(InventorySlot[] inventorySlots , InventorySlot nextSlot, InventorySlot slot)
     {
         if (nextSlot.IsEmpty)
         {
-            _inventorySlotsBuy[slot.Position].AssignEmpty();
+            inventorySlots[slot.Position].AssignEmpty();
         }
         else
         {
-            _inventorySlotsBuy[slot.Position].AssignProduct(nextSlot.product);
+            inventorySlots[slot.Position].AssignProduct(nextSlot.product);
         }
     }
 
@@ -333,6 +397,29 @@ public class DealerWindow : L2PopupWindow
         _contentBuy.Clear();
         _tabBuy.Initialize(_windowEle, _contentBuy, _contentBuy);
         _inventorySlotsBuy = _shopCellCreator.CreateEmptyBuy(_tabBuy, _defaultCount, _contentBuy, GetInventorySlotTemplate());
+    }
+
+    //var sendPaket = CreatorPacketsUser.CreateDestroyItem(objectId, quantity);
+    //bool enable = GameClient.Instance.IsCryptEnabled();
+    //SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
+
+    //not found adena
+    // Charge buyer and add tax to castle treasury if not owned by npc clan
+    //if (subTotal< 0 || !player.reduceAdena("Buy", (int) subTotal, player.getCurrentFolk(), false))
+    //{
+    //sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+    //return;
+    //}
+
+    /**
+ * ID: 279<br>
+ * Message: You do not have enough adena.
+ */
+    private void HandleSuccessButtonClick()
+    {
+        HideWindow();
+        //GameClient.Instance.ClientPacketHandler.RequestRestart();
+        UnityEngine.Debug.Log("Çäåñü äîëæåí áûòü ðåñòàðò èç èãðû!!!");
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)

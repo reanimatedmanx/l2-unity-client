@@ -5,18 +5,20 @@ public class SimpleToolTipData : IDataTips
     private string _name;
     private string _description;
     private string _item_description;
+    private Product _product;
     public SimpleToolTipData(object data)
     {
         if(data.GetType() == typeof(Product))
         {
-            Product product = (Product)data;
-            _name = product.GetName();
-            _description = product.GetDescription();
-            _item_description = product.GetItemDescription();
+            _product = (Product)data;
+            _name = _product.GetName();
+            _description = _product.GetDescription();
+            _item_description = _product.GetItemDescription();
         }
     }
     public string GetName()
     {
+        if(_product.Count > 1) _name = _name +" (" + _product.Count + ")";
         return _name;
     }
 
