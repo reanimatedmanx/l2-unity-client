@@ -56,55 +56,53 @@
     rotate: 180deg;
 }
 
+.html_normal_text {
+    color: rgb(220, 217, 220);
+    font-size: 11px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    white-space: normal;
+    -unity-text-align: middle-left;
+    display: inline;
+}
 
-.html_normal_text{
+.html_normal_text_no_color {
+    font-size: 11px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    white-space: normal;
+    -unity-text-align: middle-left;
+    display: inline;
+}
+
+.html_draw {
+    flex-wrap: wrap;
+}
+
+.html_br {
     color: rgb(220, 217, 220);
     font-size: 11px;
-    margin-top: 0; 
-    margin-bottom: 0; 
-    padding-top: 0; 
-    padding-bottom: 0; 
-    white-space: normal; 
-    -unity-text-align: middle-left;
-    display: inline; 
-}
-.html_normal_text_no_color{
-    font-size: 11px;
-    margin-top: 0; 
-    margin-bottom: 0; 
-    padding-top: 0; 
-    padding-bottom: 0; 
-    white-space: normal; 
-    -unity-text-align: middle-left;
-    display: inline; 
-}
-.html_draw{
-    flex-wrap: wrap; /* Позволяет элементам переноситься на новую строку */
-}
-.html_br{
-    color: rgb(220, 217, 220);
-    font-size: 11px;
-    margin-top: 3; 
-    margin-bottom: 3; 
-    padding-top: 3; 
-    padding-bottom: 3; 
-    white-space: normal; 
+    margin-top: 3;
+    margin-bottom: 3;
+    padding-top: 3;
+    padding-bottom: 3;
+    white-space: normal;
 }
 
 .html_link {
-    /* color: rgb(102, 151, 255);*/
     color: rgb(93, 139, 237);
-    text-decoration: underline; /* Подчеркивание текста */
+    text-decoration: underline;
     font-size: 11.5px;
-    white-space: normal; 
-    margin-top: 0; 
-    margin-bottom: 0; 
-    padding-top: 0; 
-    padding-bottom: 0; 
-
-
+    white-space: normal;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
-
 
 .status-window .level-container {
     margin: 0;
@@ -386,7 +384,6 @@
     border-width: 0;
 }
 
-
 .l2-scroll-windows .unity-base-slider__drag-container {
     background-color: transparent;
     min-width: 14px;
@@ -404,14 +401,14 @@
     border-width: 0;
     border-radius: 5px;
 }
-.l2-scroll-windows .unity-base-slider--vertical{
+
+.l2-scroll-windows .unity-base-slider--vertical {
     min-width: 14px;
     width: 14px;
 }
 
-
-.l2-scroll-windows .unity-scroller--vertical{
-    min-width:14px;
+.l2-scroll-windows .unity-scroller--vertical {
+    min-width: 14px;
     width: 14px;
 }
 
@@ -1392,6 +1389,48 @@
 .arrow-input {
     margin-top: 5px;
 }
+
+
+
+
+.calculator_field_bg {
+    background-image: resource('Data/UI/Assets/Login/CharacterPassword_DF_EditBox');
+}
+
+.calculator_field_click_bg {
+    background-image: resource('Data/UI/Assets/Login/CharacterPassword_DF_EditBoxFocus02');
+}
+
+.quantity-window .unity-base-text-field__input {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    background-color: transparent;
+    color: rgb(220, 220, 220);
+}
+
+.quantity-window .unity-base-field__input {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    background-color: transparent;
+    color: rgb(220, 220, 220);
+}
+
+.quantity-window .unity-text-field {
+    --unity-cursor-color: #17191b;
+    color: rgb(220, 220, 220);
+    font-size: 11px;
+    font-weight: 100;
+}
+
+.quantity-window .transparent-cursor {
+    --unity-cursor-color: rgba(0, 0, 0, 0);
+}
+
+
+
+
 
 .login-input {
     -unity-font: resource('Data/UI/Assets/Font/tahoma');
@@ -2388,6 +2427,12 @@
     flex-direction: row;
     height: 46px;
     align-self: flex-end;
+}
+
+.calculator-header-label {
+    white-space: normal;
+    overflow-wrap: break-word;
+    font-weight: 500;
 }
 
 .skillbar {
@@ -3544,3 +3589,5 @@
     -unity-text-align: middle-left;
     font-size: 12px;
 }
+
+
