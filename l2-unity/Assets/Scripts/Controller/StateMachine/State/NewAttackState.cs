@@ -1,5 +1,4 @@
 
-using UnityEditorInternal;
 using UnityEngine;
 
 public class NewAttackState : StateBase

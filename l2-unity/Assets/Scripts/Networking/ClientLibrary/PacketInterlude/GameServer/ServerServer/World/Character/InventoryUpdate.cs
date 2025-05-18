@@ -1,10 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using static UnityEditor.FilePathAttribute;
-using static UnityEditor.Progress;
-
 public class InventoryUpdate : ServerPacket
 {
     private ItemInstance[] items;
