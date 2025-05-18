@@ -27,7 +27,7 @@ public class StartCombo : AbstractAnimCombo
     private void CalculateTimeCompression(float elapsedTime, BothModel bothModel, float launchTimeSec)
     {
         //fire 600ms
-        float totalAnimationTime = GetTotalAnimationTime(bothModel.GetAllCombo().GetAnimСycle());
+        float totalAnimationTime = GetTotalAnimationTime(bothModel.GetAllCombo().GetAnimCycle());
         var compressionFactor1 = totalAnimationTime / ConvertHitTimeToSec(bothModel.GetHitTime());
         // bothModel.SetCompressionByIndex(0, compressionFactor1);
 
