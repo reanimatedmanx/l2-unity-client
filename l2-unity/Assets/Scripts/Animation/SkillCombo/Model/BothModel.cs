@@ -18,7 +18,7 @@ public class BothModel
         _hitTime = hitTime;
         _AllAnim = AllAnim;
         _dist = dist;
-        _compressionTime = new float[AllAnim.GetAnim—ycle().Length];
+        _compressionTime = new float[AllAnim.GetAnimCycle().Length];
         _targetObjId = targetObjId;
         _isFly = true;
     }

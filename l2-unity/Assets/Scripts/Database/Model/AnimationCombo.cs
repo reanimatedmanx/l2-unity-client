@@ -14,7 +14,7 @@ public class AnimationCombo
         this.unk0 = unk0;
     }
 
-    public string[] GetAnim—ycle()
+    public string[] GetAnimCycle()
     {
         return anim_name;
     }
