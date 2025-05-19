@@ -37,7 +37,7 @@ public class StartTalkingIntention : NpcIntentionBase
     private void ShowHtmlDialog(NpcHtmlMessage packet)
     {
         HtmlWindow.Instance.InjectToWindow(packet.Elements());
-        HtmlWindow.Instance.ShowWindow();
+        HtmlWindow.Instance.ShowWindowToCenter();
     }
 
     public override void Exit()

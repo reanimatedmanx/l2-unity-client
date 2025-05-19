@@ -139,7 +139,7 @@ public class L2GameUI : L2UI
         if (QuantityInput.Instance != null)
         {
             QuantityInput.Instance.AddWindow(_rootVisualContainer);
-            QuantityInput.Instance.ShowWindow();
+            QuantityInput.Instance.HideWindow();
         }
     }
 

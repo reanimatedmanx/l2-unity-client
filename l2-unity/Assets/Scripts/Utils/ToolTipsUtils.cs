@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ToolTipsUtils 
 {
+    private const char NewChar = '0';
+
     public static Color GetColorPrice(string price)
     {
         if (price.Length == 6)
@@ -20,5 +22,17 @@ public class ToolTipsUtils
     {
         string formattedNumber = wholeNumber.ToString("N0", CultureInfo.InvariantCulture);
         return formattedNumber.Replace('.', ',');
+    }
+
+    public static string ConvertToPrice(long wholeNumber)
+    {
+        string formattedNumber = wholeNumber.ToString("N0", CultureInfo.InvariantCulture);
+        return formattedNumber.Replace('.', ',');
+    }
+
+
+    public static string ConvertPriceToNormal(string wholeNumber)
+    {
+        return wholeNumber.Replace(",", "");
     }
 }

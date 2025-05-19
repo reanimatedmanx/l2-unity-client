@@ -120,6 +120,8 @@ public class HtmlWindow : L2PopupWindow
         }
     }
 
+   
+
     private void AddNewFontColot(ParseFontColor parce)
     {
         TextElement label1 = new TextElement();

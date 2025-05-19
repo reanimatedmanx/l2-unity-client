@@ -3,6 +3,7 @@ using FMOD;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static L2Slot;
@@ -166,6 +167,12 @@ public class DealerWindow : L2PopupWindow
 
             Product source = _listSell[position];
 
+            if(source.Count > 1)
+            {
+                RefreshOpacity(0.7f);
+                QuantityInput.Instance.ShowWindow(this , source);
+            }
+
             ModifyBuy(_isModifySell, _listBuy, source);
             ShiftBuy(position);
 
@@ -177,7 +184,13 @@ public class DealerWindow : L2PopupWindow
         {
             if (!IsIndexValid(listServer, position)) return;
             Product source = listServer[position];
-            
+
+            if (source.Count > 1)
+            {
+                RefreshOpacity(0.7f);
+                QuantityInput.Instance.ShowWindow(this, source);
+            }
+
             if (source == null) return;
             _listSell = _shopCellCreator.AddProduct(_listSell, source);
 
@@ -196,6 +209,7 @@ public class DealerWindow : L2PopupWindow
         }
     }
 
+   
     private void ModifySell(bool isModify , int position , List<Product> listServer , Product source)
     {
         if (isModify)

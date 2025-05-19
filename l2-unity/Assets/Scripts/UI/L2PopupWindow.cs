@@ -80,4 +80,18 @@ public abstract class L2PopupWindow : L2Window
     {
         _windowEle.SendToBack();
     }
+
+
+    public void ShowWindowToCenter()
+    {
+        base.ShowWindow();
+        OnCenterScreen(_root);
+    }
+
+    public void RefreshOpacity(float opacity)
+    {
+        _windowEle.style.opacity = opacity;
+    }
+
+
 }

@@ -38,6 +38,8 @@ public abstract class L2Window : MonoBehaviour
         UpdateCenter(root);
     }
 
+
+
     private void UpdateCenter(VisualElement root)
     {
         if (_isReg == false)

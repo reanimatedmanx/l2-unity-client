@@ -1,8 +1,8 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <engine:Template name="AlertTemplate" src="project://database/Assets/Resources/Data/UI/_Elements/Template/DefaultAlertWindow.uxml?fileID=9197481963319205126&amp;guid=ff18b20ce9c354b4793e7275a5588057&amp;type=3#DefaultAlertWindow" />
     <Style src="project://database/Assets/Resources/Data/UI/_Elements/L2StyleSheet.uss?fileID=7433441132597879392&amp;guid=72e99cc94b130bf4ba100dceaa830b13&amp;type=3#L2StyleSheet" />
-    <engine:GroupBox name="2Panels" class="quantity-window" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 465px; height: 153px; flex-direction: row;">
-        <engine:Instance name="AlertTemplate" template="AlertTemplate" style="overflow: hidden; width: 66%; height: 100%; bottom: 0; position: absolute; max-width: none; max-height: none;">
+    <engine:GroupBox name="2Panels" class="quantity-window" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 465px; height: 153px; flex-direction: row; position: absolute;">
+        <engine:Instance name="AlertTemplate" template="AlertTemplate" style="overflow: hidden; width: 321px; height: 100%; bottom: 0; position: absolute; max-width: none; max-height: none;">
             <engine:VisualElement style="flex-grow: 1; position: absolute; width: 322px; height: 112px; background-color: rgb(0, 0, 0); opacity: 0.24; top: 16px; left: 16px; display: none; visibility: hidden; overflow: hidden;" />
             <engine:GroupBox name="Content" style="position: absolute; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-bottom: 0; padding-left: 0; height: 100%; width: 100%; max-width: 320px; max-height: 110px;">
                 <engine:GroupBox name="Header" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0;">
@@ -15,7 +15,7 @@
                     <engine:VisualElement name="ID" picking-mode="Ignore" style="flex-grow: 1; flex-direction: row; height: 15px; flex-shrink: 0; width: 65%; align-self: center;">
                         <engine:VisualElement name="IDInput" picking-mode="Ignore" class="login-input-container">
                             <engine:VisualElement name="UserInputBg" picking-mode="Ignore" class="calculator_field_bg" style="flex-grow: 1; position: absolute; width: 100%; height: 28px; -unity-slice-left: 18; -unity-slice-top: 18; -unity-slice-right: 18; -unity-slice-bottom: 18; opacity: 1; display: flex; visibility: visible; overflow: visible;" />
-                            <engine:TextField max-length="16" name="UserInputField" tabindex="1" value="123" style="height: 22px; margin-top: -2px; width: 198px; overflow: visible; margin-right: 0;" />
+                            <engine:TextField max-length="24" name="UserInputField" tabindex="1" style="height: 22px; margin-top: -2px; width: 198px; overflow: visible; margin-right: 0;" />
                         </engine:VisualElement>
                     </engine:VisualElement>
                 </engine:GroupBox>
@@ -31,27 +31,75 @@
                 </engine:GroupBox>
             </engine:GroupBox>
         </engine:Instance>
-        <engine:Instance name="AlertTemplate" template="AlertTemplate" style="overflow: hidden; width: 181px; height: 100%; bottom: 0; position: absolute; max-width: none; max-height: none; left: 295px; flex-shrink: 0; flex-grow: 1; align-items: flex-start;">
-            <engine:GroupBox name="Content" style="position: absolute; margin-top: 10px; margin-right: 20px; margin-bottom: 5px; margin-left: 10px; padding-top: 0; padding-bottom: 0; padding-left: 0; height: 137px; width: 148px; max-width: 440px; max-height: 210px; left: 3px; top: 4px;">
-                <engine:GroupBox name="Row1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: auto; max-height: none; max-width: none; flex-direction: row;">
-                    <engine:VisualElement name="Button1" style="flex-grow: 1; width: 56px; height: 56px; max-height: 56px; max-width: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key1&apos;);" />
-                    <engine:VisualElement name="Button2" style="flex-grow: 1; max-width: 56px; width: 56px; height: 56px; max-height: 64px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key2&apos;); margin-left: -20px;" />
-                    <engine:VisualElement name="Button3" style="flex-grow: 1; width: 56px; max-width: 56px; max-height: 56px; height: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key3&apos;); margin-left: -20px;" />
+        <engine:Instance name="AlertTemplate" template="AlertTemplate" style="overflow: hidden; width: 152px; height: 100%; bottom: 0; position: absolute; max-width: none; max-height: none; left: 313px; flex-shrink: 0; flex-grow: 1; align-items: flex-start;">
+            <engine:GroupBox name="Content" style="position: absolute; margin-top: 17px; margin-right: 20px; margin-bottom: 5px; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; height: 123px; width: 119px; max-width: 440px; max-height: 210px; left: 8px; top: 4px; flex-direction: row;">
+                <engine:GroupBox name="ButtonNumber" style="margin-top: 0; margin-right: -6px; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto;">
+                    <engine:GroupBox name="Row1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: 28px; max-height: none; max-width: none; flex-direction: row;">
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button1" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-right: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button2" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-left: 0; margin-right: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="2" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button3" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-left: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="3" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                    </engine:GroupBox>
+                    <engine:GroupBox name="Row2" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: 28px; max-height: none; max-width: none; flex-direction: row;">
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button4" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-right: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="4" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button5" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-left: 0; margin-right: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="5" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button6" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-left: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="6" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                    </engine:GroupBox>
+                    <engine:GroupBox name="Row3" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: 28px; max-height: none; max-width: none; flex-direction: row;">
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button7" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-right: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="7" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button8" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-left: 0; margin-right: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="8" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button9" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-left: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="9" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                    </engine:GroupBox>
+                    <engine:GroupBox name="Row4" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: 28px; max-height: none; max-width: none; flex-direction: row;">
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="Button0" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-right: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: -9px; width: 33px; min-height: auto;" />
+                            <engine:Label text="0" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 26px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonALL" class="l2-button" style="height: 29px; background-color: rgba(188, 188, 188, 0); width: 50px; margin-left: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 31px; bottom: 0; right: 19px; width: 63px; min-height: auto;" />
+                            <engine:Label text="ALL" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 20px; width: 55px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                    </engine:GroupBox>
                 </engine:GroupBox>
-                <engine:GroupBox name="Row2" style="margin-top: -24px; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: auto; max-height: none; max-width: none; flex-direction: row;">
-                    <engine:VisualElement name="Button1" style="flex-grow: 1; width: 56px; height: 64px; max-height: 56px; max-width: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key1&apos;);" />
-                    <engine:VisualElement name="Button2" style="flex-grow: 1; max-width: 56px; width: 56px; height: 56px; max-height: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key2&apos;); margin-left: -20px;" />
-                    <engine:VisualElement name="Button3" style="flex-grow: 1; width: 56px; max-width: 56px; max-height: 56px; height: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key3&apos;); margin-left: -20px;" />
-                </engine:GroupBox>
-                <engine:GroupBox name="Row3" style="margin-top: -24px; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: auto; max-height: none; max-width: none; flex-direction: row;">
-                    <engine:VisualElement name="Button1" style="flex-grow: 1; width: 56px; height: 56px; max-height: 64px; max-width: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key1&apos;);" />
-                    <engine:VisualElement name="Button2" style="flex-grow: 1; max-width: 56px; width: 56px; height: 64px; max-height: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key2&apos;); margin-left: -20px;" />
-                    <engine:VisualElement name="Button3" style="flex-grow: 1; width: 56px; max-width: 56px; max-height: 56px; height: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key3&apos;); margin-left: -20px;" />
-                </engine:GroupBox>
-                <engine:GroupBox name="Row4" style="margin-top: -24px; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: auto; max-height: none; max-width: none; flex-direction: row;">
-                    <engine:VisualElement name="Button1" style="flex-grow: 1; width: 56px; height: 56px; max-height: 56px; max-width: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key1&apos;);" />
-                    <engine:VisualElement name="Button2" style="flex-grow: 1; max-width: 56px; width: 56px; height: 56px; max-height: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key2&apos;); margin-left: -20px;" />
-                    <engine:VisualElement name="Button3" style="flex-grow: 1; width: 56px; max-width: 56px; max-height: 56px; height: 56px; background-image: resource(&apos;Data/UI/Assets/Calculator/CharacterPassword_DF_Key3&apos;); margin-left: -20px;" />
+                <engine:GroupBox name="ButtonSupport" style="padding-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0;">
+                    <engine:GroupBox name="RowBs" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: 58px; max-height: none; max-width: none; flex-direction: column;">
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonBs" class="l2-button" style="height: 47px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-right: 0; margin-left: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 59px; bottom: 0; right: -9px; width: 35px; min-height: auto;" />
+                            <engine:Label text="B/S" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 48px; width: 29px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                    </engine:GroupBox>
+                    <engine:GroupBox name="RowC" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; width: auto; height: 58px; max-height: none; max-width: none; flex-direction: column;">
+                        <engine:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonC" class="l2-button" style="height: 47px; background-color: rgba(188, 188, 188, 0); width: 30px; margin-right: 0; margin-left: 0; margin-top: 0;">
+                            <engine:VisualElement name="ButtonBg" class="l2-button-bg" style="height: 59px; bottom: -26px; right: -9px; width: 35px; min-height: auto;" />
+                            <engine:Label text="C" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0; height: 48px; width: 29px; font-size: 11px; color: rgba(210, 201, 173, 0.96);" />
+                        </engine:Button>
+                    </engine:GroupBox>
                 </engine:GroupBox>
             </engine:GroupBox>
         </engine:Instance>

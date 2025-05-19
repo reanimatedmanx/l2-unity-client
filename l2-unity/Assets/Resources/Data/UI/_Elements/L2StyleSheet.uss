@@ -1401,6 +1401,12 @@
     background-image: resource('Data/UI/Assets/Login/CharacterPassword_DF_EditBoxFocus02');
 }
 
+
+.centered-window {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
 .quantity-window .unity-base-text-field__input {
     margin: 0;
     padding: 0;

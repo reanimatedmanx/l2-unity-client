@@ -341,7 +341,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
                 //Debug.Log("Position Player: " + position);
                 ManualRotate(npc.transform, position);
                 HtmlWindow.Instance.InjectToWindow(npcHtmlMessage.Elements());
-                HtmlWindow.Instance.ShowWindow();
+                HtmlWindow.Instance.ShowWindowToCenter();
             }
            
         });
@@ -368,7 +368,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         {
             EventProcessor.Instance.QueueEvent(() => {
                 HtmlWindow.Instance.InjectToWindow(htmlMessage.Elements());
-                HtmlWindow.Instance.ShowWindow();
+                HtmlWindow.Instance.ShowWindowToCenter();
             });
         }
 
@@ -384,7 +384,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             DealerWindow.Instance.SetHeaderNameBuyPanel("Buy");
             DealerWindow.Instance.UpdateBuyData(buyList.Products, false , buyList.ListID);
             DealerWindow.Instance.UpdateDataForm(buyList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
-            DealerWindow.Instance.ShowWindow();
+            DealerWindow.Instance.ShowWindowToCenter();
         });
         Debug.Log($"Buy list: {buyList}");
     }

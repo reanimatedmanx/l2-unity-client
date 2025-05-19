@@ -152,20 +152,7 @@ public class InitPacketsLoadWord
     {
         EventProcessor.Instance.QueueEvent(() => BufferPanel.Instance.RefreshPenalty(etcStatusUpdate));
     }
-    private async Task ShowTutorial(int delayMilliseconds , TutorialShowHtml showTutorial)
-    {
-        await Task.Delay(delayMilliseconds);
 
-        EventProcessor.Instance.QueueEvent(() => {
-            HtmlWindow.Instance.InjectToWindow(showTutorial.Elements());
-            HtmlWindow.Instance.ShowWindow();
-        });
-    }
-    private async Task MoveToDelay(int delayMilliseconds, CharMoveToLocation moveTo)
-    {
-        await Task.Delay(delayMilliseconds);
-        EventProcessor.Instance.QueueEvent(() => MoveTo(moveTo));
-    }
     public async Task MoveTo(CharMoveToLocation moveToLocation)
     {
         Entity entity = await World.Instance.GetEntityNoLock(moveToLocation.ObjId);
