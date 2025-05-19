@@ -1,6 +1,4 @@
 
-using UnityEditorInternal;
-using UnityEngine;
 using static AttackingState;
 
 public class NewWalkingState : StateBase
