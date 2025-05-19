@@ -1,6 +1,4 @@
-using UnityEditorInternal;
 using UnityEngine;
-
 
 public class IdleMosterState : MonsterBase
 {
