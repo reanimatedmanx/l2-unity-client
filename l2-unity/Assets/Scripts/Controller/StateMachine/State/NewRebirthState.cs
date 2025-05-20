@@ -1,3 +1,5 @@
+using UnityEditorInternal;
+
 public class NewRebirthState : StateBase
 {
     public NewRebirthState(PlayerStateMachine stateMachine) : base(stateMachine) { }

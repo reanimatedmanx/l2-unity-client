@@ -1,3 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.tvOS;
+
 public class ErrorType
 {
     public static readonly int REASON_CREATION_FAILED = 0x00; // "Your character creation has failed."

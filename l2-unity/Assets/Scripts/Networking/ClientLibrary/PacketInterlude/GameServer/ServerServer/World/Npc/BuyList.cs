@@ -1,5 +1,9 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using static UnityEditor.Progress;
+using System.Security.Cryptography;
+using UnityEditor;
+using UnityEngine;
 
 
 public class BuyList : ServerPacket
@@ -109,6 +113,14 @@ public class Product
         _enchant = enchant;
         _price = price;
         _itemId = itemId;
+
+       // Debug.Log("item id " + _itemId + " count " + _count + " _itemType2 " + _itemType2 + " _itemType1" + _itemType1);
+    }
+
+
+    public Product Clone()
+    {
+        return  new Product(_itemType1, _objId, _count, _itemType2, _isEquip,  _bodyPart,  _enchant, _price, _itemId);
     }
 
     public int GetWeight()

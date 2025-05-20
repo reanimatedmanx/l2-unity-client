@@ -1,3 +1,7 @@
+using System;
+using UnityEngine;
+using UnityEngine.LightTransport;
+
 public class Die : ServerPacket
 {
     private int _objectId;

@@ -1,4 +1,8 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.VFX;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
+using static UnityEngine.GraphicsBuffer;
 
 public class EffectSkillsmanager : MonoBehaviour
 {

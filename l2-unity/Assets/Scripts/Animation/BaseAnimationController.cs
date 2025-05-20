@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class BaseAnimationController : MonoBehaviour
 {
@@ -7,6 +9,7 @@ public class BaseAnimationController : MonoBehaviour
     [SerializeField] protected bool _resetStateOnReceive = false;
     [SerializeField] protected float _spAtk01ClipLength = 1000;
     [SerializeField] protected Dictionary<string, float> _atkClipLengths;
+    private  AnimatorController controller;
     private string _lastAnimationVariableName;
     private float _lastAtkClipLength;
     private float _pAtkSpd;

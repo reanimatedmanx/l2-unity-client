@@ -1,3 +1,6 @@
+using UnityEditorInternal;
+using UnityEngine;
+
 public class DeadMosterState : MonsterBase
 {
     public DeadMosterState(MonsterStateMachine stateMachine) : base(stateMachine) { }

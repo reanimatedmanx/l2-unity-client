@@ -1,3 +1,8 @@
+using NUnit.Framework.Internal;
+using UnityEditorInternal;
+using UnityEngine;
+
+
 public class AttackinMonsterState : MonsterBase
 {
     public AttackinMonsterState(MonsterStateMachine stateMachine) : base(stateMachine) { }

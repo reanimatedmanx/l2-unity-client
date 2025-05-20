@@ -41,8 +41,6 @@ public class ToolTipManager
 
     public void SetBuyData(List<Product> buyProduct)
     {
-        //var listBuy = new List<Product>() { buy };
-        //if (_buyProduct != null) _buyProduct.Clear();
         _buyProduct = buyProduct;
     }
 

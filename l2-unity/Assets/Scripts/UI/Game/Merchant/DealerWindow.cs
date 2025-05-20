@@ -1,5 +1,6 @@
 
 using FMOD;
+using Mono.Cecil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ public class DealerWindow : L2PopupWindow
     public VisualTreeAsset InventorySlotTemplate { get { return _inventorySlotTemplate; } }
     private ShopItemEvaluator _itemEvalutor;
     private ShopInventoryController _shopCellCreator;
+    private TradeItemMover _tradeItemMover;
 
     private Label _panelSellHeaderName;
     private Label _panelBuyHeaderName;
@@ -51,6 +53,7 @@ public class DealerWindow : L2PopupWindow
             _instance = this;
             _itemEvalutor = new ShopItemEvaluator(_instance);
             _shopCellCreator = new ShopInventoryController(_instance , _defaultCount);
+            _tradeItemMover = new TradeItemMover(this , _shopCellCreator, _itemEvalutor);
         }
         else
         {
@@ -64,6 +67,7 @@ public class DealerWindow : L2PopupWindow
         _itemEvalutor = null;
         _inventorySlotsBuy = null;
         _inventorySlotsSell = null;
+        _tradeItemMover = null;
     }
 
     protected override void LoadAssets()
@@ -112,9 +116,12 @@ public class DealerWindow : L2PopupWindow
         _isModifySell = isModifySell;
         if(_listSell != null) _listSell.Clear();
 
+        //UnityEngine.Debug.Log("Server size list buy " + listBuy.Count);
+
         _shopCellCreator.ClearSell(_tabSell);
         _shopCellCreator.CreateSell(listBuy, _tabSell, _contentSell , _windowEle);
         _shopCellCreator.ClearBuy(_inventorySlotsBuy, _tabBuy);
+        _shopCellCreator.CreateBuy(listBuy, _tabBuy, _contentBuy, _windowEle);
         _itemEvalutor.UpdateAllPrice(_listSell);
    }
 
@@ -127,18 +134,15 @@ public class DealerWindow : L2PopupWindow
     {
         _panelBuyHeaderName.text = headerName;
     }
-
-
-
     public void EventDoubleClick(VisualElement slotElement)
-   {
+    {
         string[] ids = GetUniquePosition(slotElement);
         int position = Int32.Parse(ids[0]);
         int type = Int32.Parse(ids[1]);
         SlotType slot = _shopCellCreator.DetectedClickPanel(type);
         Move—ellElsePriceType(slot , _listBuy , position);
         RefreshToolTips(slotElement , slot);
-   }
+    }
 
     public void RefreshToolTips(VisualElement slotElement , SlotType slot)
     {
@@ -149,17 +153,58 @@ public class DealerWindow : L2PopupWindow
         
     }
    
-
     private string[] GetUniquePosition(VisualElement ve)
     {
         return ve.name.Split('_');
     }
 
-  
-
-
     private void Move—ellElsePriceType(SlotType type , List<Product> listServer, int position)
     {
+
+        if (type == SlotType.PriceBuy)
+        {
+
+            if (_listSell == null) return;
+            if (!IsIndexValid(_listSell, position)) return;
+
+            Product source = _listSell[position];
+
+            if (source.Count > 1)
+            {
+                RefreshOpacity(0.7f);
+                QuantityInput.Instance.ShowWindow(this, source , type,  listServer, position);
+            }
+            else
+            {
+                UnityEngine.Debug.Log("Moving PriceBuy 4");
+                _tradeItemMover.MovingBuyWithRemoval(_isModifySell  ,source, position);
+            }
+
+
+        }
+        else if (type == SlotType.PriceSell)
+        {
+            if (!IsIndexValid(listServer, position)) return;
+            Product source = listServer[position];
+            if (source == null) return;
+
+            if (source.Count > 1)
+            {
+                RefreshOpacity(0.7f);
+                QuantityInput.Instance.ShowWindow(this, source, type,  listServer, position);
+            }
+            else
+            {
+                _listSell = _tradeItemMover.MovingSellWithRemoval(_isModifySell , _listSell , source, listServer, position);
+            }
+        }
+    }
+
+
+
+    public void Move—ellElseQuantitySelected(SlotType type, List<Product> listServer, int position , int selectCount)
+    {
+
         if (type == SlotType.PriceBuy)
         {
             if (_listSell == null) return;
@@ -167,110 +212,33 @@ public class DealerWindow : L2PopupWindow
 
             Product source = _listSell[position];
 
-            if(source.Count > 1)
-            {
-                RefreshOpacity(0.7f);
-                QuantityInput.Instance.ShowWindow(this , source);
-            }
+            _tradeItemMover.MovePanelPriceBuy(selectCount, source, _isModifySell, position);
 
-            ModifyBuy(_isModifySell, _listBuy, source);
-            ShiftBuy(position);
-
-            _listSell = _shopCellCreator.RemoveProduct(_listSell, source);
-            _itemEvalutor.UpdateAllPrice(_listSell);
-            _itemEvalutor.UpdateWeight(_listSell, _currentDataWeight, _maxWeight);
         }
         else if (type == SlotType.PriceSell)
         {
             if (!IsIndexValid(listServer, position)) return;
             Product source = listServer[position];
-
-            if (source.Count > 1)
-            {
-                RefreshOpacity(0.7f);
-                QuantityInput.Instance.ShowWindow(this, source);
-            }
-
             if (source == null) return;
-            _listSell = _shopCellCreator.AddProduct(_listSell, source);
 
-            RefreshToolTips(_listSell);
+            _tradeItemMover.MovePanelPriceSell(selectCount, source, _isModifySell, position, listServer);
 
-            if (_listSell.Count != 0)
-            {
-                Move(_inventorySlotsBuy, _tabBuy, GetNewPosition(_listSell), source);
-            }
-
-            ModifySell(_isModifySell, position, listServer, source);
-
-            _itemEvalutor.UpdateAllPrice(_listSell);
-            _itemEvalutor.UpdateWeight(_listSell, _currentDataWeight, _maxWeight);
-            
         }
     }
 
-   
-    private void ModifySell(bool isModify , int position , List<Product> listServer , Product source)
-    {
-        if (isModify)
-        {
-            ShiftSell(position);
-            _listBuy = _shopCellCreator.RemoveProduct(listServer, source);
-        }
-   
-    }
 
-    private void ModifyBuy(bool isModify, List<Product> listBuy, Product source)
-    {
-        if (isModify)
-        {
-            if (_listSell.Count != 0)
-            {
-                listBuy = _shopCellCreator.AddProduct(listBuy, source);
-                Move(_inventorySlotsSell, _tabSell, GetNewPosition(listBuy), source);
-            }
-        }
 
-    }
 
-    private void RefreshToolTips(List<Product> listSell)
-    {
-        ToolTipManager.GetInstance().SetBuyData(listSell);
-    }
+
+  
 
     public bool IsIndexValid(List<Product> _listSell, int index)
     {
         return index >= 0 && index < _listSell.Count;
     }
 
-    private int GetNewPosition(List<Product> list)
-    {
-        //if (list.Count == 0) return 0;
-        return list.Count - 1;
-    }
+ 
 
-
-
-
-
-    private void Move(InventorySlot[] inventorySlots , InventoryTab tab , int newPosition , Product product)
-    {
-        inventorySlots[newPosition].AssignProduct(product);
-        tab.UpdateInventorySlots(inventorySlots);
-    }
-
-    private void ShiftSell(int newPosition)
-    {
-        ShiftElementsLeft(_inventorySlotsSell, newPosition);
-        _tabBuy.UpdateInventorySlots(_inventorySlotsBuy);
-    }
-    //We do not move the target from sell -> buy because we believe that there is already something there and re-updating the cell is not required.We simply clear it
-    //and shift all positions to the left if we delete an element
-    public void ShiftBuy(int newPosition)
-    {
-        ShiftElementsLeft(_inventorySlotsBuy , newPosition);
-        _tabSell.UpdateInventorySlots(_inventorySlotsSell);
-    }
 
     public void ShiftElementsLeft(InventorySlot[] inventorySlots , int newPosition )
     {
@@ -355,6 +323,16 @@ public class DealerWindow : L2PopupWindow
         _currentDataWeight = data;
     }
 
+    public int GetCurrentDataWeight()
+    {
+        return _currentDataWeight;
+    }
+
+    public int GetMaxWeight()
+    {
+        return _maxWeight;
+    }
+
     public void UpdateAdena(int adena)
     {
         _adena.text = ToolTipsUtils.ConvertToPrice(adena);
@@ -380,9 +358,19 @@ public class DealerWindow : L2PopupWindow
         return _inventorySlotsSell;
     }
 
+    public InventorySlot[] GetInventorySlotsBuy()
+    {
+        return _inventorySlotsBuy;
+    }
+
     public void SetInventorySlotsSell(InventorySlot[] inventorySlotSell)
     {
         _inventorySlotsSell = inventorySlotSell;
+    }
+
+    public void SetInventorySlotsBuy(InventorySlot[] inventorySlotBuy)
+    {
+        _inventorySlotsBuy = inventorySlotBuy;
     }
 
     public VisualTreeAsset GetInventorySlotTemplate()
@@ -398,6 +386,41 @@ public class DealerWindow : L2PopupWindow
     public void SetTabSell(InventoryTab tabSell)
     {
         _tabSell = tabSell;
+    }
+
+    public void SetTabBuy(InventoryTab tabBuy)
+    {
+        _tabBuy = tabBuy;
+    }
+
+    public InventoryTab GetTabBuy()
+    {
+        return _tabBuy;
+    }
+
+    public InventoryTab GetTabSell()
+    {
+        return _tabSell;
+    }
+
+    public List<Product> GetListSell()
+    {
+        return _listSell;
+    }
+
+    public List<Product> GetListBuy()
+    {
+        return _listBuy;
+    }
+
+    public void SetListBuy(List<Product> listBuy)
+    {
+        _listBuy = listBuy;
+    }
+
+    public void SetListSell(List<Product> listSell)
+    {
+        _listSell = listSell;
     }
 
     public void UpdateDataForm(int adena, double weightPercent, int currentWeight, int maxWeight)
@@ -439,6 +462,11 @@ public class DealerWindow : L2PopupWindow
         {
             SetAddCount1(_listSell);
             var sendPaket = CreatorPacketsUser.CreateRequestBuyItem(_listId, _listSell);
+            SendGameDataQueue.Instance().AddItem(sendPaket, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
+        }
+        else
+        {
+            var sendPaket = CreatorPacketsUser.CreateRequestSellItem(_listId, _listSell);
             SendGameDataQueue.Instance().AddItem(sendPaket, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
         }
        

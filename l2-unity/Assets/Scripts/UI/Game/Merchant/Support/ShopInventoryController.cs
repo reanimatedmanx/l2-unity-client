@@ -4,6 +4,8 @@ using static L2Slot;
 using UnityEngine.UIElements;
 using System;
 using System.Linq;
+using static UnityEditor.Progress;
+using FMOD;
 
 public class ShopInventoryController
 {
@@ -33,7 +35,8 @@ public class ShopInventoryController
 
         if (listBuy == null | listBuy.Count == 0)
         {
-            CreateEmptySell(tabSell , contentSell, inventorySlotSell, inventorySlotTemplate);
+            var inventorySlotsSell = CreateEmptyTab(tabSell , contentSell, inventorySlotSell, inventorySlotTemplate);
+            _dealerWindow.SetInventorySlotsSell(inventorySlotsSell);
         }
         else
         {
@@ -41,7 +44,36 @@ public class ShopInventoryController
         }
     }
 
-    private void CreateEmptySell(InventoryTab tabSell, VisualElement contentSell , InventorySlot[] inventorySlotsSell , VisualTreeAsset inventorySlotTemplate)
+    public void CreateBuy(List<Product> listBuy, InventoryTab tabBuy, VisualElement contentBuy, VisualElement windowEle)
+    {
+        if (tabBuy == null)
+        {
+            tabBuy = new InventoryTab();
+            _dealerWindow.SetTabBuy(tabBuy);
+            tabBuy.Initialize(windowEle, contentBuy, contentBuy);
+        }
+
+        contentBuy.Clear();
+
+        ToolTipManager.GetInstance().SetBuyData(new List<Product>());
+
+        var inventorySlotBuy = _dealerWindow.GetInventorySlotsBuy();
+        var inventorySlotTemplate = _dealerWindow.GetInventorySlotTemplate();
+
+        if (listBuy == null | listBuy.Count == 0)
+        {
+            var inventorySlotsBuy  = CreateEmptyTab(tabBuy, contentBuy, inventorySlotBuy, inventorySlotTemplate);
+            _dealerWindow.SetInventorySlotsBuy(inventorySlotsBuy);
+        }
+        else
+        {
+            CreateNoEmptyBuy(listBuy, tabBuy, inventorySlotBuy, inventorySlotTemplate, contentBuy);
+        }
+    }
+
+  
+
+    private InventorySlot[] CreateEmptyTab(InventoryTab tabSell, VisualElement contentSell , InventorySlot[] inventorySlotsSell , VisualTreeAsset inventorySlotTemplate)
     {
         inventorySlotsSell = new InventorySlot[_defaultCount];
 
@@ -53,15 +85,16 @@ public class ShopInventoryController
             InventorySlot slot = new InventorySlot(i, slotElement, tabSell, SlotType.PriceSell);
             inventorySlotsSell[i] = slot;
         }
-        _dealerWindow.SetInventorySlotsSell(inventorySlotsSell);
+        
         tabSell.UpdateInventorySlots(inventorySlotsSell);
+        return inventorySlotsSell;
     }
 
     private void CreateNoEmptySell(List<Product> listBuy, InventoryTab tabSell , InventorySlot[] inventorySlotsSell, VisualTreeAsset inventorySlotTemplate, VisualElement contentSell)
     {
             int count =  GetCountCells(listBuy.Count);
-            Debug.Log("Create cout " + count);
-            inventorySlotsSell = InitEmpty(count, tabSell, contentSell, inventorySlotTemplate);
+            inventorySlotsSell = InitEmpty(count, tabSell, contentSell, inventorySlotTemplate ,_dealerWindow.GetInventorySlotsSell() , SlotType.PriceSell);
+            tabSell.UpdateInventorySlots(inventorySlotsSell);
 
             for (int i = 0; i < listBuy.Count; i++)
             {
@@ -71,65 +104,70 @@ public class ShopInventoryController
         _dealerWindow.SetInventorySlotsSell(inventorySlotsSell);
 
     }
-    //24 minimal cells count
-    private int GetCountCells(int countBuy)
+
+    private void CreateNoEmptyBuy(List<Product> listBuy, InventoryTab tabBuy, InventorySlot[] inventorySlots, VisualTreeAsset inventorySlotTemplate, VisualElement contentBuy)
     {
-        return (countBuy <= _defaultCount) ? _defaultCount : GetNextMultipleOfSix(countBuy);
+        int count = GetCountCells(listBuy.Count);
+        inventorySlots = InitEmpty(count, tabBuy, contentBuy, inventorySlotTemplate, _dealerWindow.GetInventorySlotsBuy() , SlotType.PriceBuy);
+        tabBuy.UpdateInventorySlots(inventorySlots);
+        _dealerWindow.SetInventorySlotsBuy(inventorySlots);
     }
 
-    private InventorySlot[] InitEmpty(int count, InventoryTab tabSell , VisualElement contentSell , VisualTreeAsset inventorySlotTemplate)
-    {
-        var _inventorySlotsSell = _dealerWindow.GetInventorySlotsSell();
 
-        if (_inventorySlotsSell == null)
+
+    private InventorySlot[] InitEmpty(int count, InventoryTab tab , VisualElement contentSell , VisualTreeAsset inventorySlotTemplate , InventorySlot[]  inventorySlots , SlotType type)
+    {
+        
+
+        if (inventorySlots == null)
         {
 
-            _inventorySlotsSell = CreateNewArray(count);
+            inventorySlots = CreateNewArray(count);
 
-            Debug.Log("_inventorySlotsSell 1 " + _inventorySlotsSell.Length);
-
-            for (int i = 0; i < _inventorySlotsSell.Length; i++)
+            for (int i = 0; i < inventorySlots.Length; i++)
             {
-                InventorySlot slot = CreateSlot(contentSell, inventorySlotTemplate, tabSell, i);
-                _inventorySlotsSell[i] = slot;
+                var slotElement = CreateSlotElement(inventorySlotTemplate, contentSell);
+                var slot = CreateSlotInventory(slotElement, tab, i, type);
+                inventorySlots[i] = slot;
             }
         }
         else
         {
 
-            _inventorySlotsSell =  ReCreateElseChangeCount(_inventorySlotsSell, count);
-            Debug.Log("_inventorySlotsSell 2 " + _inventorySlotsSell.Length);
-            Debug.Log("_inventorySlotsSell contentSell 1 " + contentSell.childCount);
+            inventorySlots =  ReCreateElseChangeCount(inventorySlots, count);
 
-
-            for (int i = 0; i < _inventorySlotsSell.Length; i++)
+            for (int i = 0; i < inventorySlots.Length; i++)
             {
-                if(_inventorySlotsSell[i] == null)
+                if(inventorySlots[i] == null)
                 {
-                    InventorySlot slot = CreateSlot(contentSell, inventorySlotTemplate, tabSell, i);
-                    _inventorySlotsSell[i] = slot;
+                    var slotElement  = CreateSlotElement(inventorySlotTemplate, contentSell);
+                    var slot = CreateSlotInventory(slotElement, tab, i , type);
+                    inventorySlots[i] = slot;
                 }
                 else
                 {
-                    _inventorySlotsSell[i].AssignEmpty();
-                    contentSell.Add(_inventorySlotsSell[i].SlotElement);
-                    //_inventorySlotsSell[i].RefreshPosition(i);
+                    inventorySlots[i].AssignEmpty();
+                    contentSell.Add(inventorySlots[i].SlotElement);
                 }
             }
         }
 
-        tabSell.UpdateInventorySlots(_inventorySlotsSell);
-        Debug.Log("_inventorySlotsSell contentSell 2 " + contentSell.childCount);
-        return _inventorySlotsSell;
+        
+
+        return inventorySlots;
     }
 
-    private InventorySlot CreateSlot(VisualElement contentSell , VisualTreeAsset inventorySlotTemplate , InventoryTab tabSell , int i)
+    private InventorySlot CreateSlotInventory(VisualElement slotElement , InventoryTab tabSell , int i , SlotType type)
+    {
+        InventorySlot slot = new InventorySlot(i, slotElement, tabSell, type);
+        return slot;
+    }
+
+    private VisualElement CreateSlotElement(VisualTreeAsset inventorySlotTemplate , VisualElement contentSell)
     {
         VisualElement slotElement = inventorySlotTemplate.Instantiate()[0];
         contentSell.Add(slotElement);
-
-        InventorySlot slot = new InventorySlot(i, slotElement, tabSell, SlotType.PriceSell);
-        return slot;
+        return slotElement;
     }
 
     private InventorySlot[] CreateNewArray(int count)
@@ -210,23 +248,74 @@ public class ShopInventoryController
             return new List<Product>() { source };
         }
 
+        bool isUpdate = false;
 
-        listSell.Add(source);
+        if(source.GetTypeItem() == EnumType2.TYPE2_OTHER)
+        {
+            
+            isUpdate = UpdateList(isUpdate, listSell, source , true);
+        }
 
+        if(!isUpdate) listSell.Add(source);
 
         return listSell;
     }
 
-    public List<Product> RemoveProduct(List<Product> listSell, Product source)
+  
+
+    public List<Product> RemoveProduct(List<Product> listSell, Product source , bool isRemoval)
     {
         if (listSell == null)
         {
             return new List<Product>() { source };
         }
 
-        listSell.Remove(source);
+        bool isUpdate = false;
+
+        if (source.GetTypeItem() == EnumType2.TYPE2_OTHER && isRemoval == false)
+        {
+            isUpdate = UpdateList(isUpdate, listSell, source , false);
+        }
+
+        if (!isUpdate || isRemoval || source.Count == 0) listSell.Remove(source);
+
         return listSell;
     }
+
+
+    private bool UpdateList(bool isUpdate , List<Product> listSell, Product source , bool plus)
+    {
+        foreach (Product product in listSell)
+        {
+            if (product.ItemId == source.ItemId)
+            {
+               
+                if (plus)
+                {
+                    UpdateProductPlus(product, source);
+                }
+                else
+                {
+                    //UpdateProductMinus(product, source);
+                }
+
+                isUpdate = true;
+            }
+        }
+
+        return isUpdate;
+    }
+
+    private void UpdateProductPlus(Product item, Product source)
+    {
+        item.SetCount(item.Count + source.Count);
+    }
+
+    private void UpdateProductMinus(Product item, Product source)
+    {
+        item.SetCount(item.Count - source.Count);
+    }
+
 
     public void ClearSell(InventoryTab tabSell)
     {
@@ -269,6 +358,12 @@ public class ShopInventoryController
         tabBuy.UpdateInventorySlots(inventorySlotsBuy);
 
         return inventorySlotsBuy;
+    }
+
+    //24 minimal cells count
+    private int GetCountCells(int countBuy)
+    {
+        return (countBuy <= _defaultCount) ? _defaultCount : GetNextMultipleOfSix(countBuy);
     }
 
 }

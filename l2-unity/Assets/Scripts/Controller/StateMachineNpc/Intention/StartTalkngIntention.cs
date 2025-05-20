@@ -1,3 +1,12 @@
+using System.Security.Cryptography;
+using System.Threading;
+using UnityEditorInternal;
+using UnityEngine;
+
+using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
+using static UnityEngine.GraphicsBuffer;
+
 public class StartTalkingIntention : NpcIntentionBase
 {
     public StartTalkingIntention(NpcStateMachine stateMachine) : base(stateMachine) { }

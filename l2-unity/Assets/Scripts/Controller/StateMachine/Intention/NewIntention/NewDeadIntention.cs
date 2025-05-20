@@ -1,3 +1,6 @@
+using UnityEditorInternal;
+using UnityEngine;
+
 public class NewDeadIntention : IntentionBase
 {
     public NewDeadIntention(PlayerStateMachine stateMachine) : base(stateMachine)

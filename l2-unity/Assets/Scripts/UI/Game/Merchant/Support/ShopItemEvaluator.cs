@@ -46,9 +46,17 @@ public class ShopItemEvaluator
         {
             for (int i = 0; i < _listSell.Count; i++)
             {
-                if (_listSell[i] != null)
+               Product product =  _listSell[i];
+                if (product != null)
                 {
-                    allPrice = allPrice + _listSell[i].Price;
+                    if(product.Count > 1)
+                    {
+                        allPrice += product.Price * product.Count;
+                    }
+                    else
+                    {
+                        allPrice = allPrice + _listSell[i].Price;
+                    }
                 }
             }
 

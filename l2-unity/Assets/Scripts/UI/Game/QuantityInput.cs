@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -7,6 +8,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
+using static L2Slot;
 using static UnityEditor.Experimental.GraphView.Port;
 using static UnityEditor.Rendering.FilterWindow;
 
@@ -17,6 +19,9 @@ public class QuantityInput : L2PopupWindow
     private VisualElement _root;
     private TextField _userInput;
     private Product _selectProduct;
+    private SlotType _type;
+    private List<Product> _listServer;
+    private int _position;
     public static QuantityInput Instance { get { return _instance; } }
 
     private void Awake()
@@ -138,7 +143,10 @@ public class QuantityInput : L2PopupWindow
 
     private void OnClickSuccess(ClickEvent evt)
     {
-
+        string value = ToolTipsUtils.ConvertPriceToNormal(_userInput.value);
+        _dealerWindow.RefreshOpacity(1);
+        _dealerWindow.Move—ellElseQuantitySelected(_type,  _listServer, _position , int.Parse(value));
+        base.HideWindow();
     }
 
     private void OnClickClose(ClickEvent evt)
@@ -184,16 +192,16 @@ public class QuantityInput : L2PopupWindow
         _userInput.cursorIndex = formattedValue.Length + 1;
     }
 
- 
-
-
-
-    public void ShowWindow(DealerWindow dealerWindow , Product selectProduct)
+    public void ShowWindow(DealerWindow dealerWindow , Product selectProduct , SlotType type, List<Product> listServer, int position)
     {
+        _type = type;
+        _listServer = listServer;
+        _position = position;
         _selectProduct = selectProduct;
         _dealerWindow = dealerWindow;
         base.ShowWindow();
         OnCenterScreen(_root);
+        _userInput.value = "0";
     }
 
 
