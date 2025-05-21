@@ -20,7 +20,8 @@ public class StorageVariable
     {
         ADD_INVENTORY = 52,
         ADD_EXP_SP = 95,
-        USE_SKILL = 936
+        USE_SKILL = 936,
+        NOT_HAVE_ADENA = 279,
     }
 
 

@@ -141,6 +141,11 @@ public class L2GameUI : L2UI
             QuantityInput.Instance.AddWindow(_rootVisualContainer);
             QuantityInput.Instance.HideWindow();
         }
+        if (SystemMessageWindow.Instance != null)
+        {
+            SystemMessageWindow.Instance.AddWindow(_rootVisualContainer);
+            SystemMessageWindow.Instance.HideWindow();
+        }
     }
 
     public void EnableMouse()

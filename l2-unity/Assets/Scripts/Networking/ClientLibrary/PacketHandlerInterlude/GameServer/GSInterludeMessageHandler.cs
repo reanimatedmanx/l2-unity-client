@@ -114,9 +114,9 @@ public class GSInterludeMessageHandler : ServerPacketHandler
     {
         SMParam[] smParams = packet.Params;
         int messageId = packet.Id;
-
+        //Debug.Log("Добавлено TRY ADD" + messageId);
         SystemMessageDat messageData = SystemMessageTable.Instance.GetSystemMessage(messageId);
-
+        OpenMessageWindow(messageId, messageData);
         if (messageData != null)
         {
             if(messageData.Id == (int)StorageVariable.MessageID.ADD_INVENTORY 
@@ -126,7 +126,7 @@ public class GSInterludeMessageHandler : ServerPacketHandler
                 SystemMessage systemMessage = new SystemMessage(smParams, messageData);
                 if (!_delayMessage.ContainsKey(messageData.Id))
                 {
-                    //Debug.Log("Добавлено TRY ADD" + messageData.Id);
+                    
                     _delayMessage.TryAdd(messageData.Id, systemMessage);
                 }
                 
@@ -141,6 +141,15 @@ public class GSInterludeMessageHandler : ServerPacketHandler
         else
         {
             EventProcessor.Instance.QueueEvent(() => ChatWindow.Instance.ReceiveSystemMessage(new UnhandledMessage()));
+        }
+    }
+    //279 - You do not have enough Adena
+    private void OpenMessageWindow(int messageId , SystemMessageDat messageData)
+    {
+        if(messageId == (int)StorageVariable.MessageID.NOT_HAVE_ADENA & messageData != null)
+        {
+            EventProcessor.Instance.QueueEvent(() => SystemMessageWindow.Instance.ShowWindow(messageData.Message));
+            
         }
     }
 

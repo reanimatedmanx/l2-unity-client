@@ -1,0 +1,23 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:Template name="AlertTemplate" src="project://database/Assets/Resources/Data/UI/_Elements/Template/DefaultAlertWindow.uxml?fileID=9197481963319205126&amp;guid=ff18b20ce9c354b4793e7275a5588057&amp;type=3#DefaultAlertWindow" />
+    <Style src="project://database/Assets/Resources/Data/UI/_Elements/L2StyleSheet.uss?fileID=7433441132597879392&amp;guid=72e99cc94b130bf4ba100dceaa830b13&amp;type=3#L2StyleSheet" />
+    <engine:GroupBox name="2Panels" class="quantity-window" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 320px; height: 150px; flex-direction: row; position: absolute;">
+        <engine:Instance name="AlertTemplate" template="AlertTemplate" style="overflow: hidden; width: 321px; height: 100%; bottom: 0; position: absolute; max-width: none; max-height: none;">
+            <engine:VisualElement name="Back" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.21); width: auto; height: 50%; max-height: 85%; margin-top: 10px; margin-right: 10px; margin-bottom: 45px; margin-left: 10px; border-left-color: rgba(44, 42, 34, 0.6); border-right-color: rgba(44, 42, 34, 0.6); border-top-color: rgba(44, 42, 34, 0.6); border-bottom-color: rgba(44, 42, 34, 0.6); border-top-left-radius: 1px; border-top-right-radius: 1px; border-bottom-right-radius: 1px; border-bottom-left-radius: 1px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;" />
+            <engine:GroupBox name="Content" style="position: absolute; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-bottom: 0; padding-left: 0; height: 100%; width: 100%; max-width: 280px; max-height: 110px;">
+                <engine:GroupBox name="Header" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0;">
+                    <engine:GroupBox name="Info1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; flex-direction: row; height: 50px; width: 268px;">
+                        <engine:VisualElement style="flex-grow: 1; width: 32px; height: 32px; max-height: 32px; max-width: 32px; background-image: resource(&apos;Data/UI/Assets/Calculator/ICON_DF_Exclamation&apos;);" />
+                        <engine:Label text="You do not have enough Adena" name="labelText" class="calculator-header-label" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 8px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; color: rgb(206, 206, 206); font-size: 11px; -unity-font-definition: resource(&apos;Data/UI/Font/tahoma&apos;);" />
+                    </engine:GroupBox>
+                </engine:GroupBox>
+                <engine:GroupBox name="Footer" style="margin-top: 15%; margin-right: 0; margin-bottom: 0; margin-left: 3px; padding-top: 0; padding-bottom: 0; padding-left: 0; flex-direction: row; align-self: stretch; justify-content: center; align-items: stretch; flex-grow: 0; flex-shrink: 0; width: 276px;">
+                    <engine:Button text="CloseButton" parse-escape-sequences="true" display-tooltip-when-elided="true" name="OkButton" class="l2-button" style="height: 20px; background-color: rgba(188, 188, 188, 0);">
+                        <engine:VisualElement name="ButtonBg" class="l2-button-bg" />
+                        <engine:Label text="OK" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0;" />
+                    </engine:Button>
+                </engine:GroupBox>
+            </engine:GroupBox>
+        </engine:Instance>
+    </engine:GroupBox>
+</engine:UXML>
