@@ -159,21 +159,39 @@ public class World : MonoBehaviour {
 
     public void SpawnNpcInterlude(NetworkIdentityInterlude identity, NpcStatusInterlude status, Stats stats)
     {
+       
+        
         if (_npcs.ContainsKey(identity.Id)) return;
 
         Debug.Log("Запуск обработки Spawn Npc Interlude ++++++++++++++++++ ");
         Npcgrp npcgrp = NpcgrpTable.Instance.GetNpcgrp(identity.NpcId);
         NpcName npcName = NpcNameTable.Instance.GetNpcName(identity.NpcId);
 
+        if (identity.NpcId == 31775)
+        {
+            Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p1 ");
+        }
         if (npcName == null || npcgrp == null)
         {
             Debug.LogError($"Npc {identity.NpcId} could not be loaded correctly.");
             return;
         }
 
+        if (identity.NpcId == 31775)
+        {
+            Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p2 Mash Name " + npcgrp.Mesh);
+        }
         GameObject go = ModelTable.Instance.GetNpc(npcgrp.Mesh);
+        if (identity.NpcId == 31775)
+        {
+            Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p3");
+        }
         if (go != null)
         {
+            if (identity.NpcId == 31775)
+            {
+                Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p4");
+            }
             Debug.Log("Name NPC " + npcName.Name);
             //Debug режим добавляет только 1 гремлина и все !!!!
            //if (isSinglSpawn | !npcName.Name.Equals("Elder Keltir")) return;
@@ -198,11 +216,24 @@ public class World : MonoBehaviour {
             identity.EntityType = EntityTypeParser.ParseEntityType(npcgrp.ClassName);
             Entity npc;
 
+            //Cat Npc
+            if (identity.NpcId == 31760)
+            {
+                Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p5");
+                identity.EntityType = EntityType.NPC;
+            }
+
+
             if (identity.EntityType == EntityType.NPC)
             {
                 npcGo.transform.SetParent(_npcsContainer.transform);
                 npc = npcGo.GetComponent<NpcEntity>();
                 ((NpcEntity)npc).NpcData = npcData;
+
+                if (identity.NpcId == 31760)
+                {
+                    Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p6");
+                }
             }
             else
             {
@@ -211,6 +242,16 @@ public class World : MonoBehaviour {
                 npc.Running = npc.IdentityInterlude.IsRunning;
                 ((MonsterEntity)npc).NpcData = npcData;
 
+                if (identity.NpcId == 31760)
+                {
+                    Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p7");
+                }
+
+            }
+
+            if (identity.NpcId == 31760)
+            {
+                Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p8");
             }
 
             Appearance appearance = new Appearance();

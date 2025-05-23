@@ -1,6 +1,8 @@
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Rendering.FilterWindow;
+using static UnityEngine.Rendering.DebugUI.MessageBox;
 
 public class TooltipDataProvider
 {
@@ -51,17 +53,71 @@ public class TooltipDataProvider
                 if(gradeAccesories != null) gradeAccesories.text = ItemGradeParser.Converter(armor.Grade);
             }
 
+            VisualElement groupBoxType = container.Q<VisualElement>("typeText");
+            VisualElement groupBoxMDef = container.Q<VisualElement>("mdeText");
+
+            EnabledRow(groupBoxType);
+            EnabledRow(groupBoxMDef);
+
+            Label textMdef = container.Q<Label>("mdefLabel");
+            Label typeLabel = container.Q<Label>("typeLabel");
+
             Label price = (Label)container.Q<Label>("priceLabel");
             price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
             price.text = ToolTipsUtils.ConvertToPrice(product.Price) + " Adena";
 
-            container.Q<Label>("typeLabel").text = product.GetTypeAccessoriesName();
-            container.Q<Label>("mdefLabel").text = armor.MDef.ToString();
+            typeLabel.text = product.GetTypeAccessoriesName();
+            textMdef.text = armor.MDef.ToString();
             container.Q<Label>("weightlabel").text = armor.Weight.ToString();
             container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
 
         }
     }
 
-   
+    public void AddDataOther(TemplateContainer container, Product product)
+    {
+        if (product != null)
+        {
+            EtcItemgrp etcItem = product.GetEtcItem();
+
+            IDataTips text = ToolTipManager.GetInstance().GetProductText(product);
+
+            container.Q<Label>("nameAccessories").text = text.GetName();
+
+
+            Label price = (Label)container.Q<Label>("priceLabel");
+            price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
+            price.text = ToolTipsUtils.ConvertToPrice(product.Price) + " Adena";
+
+            //disabled rows Mdef
+            VisualElement groupBoxType = container.Q<VisualElement>("typeText");
+            VisualElement groupBoxMDef = container.Q<VisualElement>("mdeText");
+
+            DisabledRow(groupBoxType);
+            DisabledRow(groupBoxMDef);
+
+
+            container.Q<Label>("weightlabel").text = etcItem.Weight.ToString();
+            container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
+
+        }
+    }
+
+    private void DisabledRow(VisualElement element )
+    {
+        if(element != null)
+        {
+            element.style.display = DisplayStyle.None;
+        }
+    }
+
+    private void EnabledRow(VisualElement element)
+    {
+        if (element != null)
+        {
+            element.style.display = DisplayStyle.Flex;
+        }
+    }
+
+
 }

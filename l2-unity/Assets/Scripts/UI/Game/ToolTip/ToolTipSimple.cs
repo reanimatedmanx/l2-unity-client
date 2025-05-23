@@ -88,13 +88,18 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
 
     private void AddData(Product product , TemplateContainer template)
     {
-        if (product.GetTypeItem() == EnumType2.TYPE2_WEAPON)
+
+        switch (product.GetTypeItem())
         {
-            _dataProvider.AddDataWeapon(template, product);
-        }
-        else if (product.GetTypeItem() == EnumType2.TYPE2_ACCESSORY)
-        {
-            _dataProvider.AddDataAccessories(template, product);
+            case  EnumType2.TYPE2_WEAPON:
+                _dataProvider.AddDataWeapon(template, product);
+                break;
+            case EnumType2.TYPE2_ACCESSORY:
+                _dataProvider.AddDataAccessories(template, product);
+                break;
+            case EnumType2.TYPE2_OTHER:
+                _dataProvider.AddDataOther(template, product);
+                break;
         }
     }
 
@@ -221,12 +226,14 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                Product product =  ToolTipManager.GetInstance().FindProductInSellList(position);
                 if(product != null)
                 {
-                    if (product.GetTypeItem() == EnumType2.TYPE2_WEAPON)
+                    switch (product.GetTypeItem())
                     {
-                        return SwitchToWeapon();
-                    }else if (product.GetTypeItem() == EnumType2.TYPE2_ACCESSORY)
-                    {
-                        return SwitchToAccessories();
+                        case EnumType2.TYPE2_WEAPON:
+                            return SwitchToWeapon();
+                        case EnumType2.TYPE2_ACCESSORY:
+                            return SwitchToAccessories();
+                        case EnumType2.TYPE2_OTHER:
+                            return SwitchToAccessories();
                     }
                 }
 
@@ -235,13 +242,14 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 Product product = ToolTipManager.GetInstance().FindProductInBuyList(position);
                 if(product != null)
                 {
-                    if (product.GetTypeItem() == EnumType2.TYPE2_WEAPON)
+                    switch (product.GetTypeItem())
                     {
-                        return SwitchToWeapon();
-                    }
-                    else if (product.GetTypeItem() == EnumType2.TYPE2_ACCESSORY)
-                    {
-                        return SwitchToAccessories();
+                        case EnumType2.TYPE2_WEAPON:
+                            return SwitchToWeapon();
+                        case EnumType2.TYPE2_ACCESSORY:
+                            return SwitchToAccessories();
+                        case EnumType2.TYPE2_OTHER:
+                            return SwitchToAccessories();
                     }
                 }
   

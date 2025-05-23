@@ -72,7 +72,7 @@ public class ClickManager : MonoBehaviour
                 !InputManager.Instance.RightClickHeld)
             {
                 _targetObjectData = _hoverObjectData;
-
+                Debug.Log("Click Manager type " + _targetObjectData.ObjectTag);
                 if (_entityMask == (_entityMask | (1 << hitLayer)) && _targetObjectData.ObjectTag != "Player")
                 {
                     OnClickOnEntity();

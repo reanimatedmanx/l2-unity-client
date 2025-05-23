@@ -486,8 +486,6 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
     {
         //Debug.Log("GameServerPacket NpcInfo  : начало обработки пакета ");
         NpcInfo npcInfo = new NpcInfo(data);
-        //Debug.Log("GameServerPacket NpcInfo : пакет обработали Npc id " + npcInfo.Identity.NpcId);
-
         StorageNpc.getInstance().AddNpcInfo(npcInfo);
 
         if (InitPacketsLoadWord.getInstance().IsInit)

@@ -19,6 +19,14 @@ public class EtcItemgrpTable {
     private Dictionary<int, EtcItemgrp> _etcItemGrps;
     public Dictionary<int, EtcItemgrp> EtcItemGrps { get { return _etcItemGrps; } }
 
+    public EtcItemgrp GetEtcItem(int id)
+    {
+        EtcItemgrp item;
+        EtcItemGrps.TryGetValue(id, out item);
+        return item;
+    }
+
+
     public void Initialize() {
         ReadEtcItemgrpDat();
     }

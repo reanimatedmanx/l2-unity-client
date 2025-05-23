@@ -151,7 +151,10 @@ public class Product
         return WeapongrpTable.Instance.GetWeapon(_itemId);
     }
 
-    
+    public EtcItemgrp GetEtcItem()
+    {
+        return EtcItemgrpTable.Instance.GetEtcItem(_itemId);
+    }
 
     public EnumType2 GetTypeItem()
     {
