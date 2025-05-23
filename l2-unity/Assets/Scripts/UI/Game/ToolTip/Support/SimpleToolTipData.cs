@@ -22,6 +22,11 @@ public class SimpleToolTipData : IDataTips
         return _name;
     }
 
+    public ItemName[] GetSets()
+    {
+        return _product.GetSets();
+    }
+
     public string GetDiscription()
     {
         return _description;

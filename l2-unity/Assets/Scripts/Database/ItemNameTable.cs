@@ -1,7 +1,9 @@
-﻿using System;
+﻿using NUnit.Framework.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -100,6 +102,8 @@ public class ItemNameTable {
         //_actionsInterlude = new Dictionary<int, ActionData>();
         string dataPath = Path.Combine(Application.streamingAssetsPath, "Data/Meta/Itemname-e_interlude.txt");
 
+
+        
         using (StreamReader reader = new StreamReader(dataPath))
         {
             string line;
@@ -110,21 +114,31 @@ public class ItemNameTable {
                     ItemName itemData = new ItemName();
 
                     string[] ids = line.Split('\t');
-                    int s1 = line.IndexOf("a,") + 2;
-                    int s2 = line.IndexOf(".\\0");
-                    //string result = line.Substring(s1+2, s2).Trim();
+                    //int s1 = line.IndexOf("a,") + 2;
+                    //int s2 = line.IndexOf(".\\0");
 
-                   // Debug.Log("");
+
+                    string parts = DatUtils.CleanupStringOldData(ids[5]);
+
+
                     itemData.Id = Int32.Parse(ids[0]);
                     itemData.Name = ids[1];
-                    itemData.Description = GetDesciptionText(line, s1, s2);
 
+                    var sets = GetSetsIds(itemData.Id, parts);
+                    SetDescriptionText(itemData, parts, ids);
 
+                    //itemData.Description = GetDesciptionText(line, s1, s2);
+
+                    if (itemData.Id == 23)
+                    {
+                        Debug.Log("");
+                    }
                     if (_itemNames.ContainsKey(itemData.Id))
                     {
                         if (string.IsNullOrEmpty(_itemNames[itemData.Id].Description))
                         {
                             _itemNames[itemData.Id].Description = itemData.Description;
+                            _itemNames[itemData.Id].SetSets(sets);
                         }
 
                     }
@@ -135,16 +149,38 @@ public class ItemNameTable {
         }
     }
 
-    private string GetDesciptionText(string line, int startIndex, int endIndex)
+    private void  SetDescriptionText(ItemName itemData , string parts , string[] ids)
     {
-
-
-        if (startIndex != -1) // Проверяем, найдена ли подстрока
+        if (string.IsNullOrEmpty(parts))
         {
-            // Вычисляем индекс конца слова
-            int endIndex2 = endIndex - startIndex;
-            return line.Substring(startIndex, endIndex2).Trim();
+            var oldDescript = DatUtils.CleanupStringOldData(ids[3]);
+            itemData.Description = oldDescript;
         }
-        return "";
+        else
+        {
+            string descript_parts = DatUtils.CleanupStringOldData(ids[6]);
+            itemData.Description = descript_parts;
+        }
+    }
+
+    private int[] GetSetsIds(int id , string text)
+    {
+        if (!string.IsNullOrEmpty(text))
+        {
+            var text1 = text.Replace(id.ToString()+",", "");
+            string[] stringArray = text1.Split(',');
+
+            return stringArray
+                .Select(s => {
+                    int number;
+                    return int.TryParse(s, out number) ? number : 0; // или выбросьте исключение, если необходимо
+                }).ToArray();
+
+        }
+        else
+        {
+            return null;
+        }
+
     }
 }

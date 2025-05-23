@@ -7,6 +7,6 @@ public interface IDataTips
 
     string GetItemDiscription();
 
-
+    ItemName[] GetSets();
     string GetIcon();
 }

@@ -13,6 +13,11 @@ public class DatUtils {
         return name.Replace("{", string.Empty).Replace("}", string.Empty);
     }
 
+    public static string CleanupStringOldData(string name)
+    {
+        return name.Replace("a,", string.Empty).Replace("\\0", string.Empty);
+    }
+
     public static string[] ParseArray(string value) {
         return SplitJSON(value);
     }

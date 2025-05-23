@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 using UnityEngine;
@@ -167,31 +168,19 @@ public class World : MonoBehaviour {
         Npcgrp npcgrp = NpcgrpTable.Instance.GetNpcgrp(identity.NpcId);
         NpcName npcName = NpcNameTable.Instance.GetNpcName(identity.NpcId);
 
-        if (identity.NpcId == 31775)
-        {
-            Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p1 ");
-        }
+
         if (npcName == null || npcgrp == null)
         {
             Debug.LogError($"Npc {identity.NpcId} could not be loaded correctly.");
             return;
         }
 
-        if (identity.NpcId == 31775)
-        {
-            Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p2 Mash Name " + npcgrp.Mesh);
-        }
+
         GameObject go = ModelTable.Instance.GetNpc(npcgrp.Mesh);
-        if (identity.NpcId == 31775)
-        {
-            Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p3");
-        }
+
         if (go != null)
         {
-            if (identity.NpcId == 31775)
-            {
-                Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p4");
-            }
+
             Debug.Log("Name NPC " + npcName.Name);
             //Debug режим добавляет только 1 гремлина и все !!!!
            //if (isSinglSpawn | !npcName.Name.Equals("Elder Keltir")) return;
@@ -207,7 +196,7 @@ public class World : MonoBehaviour {
             //}
             
             identity.SetPosY(GetGroundHeight(identity.Position));
-            //GameObject npcGo = Instantiate(go, identity.Position, Quaternion.identity);
+
             GameObject npcGo = Instantiate(go, identity.Position, identity.Heading);
             NpcData npcData = new NpcData(npcName, npcgrp);
 
@@ -216,12 +205,7 @@ public class World : MonoBehaviour {
             identity.EntityType = EntityTypeParser.ParseEntityType(npcgrp.ClassName);
             Entity npc;
 
-            //Cat Npc
-            if (identity.NpcId == 31760)
-            {
-                Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p5");
-                identity.EntityType = EntityType.NPC;
-            }
+
 
 
             if (identity.EntityType == EntityType.NPC)
@@ -229,11 +213,6 @@ public class World : MonoBehaviour {
                 npcGo.transform.SetParent(_npcsContainer.transform);
                 npc = npcGo.GetComponent<NpcEntity>();
                 ((NpcEntity)npc).NpcData = npcData;
-
-                if (identity.NpcId == 31760)
-                {
-                    Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p6");
-                }
             }
             else
             {
@@ -241,18 +220,9 @@ public class World : MonoBehaviour {
                 npc = npcGo.GetComponent<MonsterEntity>();
                 npc.Running = npc.IdentityInterlude.IsRunning;
                 ((MonsterEntity)npc).NpcData = npcData;
-
-                if (identity.NpcId == 31760)
-                {
-                    Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p7");
-                }
-
             }
 
-            if (identity.NpcId == 31760)
-            {
-                Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p8");
-            }
+
 
             Appearance appearance = new Appearance();
             appearance.RHand = npcgrp.Rhand;
@@ -282,10 +252,9 @@ public class World : MonoBehaviour {
 
             npc.Appearance = appearance;
 
-            // npcGo.transform.eulerAngles = new Vector3(npcGo.transform.eulerAngles.x, identity.Heading, npcGo.transform.eulerAngles.z);
-            //npcGo.transform.rotation = identity.Heading;
-            npcGo.transform.name = identity.Name;
+            ChangeEntityType(identity);
 
+            npcGo.transform.name = identity.Name;
             npcGo.SetActive(true);
 
             if(npc.GetType() == typeof(MonsterEntity))
@@ -309,6 +278,16 @@ public class World : MonoBehaviour {
         else
         {
             Debug.LogWarning("NPC Not Found Nps!!!!! Need add server ID " + identity.Id  + " Npc Id " + identity.NpcId);
+        }
+    }
+
+    private void ChangeEntityType(NetworkIdentityInterlude identity)
+    {
+        //Cat Npc
+        if (identity.NpcId == 31760)
+        {
+            Debug.Log("SpawnNpcInterlude>>> Spawn 31760 p5");
+            identity.EntityType = EntityType.NPC;
         }
     }
     //The only npcs that move in the game

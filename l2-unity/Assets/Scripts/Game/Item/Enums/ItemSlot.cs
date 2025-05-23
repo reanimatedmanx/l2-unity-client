@@ -17,7 +17,8 @@ public enum ItemSlot : byte {
     underwear = 15,
     ring = 16,
     earring = 17,
-    boots = 18
+    boots = 18,
+    lhand_shield = 19,
 
 }
 
@@ -48,6 +49,8 @@ public class ItemSlotParser {
                 return ItemSlot.fullarmor;
             case "artifact_a7":
                 return ItemSlot.rhand;
+            case "artifact_a8":
+                return ItemSlot.lhand_shield;
             case "lrhand":
                 return ItemSlot.lrhand;
             default:

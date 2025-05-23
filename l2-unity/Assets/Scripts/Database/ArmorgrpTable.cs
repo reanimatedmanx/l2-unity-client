@@ -50,6 +50,7 @@ public class ArmorgrpTable {
                 string[] modTex;
 
                 string[] keyvals = line.Split('\t');
+                string armor_type = "";
 
                 for (int i = 0; i < keyvals.Length; i++) {
                     if(!keyvals[i].Contains("=")) {
@@ -59,7 +60,7 @@ public class ArmorgrpTable {
                     string[] keyval = keyvals[i].Split("=");
                     string key = keyval[0];
                     string value = keyval[1];
-
+                    
                     if(DatUtils.ParseBaseAbstractItemGrpDat(armorgrp, key, value)) {
                         continue;
                     }
@@ -67,6 +68,9 @@ public class ArmorgrpTable {
                     switch (key) {                
                         case "body_part": //artifact_a1 = chest, artifact_a2 = legs, artifact_a3 = boots, head = head, artifactbook = gloves, rfinger, lfinger, rear, lear, onepiece,
                             armorgrp.BodyPart = ItemSlotParser.ParseBodyPart(value); //TODO for fullbody store 2 models and textures for one item
+                            break;
+                        case "armor_type":
+                            armorgrp.ArmorType = ArmorClassifier.GetArmorType(DatUtils.CleanupString(value));
                             break;
                         case "m_HumnFigh": // {{[Fighter.MFighter_m002_g]};{[mfighter.mfighter_m002_t10_g]}}
                             modTex = DatUtils.ParseArray(value);
@@ -147,9 +151,8 @@ public class ArmorgrpTable {
                     }
                 }
 
-                if (!ItemTable.Instance.ShouldLoadItem(armorgrp.ObjectId)) {
-                    continue;
-                }
+               // ArmorType armorTyme = ArmorClassifier.GetArmorType(armor_type);
+
 
                 _armorgrps.TryAdd(armorgrp.ObjectId, armorgrp);
             }

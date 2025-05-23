@@ -14,6 +14,7 @@ public enum WeaponType : byte {
     dual,
     dualfist,
     pole,
+    shield,
     staff,
     mbook
 }
@@ -84,7 +85,7 @@ public class WeaponTypeParser {
             case "staff":
                 return WeaponType.bow;
             case "fist": // shield or hand check at handness
-                return WeaponType.hand;
+                return WeaponType.shield;
             case "twohandblunt":
                 return WeaponType.fist;
             case "bow":

@@ -17,7 +17,9 @@ public class Weapongrp : Abstractgrp
     [SerializeField] private int _matk;
     [SerializeField] private int _critRate;
     [SerializeField] private int _isMagicWeapon;
-
+    private int _shield_pdef;
+    private int _shield_rate;
+    private int _dex;
     public int IsMagicWeapon { get { return _isMagicWeapon; } set { _isMagicWeapon = value; } }
 
     public ItemSlot BodyPart { get { return _bodyPart; } set { _bodyPart = value; } }
@@ -30,6 +32,10 @@ public class Weapongrp : Abstractgrp
 
     public int PAtk { get { return _patk; } set { _patk = value; } }
     public int Matk { get { return _matk; } set { _matk = value; } }
+    public int ShieldPdef { get { return _shield_pdef; } set { _shield_pdef = value; } }
+    public int ShieldRate { get { return _shield_rate; } set { _shield_rate = value; } }
+    public int Dex { get { return _dex; } set { _dex = value; } }
+
     public int PAtkSpeed { get { return _patkspeed; } set { _patkspeed = value; } }
     public int CriticalRate { get { return _critRate; } set { _critRate = value; } }
     public int Weight { get { return _weight; } set { _weight = value; } }

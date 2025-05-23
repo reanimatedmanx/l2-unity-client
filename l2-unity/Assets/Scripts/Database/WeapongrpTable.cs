@@ -123,46 +123,8 @@ public class WeapongrpTable {
                     }
                 }
 
-                if(weaponType == WeaponType.sword) {
-                    if(handness == 2) {
-                        weaponType = WeaponType.bigword;
-                    }else if(
-                          handness == 1 & weaponGrp.Material == ItemMaterial.paper 
-                        | handness == 1 & weaponGrp.Material == ItemMaterial.steel & weaponGrp.IsMagicWeapon == 1)
-                    {
-                        weaponType = WeaponType.mbook;
-                    }else if (weaponGrp.Material == ItemMaterial.steel & weaponGrp.IsMagicWeapon == 0)
-                    {
-                        weaponType = WeaponType.sword;
-                    }
-                }
 
-                if (weaponType == WeaponType.blunt)
-                {
-                    if (handness == 1)
-                    {
-                        weaponType = WeaponType.blunt;
-                    }
-                }
-
-                if (weaponType == WeaponType.hand) {
-                    if (handness == 0) {
-                        weaponType = WeaponType.none;
-                    }
-                }
-
-                if(handness == 14) {
-                    if (weaponType == WeaponType.blunt & weaponGrp.Material == ItemMaterial.wood)
-                    {
-                        weaponType = WeaponType.staff;
-                    }
-                    else{
-                        weaponType = WeaponType.pole;
-                    }
-                   
-                   
-                }
-
+                weaponType = WeaponClassifier.GetType(weaponType, weaponGrp, handness);
                 weaponGrp.WeaponType = weaponType;
 
                 if (!ItemTable.Instance.ShouldLoadItem(weaponGrp.ObjectId)) {
@@ -180,6 +142,8 @@ public class WeapongrpTable {
         }
     }
 
+    
+
     //41 P atk
     //42 M atk
     //45 Crit rate
@@ -187,6 +151,10 @@ public class WeapongrpTable {
     //51 Mana (MpConsume)
     //52 Soulshot
     //53 SpiritShot
+
+    //49 - shield_rate
+    //47 - dex
+    //48 - shield_pdef
     public void ReadWeaponInterlude()
     {
         //_actionsInterlude = new Dictionary<int, ActionData>();
@@ -203,9 +171,9 @@ public class WeapongrpTable {
                 {
                     string[] ids = line.Split('\t');
                     int id =  Int32.Parse(ids[1]);
-                    if(id == 9)
+                    if(id == 102)
                     {
-                        Debug.Log("");
+                        //Debug.Log("");
                     }
                     if (_weaponGrps.ContainsKey(id))
                     {
@@ -213,6 +181,11 @@ public class WeapongrpTable {
                         grp.PAtk = Int32.Parse(ids[41]);
                         grp.Matk = Int32.Parse(ids[42]);
                         grp.CriticalRate = Int32.Parse(ids[45]);
+
+                        grp.Dex = Int32.Parse(ids[47]);
+                        grp.ShieldPdef = Int32.Parse(ids[48]);
+                        grp.ShieldRate = Int32.Parse(ids[49]);
+
                         grp.PAtkSpeed = Int32.Parse(ids[50]);
                         grp.MpConsume = Int32.Parse(ids[51]);
 

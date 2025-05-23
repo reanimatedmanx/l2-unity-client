@@ -19,6 +19,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
     private VisualTreeAsset _windowTemplateWeapon;
     private VisualTreeAsset _windowTemplateSimple;
     private VisualTreeAsset _windowTemplateAcccesories;
+    private VisualTreeAsset _windowTemplateArmor;
     private VisualElement _contentInside;
     private float _lastHeightContent = 0;
     private float _heightContent = 0;
@@ -51,6 +52,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         _windowTemplateSimple = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipSimple");
         _windowTemplateWeapon = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipWeapon");
         _windowTemplateAcccesories = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipAccessories");
+        _windowTemplateArmor = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipArmor");
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)
@@ -99,6 +101,9 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 break;
             case EnumType2.TYPE2_OTHER:
                 _dataProvider.AddDataOther(template, product);
+                break;
+            case EnumType2.TYPE2_SHIELD_ARMOR:
+                _dataProvider.AddDataArmor(template, product);
                 break;
         }
     }
@@ -234,6 +239,8 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                             return SwitchToAccessories();
                         case EnumType2.TYPE2_OTHER:
                             return SwitchToAccessories();
+                        case EnumType2.TYPE2_SHIELD_ARMOR:
+                            return SwitchToArmor();
                     }
                 }
 
@@ -250,6 +257,8 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                             return SwitchToAccessories();
                         case EnumType2.TYPE2_OTHER:
                             return SwitchToAccessories();
+                        case EnumType2.TYPE2_SHIELD_ARMOR:
+                            return SwitchToArmor();
                     }
                 }
   
@@ -311,7 +320,17 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         return _accessories;
     }
 
-    
+    private TemplateContainer SwitchToArmor()
+    {
+        _content.Clear();
+        var _accessories = _windowTemplateArmor.CloneTree();
+        _content.Add(_accessories);
+        _contentInside = _accessories.Q<VisualElement>(className: "content");
+        _contentInside.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+        return _accessories;
+    }
+
+
 
     private string[] GetUniquePosition(VisualElement ve)
     {
@@ -369,14 +388,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
 
                 _content.transform.position = reversePoint;
             }
-        //}
-        //else
-        //{
-            //2px border
-         //   float new_y = newPoint.y + 2;
-         //   Vector2 reversePoint = new Vector2(newPoint.x, new_y);
-         //   _content.transform.position = reversePoint;
-        //}
+
         BringToFront();
     }
 
@@ -387,16 +399,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         return new Vector2(newPoint.x, newPoint.y - element1);
     }
 
-    //PosY/2 - center point left vertical border
-    // PosY > newPoint = TOP
-    //PosY < newPoint = Footer
-    //private bool IsTop(Vector2 newPoint)
-    //{
-        //float yPos = ActionWindow.Instance.getYposition();
-       // float heightAction = ActionWindow.Instance.getHeight() / 2;
-        //var end = yPos + heightAction;
-        //return end >= newPoint.y;
-    //}
+
     private Vector2 lowestPoint(Vector2 newPoint, float element)
     {
         return new Vector2(newPoint.x, newPoint.y + element);
