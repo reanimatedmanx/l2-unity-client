@@ -206,7 +206,7 @@ public class World : MonoBehaviour {
             Entity npc;
 
 
-
+            ChangeEntityType(identity);
 
             if (identity.EntityType == EntityType.NPC)
             {
@@ -252,7 +252,7 @@ public class World : MonoBehaviour {
 
             npc.Appearance = appearance;
 
-            ChangeEntityType(identity);
+           
 
             npcGo.transform.name = identity.Name;
             npcGo.SetActive(true);

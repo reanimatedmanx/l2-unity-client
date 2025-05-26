@@ -165,15 +165,7 @@ public class GameServerPacketHandler : ServerPacketHandler
         });
     }
 
-    private void OnMessageReceive(byte[] data) {
-        ReceiveMessagePacket packet = new ReceiveMessagePacket(data);
-        String sender = packet.Sender;
-        String text = packet.Text;
-        ChatMessage message = new ChatMessage(sender, text);
-        _eventProcessor.QueueEvent(() => ChatWindow.Instance.ReceiveChatMessage(message));
-    }
-
-
+  
 
 
  

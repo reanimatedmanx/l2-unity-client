@@ -71,15 +71,15 @@ public class PlayerInventory : MonoBehaviour
                 if (oldItem == null)
                 {
                     //count info  to message system
-                    StorageVariable.getInstance().AddS1Items(new VariableItem(item.Count.ToString(), item.ObjectId));
+                   // StorageVariable.getInstance().AddS1Items(new VariableItem(item.Count.ToString(), item.ObjectId));
                     _playerInventory.Add(item);
                 }
                 else
                 {
                     //count info  to message system
                     int newCount = item.Count - oldItem.Count;
-                    StorageVariable.getInstance().AddS1Items(new VariableItem(newCount.ToString(), item.ObjectId));
-                    StorageVariable.getInstance().ResumeShowDelayMessage((int)MessageID.ADD_INVENTORY);
+                   // StorageVariable.getInstance().AddS1Items(new VariableItem(newCount.ToString(), item.ObjectId));
+                   // StorageVariable.getInstance().ResumeShowDelayMessage((int)MessageID.ADD_INVENTORY);
                     oldItem.Update(item);
                 }
             }
@@ -89,8 +89,9 @@ public class PlayerInventory : MonoBehaviour
                 _playerInventory.Remove(oldItem);
             }
         }
-        StorageItems.getInstance().AddItems(_playerInventory.ToArray());
-        InventoryWindow.Instance.UpdateItemList(_playerInventory);
+        EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.UpdateItemList(_playerInventory));
+        //StorageItems.getInstance().AddItems(_playerInventory.ToArray());
+        //InventoryWindow.Instance.UpdateItemList(_playerInventory);
     }
 
     public ItemInstance GetItemByObjectId(int objectId)

@@ -648,10 +648,11 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
     private void OnInventoryUpdate(byte[] data)
     {
         InventoryUpdate packet = new InventoryUpdate(data);
-        EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.UpdateInventory(packet.Items));
+        PlayerInventory.Instance.UpdateInventory(packet.Items);
+        //EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.UpdateInventory(packet.Items));
 
         // World.Instance.StatusUpdate(packet.ObjectId, packet.Attributes);
-         //Debug.Log("INVENTORY UPDATE Œ¡–¿¡ŒŒ“¿À»");
+        //Debug.Log("INVENTORY UPDATE Œ¡–¿¡ŒŒ“¿À»");
     }
 
     

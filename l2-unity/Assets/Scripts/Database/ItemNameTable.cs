@@ -167,8 +167,8 @@ public class ItemNameTable {
     {
         if (!string.IsNullOrEmpty(text))
         {
-            var text1 = text.Replace(id.ToString()+",", "");
-            string[] stringArray = text1.Split(',');
+            //var text1 = text.Replace(id.ToString()+",", "");
+            string[] stringArray = text.Split(',');
 
             return stringArray
                 .Select(s => {

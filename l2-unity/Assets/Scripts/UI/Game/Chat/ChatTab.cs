@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements; 
@@ -6,20 +8,30 @@ using UnityEngine.UIElements;
 public class ChatTab
 {
     [SerializeField] string _tabName = "Tab";
-    //[SerializeField] private List<MessageType> _filteredMessages;
+
     private bool _autoscroll = true;
     private ScrollView _scrollView;
-    private Label _content;
+    private VisualElement _content;
     private Scroller _scroller;
     private VisualElement _tabContainer;
     private VisualElement _tabHeader;
     private VisualElement _chatWindowEle;
+    private static int _defaultlabelCount = 161;
     public string TabName { get { return _tabName; } }
-    //public List<MessageType> FilteredMessages { get { return _filteredMessages; } }
-    public Label Content { get { return _content; } }
+
+    //public Label Content { get { return _content; } }
+
+
+    private DataLabel[] _labelArray = new DataLabel[_defaultlabelCount];
     public VisualElement TabContainer { get { return _tabContainer; } }
     public VisualElement TabHeader { get { return _tabHeader; } }
     public Scroller Scroller { get { return _scroller; } }
+    private VisualTreeAsset _messageLabelTemplate;
+
+    public void SetMessageTemplate(VisualTreeAsset messageLabelTemplate)
+    {
+        _messageLabelTemplate = messageLabelTemplate;
+    }
 
     public void Initialize(VisualElement chatWindowEle, VisualElement tabContainer, VisualElement tabHeader) {
         _chatWindowEle = chatWindowEle;
@@ -27,8 +39,8 @@ public class ChatTab
         _tabHeader = tabHeader;
         _scrollView = tabContainer.Q<ScrollView>("ScrollView");
         _scroller = _scrollView.verticalScroller;
-        _content = tabContainer.Q<Label>("Content");
-        _content.text = "";
+        _content = tabContainer.Q<VisualElement>("Content");
+       // _content.text = "";
 
         tabHeader.AddManipulator(new ButtonClickSoundManipulator(tabHeader));
 
@@ -38,17 +50,95 @@ public class ChatTab
             }
         }, TrickleDown.TrickleDown);
       
-        RegisterAutoScrollEvent();
+        //RegisterAutoScrollEvent();
         RegisterPlayerScrollEvent();
+        CreateEmptyLabel();
     }
 
-    private void RegisterAutoScrollEvent() {
-        _content.RegisterValueChangedCallback(evt => {
-            if(_autoscroll) {
-                ChatWindow.Instance.ScrollDown(_scroller);
+ 
+
+
+    private void CreateEmptyLabel()
+    {
+        for(int i = 0; i < _defaultlabelCount; i++){
+            var template = _messageLabelTemplate.CloneTree();
+            var label = template.Q<Label>("Text");
+
+            if(label != null)
+            {
+                _labelArray[i] = new DataLabel(i, label, false);
+                _content.Add(label);
             }
-        });    
+
+        }
     }
+
+    public void ConcatMessage(string message)
+    {
+        DataLabel dl = GetDataLabel();
+        Label chatContent = dl.GetLabel();
+        SetText(chatContent, message);
+        dl.SetVisible(true);
+        ChatWindow.Instance.ScrollDown(_scroller);
+    }
+
+
+    private void SetText(Label chatContent , string message)
+    {
+        if (chatContent.text.Length > 0)
+        {
+            chatContent.text += "\r\n";
+        }
+        chatContent.text += message;
+    }
+
+    public DataLabel GetDataLabel()
+    {
+        var hiddenLabel = Array.Find(_labelArray, dl => !dl.IsVisible());
+        if (hiddenLabel != null)
+        {
+            return hiddenLabel;
+        }
+        else
+        {
+            return IfDlNotEmpty();
+        }
+        
+    }
+
+ 
+
+    private DataLabel IfDlNotEmpty()
+    {
+        ShiftElements(_labelArray);
+        return _labelArray[_labelArray.Length - 1];
+    }
+
+
+
+    public void ShiftElements(DataLabel[] array)
+    {
+
+        for (int i = 0; i < array.Length - 1; i++)
+        {
+            array[i].SetText(array[i + 1].GetLabel().text);
+        }
+
+        array[array.Length - 1].GetLabel().text = "";
+    }
+
+
+    public void SetLabelVisible(DataLabel dl , bool visible)
+    {
+        dl.SetVisible(visible);
+    }
+    //private void RegisterAutoScrollEvent() {
+       // _content.RegisterValueChangedCallback(evt => {
+         //   if(_autoscroll) {
+          //      ChatWindow.Instance.ScrollDown(_scroller);
+          //  }
+        //});    
+   // }
 
     private void RegisterPlayerScrollEvent() {
         var highBtn = _scroller.Q<RepeatButton>("unity-high-button");

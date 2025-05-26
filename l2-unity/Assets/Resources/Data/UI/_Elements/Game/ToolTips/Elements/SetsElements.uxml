@@ -1,0 +1,13 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:GroupBox name="setsElements" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0;">
+        <engine:Label name="labelSetHeader" style="margin-top: 0; margin-right: 0; margin-bottom: 2px; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; font-size: 10px; color: rgb(202, 202, 201); -unity-text-outline-width: 0.1px; -unity-font-definition: resource(&apos;Data/UI/Assets/Font/tahoma&apos;);" />
+        <engine:GroupBox name="listSets" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; border-left-width: 3px;">
+            <engine:GroupBox name="SetDefault" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 2px; padding-left: 0; flex-direction: row; opacity: 0.95;">
+                <engine:GroupBox name="SetGrowImage" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 16px; height: 16px; max-width: 16px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; align-items: center; justify-content: center; align-self: center; max-height: 16px;">
+                    <engine:VisualElement name="iconSet" style="flex-grow: 1; width: 16px; height: 16px; max-width: 16px; max-height: 16px; align-items: auto; justify-content: flex-start; align-self: auto; align-content: auto; flex-shrink: 1; background-image: resource(&apos;Data/SysTextures/Icon/armor_wooden_breastplate_i00&apos;);" />
+                </engine:GroupBox>
+                <engine:Label text="Wooden Bresplate" parse-escape-sequences="true" name="labelNameSet" style="font-size: 11px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 3px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; color: rgb(97, 97, 46); opacity: 1; -unity-text-outline-width: 0.1px; align-self: center; -unity-font-definition: resource(&apos;Data/UI/Assets/Font/tahoma&apos;);" />
+            </engine:GroupBox>
+        </engine:GroupBox>
+    </engine:GroupBox>
+</engine:UXML>

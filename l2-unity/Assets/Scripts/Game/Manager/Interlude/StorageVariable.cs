@@ -48,11 +48,11 @@ public class StorageVariable
 
     public  void ResumeShowDelayMessage(int MessageId)
     {
-        lock (_sync)
-        {
+        //lock (_sync)
+        //{
             _refreshMessageId = MessageId;
             _resetMessageDelay.Set();
-        }
+       // }
            
     }
 

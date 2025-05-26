@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 public class ChatWindow : L2Window {
     private VisualTreeAsset _tabTemplate;
     private VisualTreeAsset _tabHeaderTemplate;
+    private VisualTreeAsset _messageLabelTemplate;
     private TextField _chatInput;
     private VisualElement _chatInputContainer;
     private VisualElement _chatTabView;
@@ -19,6 +20,8 @@ public class ChatWindow : L2Window {
     [SerializeField] public List<ChatTab> _tabs;
     [SerializeField] private bool _chatOpened = false;
     [SerializeField] private int _chatInputCharacterLimit = 64;
+
+    
 
     public bool ChatOpened { get { return _chatOpened; } }
 
@@ -41,6 +44,7 @@ public class ChatWindow : L2Window {
         _windowTemplate = LoadAsset("Data/UI/_Elements/Game/Chat/ChatWindow");
         _tabTemplate = LoadAsset("Data/UI/_Elements/Game/Chat/ChatTab");
         _tabHeaderTemplate = LoadAsset("Data/UI/_Elements/Game/Chat/ChatTabHeader");
+        _messageLabelTemplate = LoadAsset("Data/UI/_Elements/Game/Chat/MessageLabelTemplate");
     }
 
     protected override IEnumerator BuildWindow(VisualElement root) {
@@ -111,7 +115,9 @@ public class ChatWindow : L2Window {
             tabHeaderContainer.Add(tabHeaderElement);
             tabContainer.Add(tabElement);
 
+            _tabs[i].SetMessageTemplate(_messageLabelTemplate);
             _tabs[i].Initialize(_windowEle, tabElement, tabHeaderElement);
+           
         }
 
         if (_tabs.Count > 0) {
@@ -199,7 +205,7 @@ public class ChatWindow : L2Window {
 
     public void ClearTab(int tabIndex) {
         if(tabIndex <= _tabs.Count - 1) {
-            _tabs[tabIndex].Content.text = "";
+            //_tabs[tabIndex].Content.text = "";
         }
     }
 
@@ -224,7 +230,7 @@ public class ChatWindow : L2Window {
             //        ConcatMessage(_tabs[i].Content, message.ToString());
             //    }
             //}
-            ConcatMessage(_tabs[i].Content, message.ToString());
+            _tabs[i].ConcatMessage( message.ToString());
         }
     }
 
@@ -239,16 +245,11 @@ public class ChatWindow : L2Window {
             //        ConcatMessage(_tabs[i].Content, message.ToString());
             //    }
             //}
-            ConcatMessage(_tabs[i].Content, message.ToString());
+            _tabs[i].ConcatMessage( message.ToString());
         }
     }
 
-    private void ConcatMessage(Label chatContent, string message) {
-        if(chatContent.text.Length > 0) {
-            chatContent.text += "\r\n";
-        }
-        chatContent.text += message;
-    }
+ 
 
     internal void ScrollDown(Scroller scroller) {
         StartCoroutine(ScrollDownWithDelay(scroller));

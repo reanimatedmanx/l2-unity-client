@@ -39,11 +39,11 @@ public class StorageItems
     }
     public void AddItems(ItemInstance[] itemsParce)
     {
-        lock (_sync)
-        {
+        //lock (_sync)
+       // {
             items = null;
             items = itemsParce;
-        } 
+       // } 
     }
 
     public void AddShow(bool show)

@@ -248,26 +248,51 @@ public class Product
         return "";
     }
 
+    public string GetTypeWeaponName()
+    {
+        Weapongrp weapon = WeapongrpTable.Instance.GetWeapon(_itemId);
+
+        if (weapon != null)
+        {
+            if (weapon.BodyPart == ItemSlot.lhand_shield)
+            {
+                return "Shield";
+            }
+        }
+
+
+        return "";
+    }
+
+
     public string GetTypeArmorName()
     {
         Armorgrp armor = ArmorgrpTable.Instance.GetArmor(_itemId);
-
+        Debug.Log("Body part test > " + armor.BodyPart);
         if (armor != null)
         {
             if (armor.BodyPart == ItemSlot.legs)
             {
-                if(armor.ArmorType == ArmorType.light) return "Bottom / Light Armor";
-                if(armor.ArmorType == ArmorType.heavy) return "Bottom / Heavy armor";
+                if(armor.ArmorType == ArmorType.light) return "Lower Body / Light";
+                if(armor.ArmorType == ArmorType.heavy) return "Lower Body / Heavy";
 
             }
             else if (armor.BodyPart == ItemSlot.chest)
             {
-                if (armor.ArmorType == ArmorType.light) return "Upper / Light Armor";
-                if (armor.ArmorType == ArmorType.heavy) return "Upper / Heavy Armor";
+                if (armor.ArmorType == ArmorType.light) return "Upper Body / Light";
+                if (armor.ArmorType == ArmorType.heavy) return "Upper Body / Heavy";
             }
             else if (armor.BodyPart == ItemSlot.boots)
             {
                 return "Boots";
+            }
+            else if (armor.BodyPart == ItemSlot.feet)
+            {
+                return "Boots";
+            }
+            else if (armor.BodyPart == ItemSlot.head)
+            {
+                return "Helmet";
             }
             else if (armor.BodyPart == ItemSlot.gloves)
             {

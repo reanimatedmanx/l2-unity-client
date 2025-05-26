@@ -1,4 +1,5 @@
 using System.Globalization;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEditor.Rendering.FilterWindow;
@@ -6,6 +7,11 @@ using static UnityEngine.Rendering.DebugUI.MessageBox;
 
 public class TooltipDataProvider
 {
+    private CreatorSets _creator;
+    public TooltipDataProvider()
+    {
+        _creator = new CreatorSets();
+    }
     public  void AddDataWeapon(TemplateContainer container, Product product)
     {
 
@@ -56,18 +62,31 @@ public class TooltipDataProvider
             VisualElement groupBoxType = container.Q<VisualElement>("typeText");
             VisualElement groupBoxMDef = container.Q<VisualElement>("mdeText");
 
+            VisualElement groupBoxIcon = container.Q<VisualElement>("GrowIcon");
+            VisualElement icon = container.Q<VisualElement>("icon");
+            Texture2D texture = IconManager.Instance.LoadTextureByName(armor.Icon);
+            AddElementIfNotNull(groupBoxIcon, icon, texture);
             EnabledRow(groupBoxType);
             EnabledRow(groupBoxMDef);
 
+            Label mpLabel = container.Q<Label>("mpLabel");
+            VisualElement mpGroup = container.Q<VisualElement>("mpText");
+            AddElementIfNot0(mpGroup, mpLabel, armor.MpBonus);
+
             Label textMdef = container.Q<Label>("mdefLabel");
-            Label typeLabel = container.Q<Label>("typeLabel");
+            textMdef.text = armor.MDef.ToString();
+
+            VisualElement groupTypeLabel = container.Q<VisualElement>("SettingType");
+            Label typeLabel  = container.Q<Label>("typeLabel");
+            AddElementIfNotEmpty(groupTypeLabel, typeLabel, product.GetTypeAccessoriesName());
 
             Label price = (Label)container.Q<Label>("priceLabel");
-            price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
+            //price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
             price.text = ToolTipsUtils.ConvertToPrice(product.Price) + " Adena";
 
-            typeLabel.text = product.GetTypeAccessoriesName();
-            textMdef.text = armor.MDef.ToString();
+            
+            //typeLabel.text = product.GetTypeAccessoriesName();
+           
             container.Q<Label>("weightlabel").text = armor.Weight.ToString();
             container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
 
@@ -85,27 +104,44 @@ public class TooltipDataProvider
 
             container.Q<Label>("nameAccessories").text = text.GetName();
 
+            //set icon
+            VisualElement groupBoxIcon = container.Q<VisualElement>("GrowIcon");
+            VisualElement icon = container.Q<VisualElement>("icon");
+            Texture2D texture = IconManager.Instance.LoadTextureByName(etcItem.Icon);
+            AddElementIfNotNull(groupBoxIcon, icon, texture);
 
+            Label mpLabel = container.Q<Label>("mpLabel");
+            VisualElement mpGroup = container.Q<VisualElement>("mpText");
+            AddElementIfNot0(mpGroup, mpLabel, 0);
+
+            //set price
             Label price = (Label)container.Q<Label>("priceLabel");
-            price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
+            //price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
             price.text = ToolTipsUtils.ConvertToPrice(product.Price) + " Adena";
 
-            //disabled rows Mdef
-            VisualElement groupBoxType = container.Q<VisualElement>("typeText");
-            VisualElement groupBoxMDef = container.Q<VisualElement>("mdeText");
 
-            DisabledRow(groupBoxType);
-            DisabledRow(groupBoxMDef);
+            VisualElement groupBoxMdef = (VisualElement)container.Q<VisualElement>("mdeText");
+            Label lebelMdef = (Label)container.Q<Label>("mdefLabel");
 
+            //set mdef
+            AddElementIfNot0(groupBoxMdef, lebelMdef, 0);
 
-            container.Q<Label>("weightlabel").text = etcItem.Weight.ToString();
+            //set type
+            VisualElement groupTypeLabel = container.Q<VisualElement>("SettingType");
+            Label typeLabel = container.Q<Label>("typeLabel");
+            AddElementIfNotEmpty(groupTypeLabel, typeLabel, product.GetTypeAccessoriesName());
+
+            VisualElement groupBoxWeight = container.Q<VisualElement>("weightText");
+            Label weightLabel = container.Q<Label>("weightlabel");
+            AddElementIfNotEmpty(groupBoxWeight, weightLabel, etcItem.Weight.ToString());
+            
             container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
 
         }
     }
 
 
-    public void AddDataArmor(TemplateContainer container, Product product)
+    public void AddDataArmor(TemplateContainer container, Product product , VisualTreeAsset setsElements)
     {
         if (product != null)
         {
@@ -122,7 +158,7 @@ public class TooltipDataProvider
 
                     if(armor != null)
                     {
-                        AddArmor(container, product, text, armor);
+                        AddArmor(container, product, text, armor , setsElements);
                     }
                 }
                 else if (data.GetType() == typeof(Weapongrp))
@@ -141,6 +177,12 @@ public class TooltipDataProvider
 
     private void AddArmorShield(TemplateContainer container, Product product , IDataTips text , Weapongrp armor)
     {
+        //set icon
+        VisualElement groupBoxIcon = container.Q<VisualElement>("GrowIcon");
+        VisualElement icon = container.Q<VisualElement>("icon");
+        Texture2D texture = IconManager.Instance.LoadTextureByName(armor.Icon);
+        AddElementIfNotNull(groupBoxIcon, icon, texture);
+
         container.Q<Label>("nameAccessories").text = text.GetName();
 
         if (ItemGrade.none != armor.Grade)
@@ -156,13 +198,14 @@ public class TooltipDataProvider
         EnabledRow(groupBoxMDef);
 
 
+        VisualElement groupType = container.Q<VisualElement>("typeText");
         Label typeLabel = container.Q<Label>("typeLabel");
 
         Label price = (Label)container.Q<Label>("priceLabel");
-        price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
+        //price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
         price.text = ToolTipsUtils.ConvertToPrice(product.Price) + " Adena";
 
-        typeLabel.text = product.GetTypeAccessoriesName();
+        AddElementIfNotEmpty(groupType, typeLabel, product.GetTypeWeaponName());
 
         Label pdefLabel = container.Q<Label>("pdefLabel");
         VisualElement pdefGroup = container.Q<VisualElement>("pdeText");
@@ -176,6 +219,10 @@ public class TooltipDataProvider
         Label dexLabel = container.Q<Label>("dexLabel");
         VisualElement dexGroup = container.Q<VisualElement>("dexText");
 
+        Label mpLabel = container.Q<Label>("mpLabel");
+        VisualElement mpGroup = container.Q<VisualElement>("mpText");
+        AddElementIfNot0(mpGroup, mpLabel, 0);
+
         AddElementIfNot0(pdefGroup, pdefLabel, armor.ShieldPdef);
         AddElementIfNot0(mdefGroup, mdefLabel, 0);
         AddElementIfNot0(chancedefGroup, chancedefLabel, armor.ShieldRate);
@@ -185,8 +232,14 @@ public class TooltipDataProvider
         container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
     }
 
-    private void AddArmor(TemplateContainer container, Product product, IDataTips text, Armorgrp armor)
+    private void AddArmor(TemplateContainer container, Product product, IDataTips text, Armorgrp armor , VisualTreeAsset setsElements)
     {
+        //set icon
+        VisualElement groupBoxIcon = container.Q<VisualElement>("GrowIcon");
+        VisualElement icon = container.Q<VisualElement>("icon");
+        Texture2D texture = IconManager.Instance.LoadTextureByName(armor.Icon);
+        AddElementIfNotNull(groupBoxIcon, icon, texture);
+
         container.Q<Label>("nameAccessories").text = text.GetName();
 
         if (ItemGrade.none != armor.Grade)
@@ -206,7 +259,7 @@ public class TooltipDataProvider
 
 
         Label price = (Label)container.Q<Label>("priceLabel");
-        price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
+        //price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
         price.text = ToolTipsUtils.ConvertToPrice(product.Price) + " Adena";
 
 
@@ -224,15 +277,23 @@ public class TooltipDataProvider
         Label dexLabel = container.Q<Label>("dexLabel");
         VisualElement dexGroup = container.Q<VisualElement>("dexText");
 
-        Label setsLabel = container.Q<Label>("setstlabel");
-        VisualElement setsGroup = container.Q<VisualElement>("setsText");
+        Label mpLabel = container.Q<Label>("mpLabel");
+        VisualElement mpGroup = container.Q<VisualElement>("mpText");
 
+
+
+        AddElementIfNot0(mpGroup, mpLabel, armor.MpBonus);
         AddElementIfNot0(pdefGroup, pdefLabel, armor.PDef);
         AddElementIfNot0(mdefGroup, mdefLabel, armor.MDef);
         AddElementIfNot0(chancedefGroup, chancedefLabel, 0);
         AddElementIfNot0(dexGroup, dexLabel, 0);
         AddElementIfNot0(dexGroup, dexLabel, 0);
-        AddElementArrIfNot0(setsGroup, setsLabel, text.GetSets());
+
+        VisualElement footer_container = container.Q<VisualElement>("Footer");
+
+        _creator.AddSetsElement(footer_container, setsElements, text.GetSets());
+
+
         container.Q<Label>("weightlabel").text = armor.Weight.ToString();
         container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
     }
@@ -246,10 +307,31 @@ public class TooltipDataProvider
         }
         else
         {
+            if (groupElement == null) { Debug.LogWarning(" ToolTipDataProvider: Не критическая ошибка мы не нашли элемент tooltips "); return; }
             groupElement.style.display = DisplayStyle.None;
             labelData.text = "";
         }
     }
+
+    private void AddElementIfNotNull(VisualElement groupElement, VisualElement icon, Texture2D texture)
+    {
+        if (texture != null)
+        {
+            icon.style.backgroundImage = texture;
+            groupElement.style.display = DisplayStyle.Flex;
+        }
+        else
+        {
+            groupElement.style.display = DisplayStyle.None;
+            icon.style.backgroundImage = null;
+        }
+    }
+
+ 
+
+
+  
+
 
     private void AddElementArrIfNot0(VisualElement groupElement, Label labelData, ItemName[] setsName)
     {

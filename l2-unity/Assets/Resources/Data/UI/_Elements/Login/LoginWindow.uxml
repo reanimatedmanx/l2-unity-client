@@ -7,7 +7,7 @@
             </ui:VisualElement>
             <ui:VisualElement name="IDInput" picking-mode="Ignore" class="login-input-container">
                 <ui:VisualElement name="UserInputBg" picking-mode="Ignore" class="login-input-bg" style="flex-grow: 1; position: absolute; width: 100%; height: 28px;" />
-                <ui:TextField max-length="16" name="UserInputField" tabindex="1" class="login-input" />
+                <ui:TextField max-length="16" name="UserInputField" tabindex="1" class="login-input" style="-unity-font-definition: resource(&apos;Data/UI/Assets/Font/Linotype Aroma Bold&apos;);" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Password" picking-mode="Ignore" style="flex-grow: 1; flex-direction: row; margin-top: 6px; flex-shrink: 0;">

@@ -51,14 +51,14 @@ public class NetworkCharacterControllerReceive : MonoBehaviour
 
         if (_destination != null && _destination != Vector3.zero) {
             //Debug.Log("Position Run SetMoveDirectionToDestination");
-            SetMoveDirectionToDestination();
+          //  SetMoveDirectionToDestination();
         }
         if (!_entity.IsDead())
         {
             //Debug.Log("FixedUpdate>>>>>>>>>>>>> RECIEVe EVENT _speed"+ _speed);
-            Vector3 ajustedDirection = _direction * _speed * _moveSpeedMultiplier + Vector3.down * 28f;
+            //Vector3 ajustedDirection = _direction * _speed * _moveSpeedMultiplier + Vector3.down * 28f;
             //Debug.Log("FixedUpdate>>>>>>>>>>>>> RECIEVe EVENT ajustedDirection" + ajustedDirection);
-            _characterController.Move(ajustedDirection * Time.deltaTime);
+            //_characterController.Move(ajustedDirection * Time.deltaTime);
             //Debug.Log("Position IsDead SetMoveDirectionToDestination");
         }
        // else

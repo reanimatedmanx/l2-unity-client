@@ -20,6 +20,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
     private VisualTreeAsset _windowTemplateSimple;
     private VisualTreeAsset _windowTemplateAcccesories;
     private VisualTreeAsset _windowTemplateArmor;
+    private VisualTreeAsset _setsElements;
     private VisualElement _contentInside;
     private float _lastHeightContent = 0;
     private float _heightContent = 0;
@@ -53,6 +54,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         _windowTemplateWeapon = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipWeapon");
         _windowTemplateAcccesories = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipAccessories");
         _windowTemplateArmor = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipArmor");
+        _setsElements = LoadAsset("Data/UI/_Elements/Game/ToolTips/Elements/SetsElements");
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)
@@ -103,7 +105,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 _dataProvider.AddDataOther(template, product);
                 break;
             case EnumType2.TYPE2_SHIELD_ARMOR:
-                _dataProvider.AddDataArmor(template, product);
+                _dataProvider.AddDataArmor(template, product  , _setsElements);
                 break;
         }
     }
