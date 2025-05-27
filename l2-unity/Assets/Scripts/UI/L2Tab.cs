@@ -17,7 +17,7 @@ public abstract class L2Tab
     public Scroller Scroller { get { return _scroller; } }
     protected float _scrollStepSize = 32f;
 
-    public virtual void Initialize(VisualElement chatWindowEle, VisualElement tabContainer, VisualElement tabHeader)
+    public virtual void Initialize(VisualElement chatWindowEle, VisualElement tabContainer, VisualElement tabHeader , bool initEmpty , bool isSwitchTab)
     {
         _windowEle = chatWindowEle;
 
@@ -34,10 +34,15 @@ public abstract class L2Tab
             
 
             tabHeader.AddManipulator(new ButtonClickSoundManipulator(tabHeader));
+            //use inventory window
+            //no use dealer window
+            if (isSwitchTab)
+            {
+                tabHeader.RegisterCallback<MouseDownEvent>(evt => {
+                    OnSwitchTab();
+                }, TrickleDown.TrickleDown);
+            }
 
-            tabHeader.RegisterCallback<MouseDownEvent>(evt => {
-                OnSwitchTab();
-            }, TrickleDown.TrickleDown);
 
             RegisterAutoScrollEvent();
             RegisterPlayerScrollEvent();

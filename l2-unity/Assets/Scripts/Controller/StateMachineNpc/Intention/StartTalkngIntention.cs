@@ -4,6 +4,7 @@ using UnityEditorInternal;
 using UnityEngine;
 
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.EventSystems.EventTrigger;
 using static UnityEngine.GraphicsBuffer;
 
@@ -33,12 +34,16 @@ public class StartTalkingIntention : NpcIntentionBase
             MoveAllCharacters.Instance.AddRotate(entity.IdentityInterlude.Id, new RotateData(player, entity));
         }
     }
-
+   
     private void ShowHtmlDialog(NpcHtmlMessage packet)
     {
-        HtmlWindow.Instance.InjectToWindow(packet.Elements());
-        HtmlWindow.Instance.ShowWindowToCenter();
+
+       HtmlWindow.Instance.InjectToWindow(packet.Elements());
+       HtmlWindow.Instance.Test2();
+  
     }
+
+
 
     public override void Exit()
     {

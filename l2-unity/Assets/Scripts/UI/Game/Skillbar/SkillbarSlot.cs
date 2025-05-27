@@ -47,10 +47,10 @@ public class SkillbarSlot : L2ClickableSlot
 
     public void AssignItem(int objectId)
     {
-        ItemInstance item = PlayerInventory.Instance.GetItemByObjectId(objectId);
-        _innerSlot = new InventorySlot(_position, _slotElement, SlotType.SkillBar);
-        ((InventorySlot)_innerSlot).AssignItem(item);
-        ((L2ClickableSlot)_innerSlot).UnregisterClickableCallback();
+        //ItemInstance item = PlayerInventory.Instance.GetItemByObjectId(objectId);
+        //_innerSlot = new InventorySlot(_position, _slotElement, SlotType.SkillBar);
+        //((InventorySlot)_innerSlot).AssignItem(item);
+        //((L2ClickableSlot)_innerSlot).UnregisterClickableCallback();
 
         UpdateInputInfo();
     }

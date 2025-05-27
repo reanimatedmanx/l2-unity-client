@@ -9,7 +9,7 @@ public class StorageItems
 {
     private static StorageItems instance;
     private object _sync = new object();
-    private ItemInstance[] items;
+    private Dictionary <int , ItemInstance> items;
     private List<Shortcut> shortCuts;
     private bool showWindow;
     private StorageItems()
@@ -37,7 +37,7 @@ public class StorageItems
         }
        
     }
-    public void AddItems(ItemInstance[] itemsParce)
+    public void AddItems(Dictionary<int, ItemInstance> itemsParce)
     {
         //lock (_sync)
        // {
@@ -51,17 +51,17 @@ public class StorageItems
         showWindow = show;
     }
 
-    public ItemInstance[]  GetItems()
+    public Dictionary<int , ItemInstance>  GetItems()
     {
-        lock (_sync)
-        {
+        //lock (_sync)
+       // {
             if (items != null)
             {
                 return items;
             }
-            return new ItemInstance[0];
-        }
-   
+            return new Dictionary<int , ItemInstance>();
+       // }
+
     }
 
     public List<Shortcut> GetShortCuts()

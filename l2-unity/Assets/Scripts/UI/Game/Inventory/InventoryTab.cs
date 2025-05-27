@@ -1,9 +1,13 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static L2Slot;
+using static PlayerInventory;
+using static UnityEditor.Progress;
 
 [System.Serializable]
 public class InventoryTab : L2Tab
@@ -16,12 +20,13 @@ public class InventoryTab : L2Tab
     public List<ItemCategory> _filteredCategories;
     public bool MainTab { get; internal set; }
 
-    public override void Initialize(VisualElement chatWindowEle, VisualElement tabContainer, VisualElement tabHeader)
+    public override void Initialize(VisualElement chatWindowEle, VisualElement tabContainer, VisualElement tabHeader, bool initEmpty, bool isSwitchTab)
     {
-        base.Initialize(chatWindowEle, tabContainer, tabHeader);
+        base.Initialize(chatWindowEle, tabContainer, tabHeader, initEmpty, isSwitchTab);
 
         _selectedSlot = -1;
         _contentContainer = tabContainer.Q<VisualElement>("Content");
+        CreateEmptyInventory(initEmpty);
     }
 
     public void UpdateInventorySlots(InventorySlot[] inventory)
@@ -30,42 +35,71 @@ public class InventoryTab : L2Tab
         _inventorySlots = inventory;
     }
 
- 
-    
-    
-    public void UpdateItemList(List<ItemInstance> items)
+
+    private void CreateEmptyInventory(bool initEmty)
     {
-        // Clear slots
-        if (_inventorySlots != null)
+        if (_contentContainer != null && initEmty)
         {
-            foreach (InventorySlot slot in _inventorySlots)
+
+            _contentContainer.Clear();
+
+            int slotCount = InventoryWindow.PLAYER_INVENTORY_SIZE;
+            _inventorySlots = new InventorySlot[slotCount];
+            SlotType slotType = GetSlotType(MainTab);
+
+            for (int i = 0; i < _inventorySlots.Length; i++)
             {
-                slot.UnregisterClickableCallback();
-                slot.ClearManipulators();
+                if (i == _inventorySlots.Length - 1)
+                {
+                    Debug.Log(" slot int i " + i);
+                    VisualElement disabledElement = CreateVisualElementDisabled();
+                    _contentContainer.Add(disabledElement);
+                }
+                else
+                {
+                    VisualElement slotElement = CretaVisualElement();
+                    InventorySlot slot = CreateInventorySlot(i, slotElement, slotType);
+                    _contentContainer.Add(slotElement);
+                   _inventorySlots[i] = slot;
+                }
+
             }
+            UpdateInventorySlots(_inventorySlots);
         }
 
-        _contentContainer.Clear();
-        _itemCount = 0;
+    }
 
-        // Create empty slots
-        int slotCount = InventoryWindow.Instance.SlotCount;
-        _inventorySlots = new InventorySlot[slotCount];
+    private VisualElement CretaVisualElement()
+    {
+        return InventoryWindow.Instance.InventorySlotTemplate.Instantiate()[0];
+    }
 
+    private VisualElement CreateVisualElementDisabled()
+    {
+        VisualElement slotElement = CretaVisualElement();
+        slotElement.AddToClassList("inventory-slot");
+        slotElement.AddToClassList("disabled");
+        return slotElement;
+    }
+    private InventorySlot CreateInventorySlot(int i , VisualElement slotElement , SlotType slotType)
+    {
+        return new InventorySlot(i, slotElement, this, slotType);
+    }
+
+    private SlotType GetSlotType(bool mainTab)
+    {
         L2Slot.SlotType slotType = L2Slot.SlotType.Inventory;
-        if (!MainTab)
+
+        if (!mainTab)
         {
             slotType = L2Slot.SlotType.InventoryBis;
         }
-
-        for (int i = 0; i < slotCount; i++)
-        {
-            VisualElement slotElement = InventoryWindow.Instance.InventorySlotTemplate.Instantiate()[0];
-            _contentContainer.Add(slotElement);
-
-            InventorySlot slot = new InventorySlot(i, slotElement, this, slotType);
-            _inventorySlots[i] = slot;
-        }
+        return slotType;
+    }
+    //temporarily disabling
+    private void UpdatePadSlots()
+    {
+        int slotCount = InventoryWindow.Instance.SlotCount;
 
         // Add disabled slot to fill up the window
         int rowLength = 9;
@@ -91,28 +125,127 @@ public class InventoryTab : L2Tab
             slotElement.AddToClassList("disabled");
             _contentContainer.Add(slotElement);
         }
+    }
+    public void SetItemList(List<ItemInstance> allItems)
+    {
+        for (int i = 0; i < allItems.Count; i++)
+        {
+            ItemInstance item = allItems[i];
+            _inventorySlots[item.Slot].AssignEmpty();
+        }
+
+        for (int i =0; i < allItems.Count; i++)
+        {
+                 ItemInstance item = allItems[i];
+                _inventorySlots[item.Slot].AssignItem(item);
+        }
+    }
+    public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified)
+    {
+        AddAndRemove(removeAndAdd);
+        Modified(modified);
+
+        // Clear slots
+        // if (_inventorySlots != null)
+        // {
+        //  foreach (InventorySlot slot in _inventorySlots)
+        // {
+        //  if(slot != null)
+        //  {
+        //      slot.UnregisterClickableCallback();
+        //      slot.ClearManipulators();
+        // }
+
+        // }
+        // }
+
+
+        //_itemCount = 0;
 
         // Assign items to slots
-        items.ForEach(item =>
-        {
-            if (item.Location == ItemLocation.Inventory)
-            {
-                if (_filteredCategories == null || _filteredCategories.Count == 0)
-                {
-                    _inventorySlots[item.Slot].AssignItem(item);
-                    _itemCount++;
-                }
-                else if (_filteredCategories.Contains(item.Category))
-                {
-                    _inventorySlots[_itemCount++].AssignItem(item);
-                }
-            }
-        });
+        //items.ForEach(item =>
+        // {
+        // if (item.Location == ItemLocation.Inventory)
+        // {
+        // if (_filteredCategories == null || _filteredCategories.Count == 0)
+        // {
+        //   _inventorySlots[item.Slot].AssignItem(item);
+        //   _itemCount++;
+        //}
+        //else if (_filteredCategories.Contains(item.Category))
+        // {
+        //    _inventorySlots[_itemCount++].AssignItem(item);
+        //}
+        // }
+        //});
 
         if (_selectedSlot != -1)
         {
             SelectSlot(_selectedSlot);
         }
+    }
+
+
+    private void AddAndRemove(List<ItemInstance> removeAndAdd)
+    {
+
+        for (int i = 0; i < removeAndAdd.Count; i++)
+        {
+            ItemInstance item = removeAndAdd[i];
+            if (item.LastChange == (int)InventoryChange.ADDED)
+            {
+                //InventorySlot slot = GetFreeSlot();
+                InventorySlot i_slot = _inventorySlots[item.Slot];
+                if (i_slot != null)
+                {
+
+                    //InventorySlot i_slot = _inventorySlots[slot.Position];
+                    i_slot.AssignItem(item);
+                }
+                else
+                {
+                    Debug.Log("ADD And Rmove Count Not ADD 3 " + removeAndAdd.Count);
+                }
+            }
+            else
+            {
+                InventorySlot slot = GetInventorySlot(item.ItemId);
+                if (slot != null)
+                {
+                    Debug.Log("Add new Object 1 Inventory Tab " + item.ItemId);
+                    _inventorySlots[slot.Position].AssignEmpty();
+                }
+            }
+        }
+
+    }
+
+    private void Modified(List<ItemInstance> modified)
+    {
+        for (int i = 0; i < modified.Count; i++)
+        {
+            ItemInstance item = modified[i];
+            if (item.LastChange == (int)InventoryChange.MODIFIED)
+            {
+                Debug.Log("Update inventory 1 Inventory Tab Modified " + item.ItemId);
+                InventorySlot slot = GetInventorySlot(item.ObjectId);
+                if (slot != null)
+                {
+                    _inventorySlots[slot.Position].AssignItem(item);
+                }
+            }
+
+        }
+    }
+
+    public InventorySlot GetInventorySlot(int objectId)
+    {
+        return _inventorySlots.FirstOrDefault(slot => slot.ObjectId == objectId);
+    }
+
+    public InventorySlot GetFreeSlot()
+    {
+        return _inventorySlots.FirstOrDefault(slot => slot.ObjectId == 0);
     }
 
     public override void SelectSlot(int slotPosition)

@@ -92,6 +92,32 @@ public class ItemInstance
         $"Cat:{_category} Equipped:{_equipped} Bodypart:{_bodyPart} Change:{_lastChange}";
     }
 
+    public override bool Equals(object obj)
+    {
+        // Проверяем, является ли объект тем же самым экземпляром
+        if (ReferenceEquals(this, obj)) return true;
+
+        // Проверяем, является ли объект того же типа
+        if (obj is ItemInstance other)
+        {
+            // Сравниваем ключевые поля для определения равенства
+            return _objectId == other._objectId && _itemId == other._itemId;
+        }
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        // Используем ключевые поля для вычисления хэш-кода
+        unchecked // Чтобы избежать переполнения
+        {
+            int hash = 17; // Начальное значение
+            hash = hash * 23 + _objectId.GetHashCode(); // Умножаем на простое число и добавляем хэш ObjectId
+            hash = hash * 23 + _itemId.GetHashCode(); // Умножаем на простое число и добавляем хэш ItemId
+            return hash;
+        }
+    }
     // Packet data
 
     //writeI(item.getObjectId()); // ObjectId

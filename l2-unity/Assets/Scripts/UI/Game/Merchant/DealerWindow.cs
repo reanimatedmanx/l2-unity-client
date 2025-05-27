@@ -434,7 +434,7 @@ public class DealerWindow : L2PopupWindow
     {
         _tabBuy = new InventoryTab();
         _contentBuy.Clear();
-        _tabBuy.Initialize(_windowEle, _contentBuy, _contentBuy);
+        _tabBuy.Initialize(_windowEle, _contentBuy, _contentBuy , false , false);
         _inventorySlotsBuy = _shopCellCreator.CreateEmptyBuy(_tabBuy, _defaultCount, _contentBuy, GetInventorySlotTemplate());
     }
 

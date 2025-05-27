@@ -169,5 +169,17 @@ public class HtmlWindow : L2PopupWindow
       
     }
 
-    
+    public void Test2()
+    {
+        StartCoroutine(CoroutineShow());
+    }
+    private IEnumerator CoroutineShow()
+    {
+        yield return new WaitForEndOfFrame();
+        _windowEle.style.display = DisplayStyle.Flex;
+        _mouseOverDetection.Enable();
+        BringToFront();
+    }
+
+
 }

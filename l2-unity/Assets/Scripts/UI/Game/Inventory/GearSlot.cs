@@ -18,13 +18,13 @@ public class GearSlot : InventorySlot
     {
         if (!_empty)
         {
-            ItemInstance item = PlayerInventory.Instance.GetItemByObjectId(ObjectId);
-            AddCacheName(item , ObjectId);
+            //ItemInstance item = PlayerInventory.Instance.GetItemByObjectId(ObjectId);
+            //AddCacheName(item , ObjectId);
 
-            var sendPaket = CreatorPacketsUser.CreateUseItem(ObjectId, 0);
-            bool enable = GameClient.Instance.IsCryptEnabled();
+            //var sendPaket = CreatorPacketsUser.CreateUseItem(ObjectId, 0);
+            //bool enable = GameClient.Instance.IsCryptEnabled();
            // Debug.Log("PlayerInventory Use_Item ObjId " + Id);
-            SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
+            //SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
         }
     }
 

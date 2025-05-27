@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class InventoryWindow : L2PopupWindow
 {
-    public static int PLAYER_INVENTORY_SIZE = 80;
+    public static int PLAYER_INVENTORY_SIZE = 81;
 
     private VisualTreeAsset _tabTemplate;
     private VisualTreeAsset _tabHeaderTemplate;
@@ -40,7 +41,7 @@ public class InventoryWindow : L2PopupWindow
 
     private VisualElement _weiBar;
     private VisualElement _weiBarBg;
-
+    protected bool _isWindowHiddenMain = true;
     public VisualTreeAsset InventorySlotTemplate { get { return _inventorySlotTemplate; } }
     public bool Expanded { get { return _expanded; } }
     public int UsedSlots { get { return _usedSlots; } }
@@ -64,56 +65,7 @@ public class InventoryWindow : L2PopupWindow
             Destroy(this);
         }
 
-        // /* TO REMOVE FOR TESTING ONLY */
-        // ItemTable.Instance.Initialize();
-        // ItemNameTable.Instance.Initialize();
-        // ItemStatDataTable.Instance.Initialize();
-        // ArmorgrpTable.Instance.Initialize();
-        // EtcItemgrpTable.Instance.Initialize();
-        // WeapongrpTable.Instance.Initialize();
-        // ItemTable.Instance.CacheItems();
-        // IconManager.Instance.Initialize();
-        // IconManager.Instance.CacheIcons();
-
-        // /* TO REMOVE FOR TESTING ONLY */
-        // _playerItems = new List<ItemInstance> ();
-
-        // _playerItems.Add(new ItemInstance(0, 28, ItemLocation.Inventory, 1, 1, ItemCategory.ShieldArmor, false, ItemSlot.legs, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 48, ItemLocation.Inventory, 2, 1, ItemCategory.ShieldArmor, false, ItemSlot.gloves, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 45, ItemLocation.Inventory, 3, 1, ItemCategory.ShieldArmor, false, ItemSlot.head, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 35, ItemLocation.Inventory, 4, 1, ItemCategory.ShieldArmor, false, ItemSlot.feet, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 21, ItemLocation.Inventory, 5, 1, ItemCategory.ShieldArmor, false, ItemSlot.chest, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 2, ItemLocation.Inventory, 6, 1, ItemCategory.Weapon, false, ItemSlot.rhand, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 20, ItemLocation.Inventory, 7, 1, ItemCategory.ShieldArmor, false, ItemSlot.lhand, 0, 0));
-
-        // _playerItems.Add(new ItemInstance(0, 57, ItemLocation.Inventory, 14, 69420, ItemCategory.Adena, false, ItemSlot.none, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 1835, ItemLocation.Inventory, 15, 69420, ItemCategory.Item, false, ItemSlot.none, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 3947, ItemLocation.Inventory, 16, 69420, ItemCategory.Item, false, ItemSlot.none, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 2509, ItemLocation.Inventory, 17, 69420, ItemCategory.Item, false, ItemSlot.none, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 736, ItemLocation.Inventory, 18, 69420, ItemCategory.Item, false, ItemSlot.none, 0, 0));
-
-        // _playerItems.Add(new ItemInstance(0, 118, ItemLocation.Inventory, 45, 1, ItemCategory.ShieldArmor, false, ItemSlot.neck, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 112, ItemLocation.Inventory, 46, 1, ItemCategory.ShieldArmor, false, ItemSlot.lear, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 112, ItemLocation.Inventory, 47, 1, ItemCategory.ShieldArmor, false, ItemSlot.rear, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 116, ItemLocation.Inventory, 48, 1, ItemCategory.ShieldArmor, false, ItemSlot.rfinger, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 116, ItemLocation.Inventory, 49, 1, ItemCategory.ShieldArmor, false, ItemSlot.lfinger, 0, 0));
-
-
-
-        // // gear
-        // _playerItems.Add(new ItemInstance(0, 28,  ItemLocation.Equipped, (int)ItemSlot.legs, 1, ItemCategory.ShieldArmor, true,  ItemSlot.legs, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 48, ItemLocation.Equipped, (int)ItemSlot.gloves, 1, ItemCategory.ShieldArmor, true,  ItemSlot.gloves, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 45,  ItemLocation.Equipped, (int)ItemSlot.head, 1, ItemCategory.ShieldArmor, true,  ItemSlot.head, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 35,  ItemLocation.Equipped, (int)ItemSlot.feet, 1, ItemCategory.ShieldArmor, true,  ItemSlot.feet, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 21,  ItemLocation.Equipped, (int)ItemSlot.chest, 1, ItemCategory.ShieldArmor, true,  ItemSlot.chest, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 4,  ItemLocation.Equipped, (int)ItemSlot.rhand, 1, ItemCategory.Weapon, true,  ItemSlot.rhand, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 20,  ItemLocation.Equipped, (int)ItemSlot.lhand, 1, ItemCategory.ShieldArmor, true,  ItemSlot.lhand, 0, 0));
-
-        // _playerItems.Add(new ItemInstance(0, 118, ItemLocation.Equipped, (int)ItemSlot.neck, 1, ItemCategory.ShieldArmor, true, ItemSlot.neck, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 112, ItemLocation.Equipped, (int)ItemSlot.lear, 1, ItemCategory.ShieldArmor, true, ItemSlot.lear, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 112, ItemLocation.Equipped, (int)ItemSlot.rear, 1, ItemCategory.ShieldArmor, true, ItemSlot.rear, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 116, ItemLocation.Equipped, (int)ItemSlot.rfinger, 1, ItemCategory.ShieldArmor, true, ItemSlot.rfinger, 0, 0));
-        // _playerItems.Add(new ItemInstance(0, 116, ItemLocation.Equipped, (int)ItemSlot.lfinger, 1, ItemCategory.ShieldArmor, true, ItemSlot.lfinger, 0, 0));
+      
     }
 
     private void OnDestroy()
@@ -158,7 +110,7 @@ public class InventoryWindow : L2PopupWindow
         Button trashBtn = (Button)GetElementById("TrashBtn");
         trashBtn.AddManipulator(new ButtonClickSoundManipulator(trashBtn));
         trashBtn.AddManipulator(new TooltipManipulator(adenaDistribution, "Trash"));
-        L2Slot trashSlot = new L2Slot(trashBtn, -2 , L2Slot.SlotType.Trash);
+        //L2Slot trashSlot = new L2Slot(trashBtn, -2 , L2Slot.SlotType.Trash);
 
         _inventoryCountLabel = GetLabelById("InventoryCount");
 
@@ -167,6 +119,25 @@ public class InventoryWindow : L2PopupWindow
 
         _adenaCountLabel = GetLabelById("AdenaCount");
         _weightLabel = GetLabelById("CurrentWeight");
+    }
+
+    protected void RegisterCloseWindowEvent(string closeButtonClass)
+    {
+        Button closeButton = (Button)GetElementByClass(closeButtonClass);
+        if (closeButton == null)
+        {
+            Debug.LogWarning($"Cant find close button with className: {closeButtonClass}.");
+            return;
+        }
+
+        ButtonClickSoundManipulator buttonClickSoundManipulator = new ButtonClickSoundManipulator(closeButton);
+        closeButton.AddManipulator(buttonClickSoundManipulator);
+
+        closeButton.RegisterCallback<MouseUpEvent>(evt =>
+        {
+            AudioManager.Instance.PlayUISound("window_close");
+            HideWindow();
+        });
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)
@@ -198,7 +169,7 @@ public class InventoryWindow : L2PopupWindow
             }
             _expanded = true;
 
-            UpdateItemList(_playerItems);
+            //UpdateItemList(_playerItems);
         }
         else
         {
@@ -212,7 +183,7 @@ public class InventoryWindow : L2PopupWindow
             }
             _expanded = false;
 
-            UpdateItemList(_playerItems);
+           //UpdateItemList(_playerItems);
         }
 
         evt.PreventDefault();
@@ -290,7 +261,7 @@ public class InventoryWindow : L2PopupWindow
             tabHeaderContainer.Add(tabHeaderElement);
             tabContainer.Add(tabElement);
 
-            _tabs[i].Initialize(_windowEle, tabElement, tabHeaderElement);
+            _tabs[i].Initialize(_windowEle, tabElement, tabHeaderElement , true , true);
         }
 
         if (_tabs.Count > 0)
@@ -301,7 +272,10 @@ public class InventoryWindow : L2PopupWindow
         _tabs[0].MainTab = true;
 
         _gearTab = new InventoryGearTab();
-        _gearTab.Initialize(_windowEle, null, null);
+        _gearTab.Initialize(_windowEle, null, null , true , true);
+
+        _maximumWeight = 10000;
+        _weightLabel.text = "00.00%";
     }
 
     public bool SwitchTab(InventoryTab switchTo)
@@ -350,78 +324,76 @@ public class InventoryWindow : L2PopupWindow
         }
 
     }
-    public void UpdateItemList(List<ItemInstance> items)
+
+    public void SetItemList(List<ItemInstance> allItems , int adenaCount)
     {
-        _adenaCount = 0;
-        _usedSlots = 0;
+        _adenaCountLabel.text = adenaCount.ToString();
 
-        if (items == null)
-        {
-            items = new List<ItemInstance>();
-        }
-        else
-        {
-            if(items.Count > 0)
-            {
-                _usedSlots = items.Where(o => o.Location == ItemLocation.Inventory).Count();
+        //_tabs[0].ForEach((tab) =>
+        //{
+        _tabs[0].SetItemList(allItems);
+       // });
+        SwitchTab(_tabs[0]);
+    }
+    public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified , int adenaCount , int usedSlots)
+    {
 
-                ItemInstance adenaItem = items.FirstOrDefault(o => o.Category == ItemCategory.Adena);
-                if (adenaItem != null)
-                {
-                    _adenaCount = adenaItem.Count;
-                }
-            }
+        //_usedSlots = 0;
 
-        }
+        //if (items == null)
+        //{
+        //    items = new List<ItemInstance>();
+        //}
+        //else
+        //{
+           // if(items.Count > 0)
+            //{
+                //_usedSlots = items.Where(o => o.Location == ItemLocation.Inventory).Count();
 
-        _playerItems = items;
+                
+                //if (adenaItem != null)
+                //{
+                //    _adenaCount = adenaItem.Count;
+                //}
+           // }
+
+        //}
+
+        //_playerItems = items;
 
         // Slot count
         _slotCount = PLAYER_INVENTORY_SIZE;
-        _inventoryCountLabel.text = $"({_usedSlots}/{_slotCount})";
+        _inventoryCountLabel.text = $"({usedSlots}/{_slotCount})";
 
         //Adena
-        _adenaCountLabel.text = _adenaCount.ToString();
+        _adenaCountLabel.text = adenaCount.ToString();
 
-        //_currentWeight = 0;
-        //_maximumWeight = 10000;
-        //_weightLabel.text = "00.00%";
+
+
 
         // Tabs
-        _gearTab.UpdateItemList(items);
+        // _gearTab.UpdateItemList(items);
 
-        List<ItemInstance> items_I = FilterOnlyInventory(items);
-        RefreshSlot(items_I);
 
-        _tabs.ForEach((tab) =>
-        {
-            tab.UpdateItemList(items_I);
-        });
+        // _tabs[].ForEach((tab) =>
+        // {
+        _tabs[0].UpdateItemList(removeAndAdd,  modified);
+        //});
+        SwitchTab(_tabs[0]);
     }
 
-    private List<ItemInstance> FilterOnlyInventory(List<ItemInstance>items)
+ 
+    public void ToggleHideWindowManual()
     {
-        List<ItemInstance> filter = items.Where(item => !item.Equipped).ToList();
 
-        return filter;
-    }
+        Dictionary<int, ItemInstance> allItems = GetInventoryItems();
+        int adenaCount = GetAdenaCount(allItems.Values.ToList());
 
-    private void RefreshSlot(List<ItemInstance> items)
-    {
-        for (int i = 0; i < items.Count; i++)
-        {
-            items[i].SetSlot(i);
-        }
-    }
 
-    public override void ToggleHideWindow()
-    {
         if (_isWindowHidden)
         {
-            ItemInstance[] items = StorageItems.getInstance().GetItems();
-            _eventProcessor.QueueEvent(() => PlayerInventory.Instance.SetInventory(StorageItems.getInstance().GetItems(), true));
 
-            //GameClient.Instance.ClientPacketHandler.SendRequestOpenInventory();
+             PlayerInventory.Instance.SetInventory(allItems, true , adenaCount);
         }
         else
         {
@@ -429,16 +401,76 @@ public class InventoryWindow : L2PopupWindow
         }
     }
 
-    public override void ShowWindow()
+    private Dictionary<int, ItemInstance> GetInventoryItems()
     {
-        base.ShowWindow();
-        AudioManager.Instance.PlayUISound("inventory_open_01");
+
+        //if (IsFirstOpen)
+        //{
+         //   IsFirstOpen = true;
+         //   return  StorageItems.getInstance().GetItems();
+       // }
+        //else
+        //{
+            return  PlayerInventory.Instance.GetPlayerInventory();
+        //}
     }
 
-    public override void HideWindow()
+    private int GetAdenaCount(List<ItemInstance> modified)
     {
-        base.HideWindow();
-        AudioManager.Instance.PlayUISound("inventory_close_01");
+        ItemInstance item = modified.FirstOrDefault(o => o.Category == ItemCategory.Adena);
+        return (item != null) ? item.Count : 0;
+    }
+
+ 
+
+  
+    //Fiex Error Open 2 Windows Or More
+   //public void HideWindowManual()
+    //{
+       // _isWindowHiddenMain = true;
+       // _windowEle.style.display = DisplayStyle.None;
+        //_mouseOverDetection.Disable();
+    //}
+
+    //public void ShowWindowManual()
+    //{
+       // try
+       // {
+           // Debug.Log("Event open Windows"); ;
+           // Debug.Log(" Show name packet 1 " + _windowEle.name + " Children element " + _windowEle.childCount);
+            //_isWindowHiddenMain = false;
+            //_windowEle.style.display = DisplayStyle.Flex;
+            //_mouseOverDetection.Enable();
+           // PrintChildren();
+            //_windowEle.MarkDirtyRepaint();
+            //BringToFront();
+        //}
+       // catch (Exception ex)
+        //{
+           // Debug.LogException(ex);
+       // }
+
+    //}
+
+    private void PrintChildren()
+    {
+        Debug.Log(" Show name packet 2 " + _windowEle.name + " Children element " + _windowEle.childCount);
+        for (int i =0; i < _windowEle.childCount; i++)
+        {
+            Debug.Log("iteration 1");
+            Debug.Log("_windowEle " + _windowEle[i].name);
+        }
+    }
+
+    private IEnumerator CoroutineShow()
+    {
+        yield return new WaitForEndOfFrame();
+        _isWindowHiddenMain = false;
+        _windowEle.style.display = DisplayStyle.Flex;
+        _mouseOverDetection.Enable();
+        BringToFront();
+        
+
     }
 
     public void SelectSlot(int slot)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
@@ -79,33 +80,57 @@ public abstract class L2Window : MonoBehaviour
 
     protected virtual void InitWindow(VisualElement root)
     {
-        _root = root;
-        _windowEle = _windowTemplate.Instantiate()[0];
-        _mouseOverDetection = new MouseOverDetectionManipulator(_windowEle);
-        _windowEle.AddManipulator(_mouseOverDetection);
-
-        if (_isWindowHidden)
+        try
         {
-            _mouseOverDetection.Disable();
-        }
+            _root = root;
+            _windowEle = _windowTemplate.Instantiate()[0];
+            _mouseOverDetection = new MouseOverDetectionManipulator(_windowEle);
+            _windowEle.AddManipulator(_mouseOverDetection);
 
-        root.Add(_windowEle);
+            if (_isWindowHidden)
+            {
+                _mouseOverDetection.Disable();
+            }
+
+            root.Add(_windowEle);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+ 
     }
 
     protected abstract IEnumerator BuildWindow(VisualElement root);
 
     public virtual void HideWindow()
     {
-        _isWindowHidden = true;
-        _windowEle.style.display = DisplayStyle.None;
-        _mouseOverDetection.Disable();
+        try
+        {
+            _isWindowHidden = true;
+            _windowEle.style.display = DisplayStyle.None;
+            _mouseOverDetection.Disable();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+
     }
 
     public virtual void ShowWindow()
     {
-        _isWindowHidden = false;
-        _windowEle.style.display = DisplayStyle.Flex;
-        _mouseOverDetection.Enable();
+        try
+        {
+            _isWindowHidden = false;
+            _windowEle.style.display = DisplayStyle.Flex;
+            _mouseOverDetection.Enable();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+
     }
 
     public virtual void ToggleHideWindow()

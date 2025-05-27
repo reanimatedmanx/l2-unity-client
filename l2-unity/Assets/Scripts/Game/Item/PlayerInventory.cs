@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
-using UnityEngine.UIElements;
-using System;
+
 using static StorageVariable;
+using static UnityEditor.Progress;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -13,13 +14,23 @@ public class PlayerInventory : MonoBehaviour
         UNCHANGED = 0, ADDED = 1, REMOVED = 3, MODIFIED = 2
     }
 
-    private List<ItemInstance> _playerInventory;
+    private Dictionary<int , ItemInstance> _playerInventory;
 
-    public List<ItemInstance> Items { get { return _playerInventory; } }
+    private List<ItemInstance> _tempForRemoveAndAdd;
+    private List<ItemInstance> _tempForModified;
+
 
     public static PlayerInventory _instance;
     public static PlayerInventory Instance { get { return _instance; } }
 
+    //public Dictionary<int, ItemInstance> GetPlayerInventory {  get { return _playerInventory; } }
+
+
+    public Dictionary<int, ItemInstance>  GetPlayerInventory()
+    {
+        printPacket(_playerInventory);
+        return _playerInventory;
+    }
     private void Awake()
     {
         if (_instance == null)
@@ -30,8 +41,9 @@ public class PlayerInventory : MonoBehaviour
         {
             Destroy(this);
         }
-
-        _playerInventory = new List<ItemInstance>();
+        _tempForRemoveAndAdd = new List<ItemInstance>();
+        _tempForModified = new List<ItemInstance>();
+        _playerInventory = new Dictionary<int, ItemInstance>();
     }
 
     private void Start()
@@ -44,102 +56,183 @@ public class PlayerInventory : MonoBehaviour
         _instance = null;
     }
 
-    public void SetInventory(ItemInstance[] items, bool openInventory)
+    public void SetInventory(Dictionary<int, ItemInstance> items, bool openInventory , int adenaCount)
     {
-        _playerInventory = items.ToList();
-
-        InventoryWindow.Instance.UpdateItemList(_playerInventory);
+        _playerInventory = items;
+        List<ItemInstance> items_collect =  _playerInventory.Values.ToList();
+        InventoryWindow.Instance.SetItemList(items_collect , adenaCount);
 
         if (openInventory)
         {
-            InventoryWindow.Instance.ShowWindow();
+            EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.ShowWindow());
+            
         }
     }
 
-    public void UpdateInventory(ItemInstance[] items)
+    public void UpdateInventoryItems(Dictionary<int, ItemInstance> items , bool openInventory)
     {
-        for (int i = 0; i < items.Length; i++)
+        UpdateInventory(items);
+
+        if (openInventory)
         {
-            ItemInstance item = items[i];
-            if (item.LastChange == (int)InventoryChange.ADDED)
-            {
-                _playerInventory.Add(item);
-            }
-            else if (item.LastChange == (int)InventoryChange.MODIFIED)
-            {
-                ItemInstance oldItem = GetItemByObjectId(item.ObjectId);
-                if (oldItem == null)
-                {
-                    //count info  to message system
-                   // StorageVariable.getInstance().AddS1Items(new VariableItem(item.Count.ToString(), item.ObjectId));
-                    _playerInventory.Add(item);
-                }
-                else
-                {
-                    //count info  to message system
-                    int newCount = item.Count - oldItem.Count;
-                   // StorageVariable.getInstance().AddS1Items(new VariableItem(newCount.ToString(), item.ObjectId));
-                   // StorageVariable.getInstance().ResumeShowDelayMessage((int)MessageID.ADD_INVENTORY);
-                    oldItem.Update(item);
-                }
-            }
-            else if (item.LastChange == (int)InventoryChange.REMOVED)
-            {
-                ItemInstance oldItem = GetItemByObjectId(item.ObjectId);
-                _playerInventory.Remove(oldItem);
-            }
+            EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.ShowWindow());
         }
-        EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.UpdateItemList(_playerInventory));
-        //StorageItems.getInstance().AddItems(_playerInventory.ToArray());
-        //InventoryWindow.Instance.UpdateItemList(_playerInventory);
     }
 
-    public ItemInstance GetItemByObjectId(int objectId)
+    private void printPacket(Dictionary<int, ItemInstance> dict)
     {
-        foreach (ItemInstance item in _playerInventory)
+        foreach (KeyValuePair<int, ItemInstance> entry in dict)
         {
-            if (item.ObjectId == objectId)
-            {
-                return item;
-            }
+            int playerName = entry.Key;
+            ItemInstance playerName1 = entry.Value;
+
+            //Debug.Log($"Dict Original key " + playerName + " itemID   " + playerName1.ItemId);
         }
-
-        return null;
     }
-
-    public ItemInstance GetItemBySlot(int slot)
+    private readonly object _lock = new object();
+    public void UpdateInventory(Dictionary<int, ItemInstance> items)
     {
-        foreach (ItemInstance item in _playerInventory)
+        lock (_lock)
         {
-            if (item.Slot == slot && !item.Equipped)
+            var items_f = items.Values.ToArray();
+            var _tempForRemoveAndAdd = FilterByRemove(items_f);
+            var _tempForModified = FilterByModified(items_f);
+
+            try
             {
-                return item;
+                 UpdatePlayerInventory(_tempForRemoveAndAdd, _tempForModified);
+                int adenaCount = GetAdenaCount(_playerInventory.Values.ToList());
+                //Debug.Log("Send Add or Remove Size " + _tempForRemoveAndAdd[0].ItemData.ItemName);
+
+                EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.UpdateItemList(_tempForRemoveAndAdd, _tempForModified, adenaCount, _playerInventory.Count));
+                //StorageItems.getInstance().AddItems(_playerInventory.ToArray());
+                //InventoryWindow.Instance.UpdateItemList(_playerInventory);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("PlayerInventory Errors: " + ex.Message);
             }
         }
-
-        return null;
+        
+  
     }
+    private int GetAdenaCount(List<ItemInstance> modified)
+    {
+        ItemInstance item =  modified.FirstOrDefault(o => o.Category == ItemCategory.Adena);
+        return (item != null) ? item.Count : 0;
+    }
+    private void UpdatePlayerInventory(List<ItemInstance> removeAndAdd, List<ItemInstance> modified)
+    {
+        for (int i = 0; i < removeAndAdd.Count; i++)
+        {
+            ItemInstance item = removeAndAdd[i];
+            AddAndRemove(_playerInventory, item);
+        }
+
+        for (int i = 0; i < modified.Count; i++)
+        {
+            ItemInstance item_m = modified[i];
+            Modified(_playerInventory, item_m);
+        }
+    }
+
+    private void AddAndRemove(Dictionary<int, ItemInstance> _playerInventory , ItemInstance item)
+    {
+        Debug.Log("Add new Object 1 NoFilter" + item.ItemId + " ObjectID " + item.ObjectId);
+        if (item.LastChange == (int)InventoryChange.REMOVED)
+        {
+            if (_playerInventory.ContainsKey(item.ObjectId))
+            {
+                _playerInventory.Remove(item.ObjectId);
+            }
+            
+        }
+        else if(item.LastChange == (int)InventoryChange.ADDED)
+        {
+            
+            if (!_playerInventory.ContainsKey(item.ObjectId))
+            {
+                Debug.Log("Add new Object 2 Item ID Filter OK" + item.ItemId + " ObjectID " + item.ObjectId);
+                int count = _playerInventory.Count();
+                item.SetSlot(count);
+                _playerInventory.Add(item.ObjectId, item);
+            }
+            
+        }
+    }
+
+    private void Modified(Dictionary<int, ItemInstance> _playerInventory, ItemInstance item)
+    {
+      
+        if (!_playerInventory.ContainsKey(item.ObjectId))
+        {
+            _playerInventory.Add(item.ObjectId, item);
+        }
+        else
+        {
+            ItemInstance oldItem = _playerInventory[item.ObjectId];
+            item.SetSlot(oldItem.Slot);
+            oldItem.Update(item);
+        }
+    }
+    private List<ItemInstance> FilterByRemove(ItemInstance[] items)
+    {
+        return items.Where(item =>
+        item.LastChange == (int)InventoryChange.REMOVED ||
+        item.LastChange == (int)InventoryChange.ADDED).ToList();
+    }
+
+    private List<ItemInstance> FilterByModified(ItemInstance[] items)
+    {
+        return items.Where(item =>
+        item.LastChange == (int)InventoryChange.MODIFIED).ToList();
+    }
+    //public ItemInstance GetItemByObjectId(int objectId)
+    //{
+     //   foreach (ItemInstance item in _playerInventory)
+     //   {
+          //  if (item.ObjectId == objectId)
+           // {
+           //     return item;
+           // }
+       // }
+
+     //   return null;
+    //}
+
+    //public ItemInstance GetItemBySlot(int slot)
+    //{
+        //foreach (ItemInstance item in _playerInventory)
+        //{
+            //if (item.Slot == slot && !item.Equipped)
+            //{
+            //    return item;
+            //}
+        //}
+
+       // return null;
+    //}
 
     public void ChangeItemOrder(int fromSlot, int toSlot)
     {
-        ItemInstance fromItem = GetItemBySlot(fromSlot);
-        ItemInstance toItem = GetItemBySlot(toSlot);
+        //ItemInstance fromItem = GetItemBySlot(fromSlot);
+        //ItemInstance toItem = GetItemBySlot(toSlot);
 
-        if (fromItem == null)
-        {
-            Debug.LogError($"Can't change item order, item not found at slot {fromSlot}.");
-            return;
-        }
+        //if (fromItem == null)
+        //{
+         //   Debug.LogError($"Can't change item order, item not found at slot {fromSlot}.");
+        //    return;
+        //}
 
-        List<InventoryOrder> orders = new List<InventoryOrder>();
-        orders.Add(new InventoryOrder(fromItem.ObjectId, toSlot));
+        //List<InventoryOrder> orders = new List<InventoryOrder>();
+        //orders.Add(new InventoryOrder(fromItem.ObjectId, toSlot));
 
-        if (toItem != null)
-        {
-            orders.Add(new InventoryOrder(toItem.ObjectId, fromSlot));
-        }
+        //if (toItem != null)
+        //{
+        //    orders.Add(new InventoryOrder(toItem.ObjectId, fromSlot));
+        //}
 
-        InventoryWindow.Instance.SelectSlot(toSlot);
+        //InventoryWindow.Instance.SelectSlot(toSlot);
         Debug.Log("Нужно реализовать пакеты для отпарвки на сервер");
         //GameClient.Instance.ClientPacketHandler.UpdateInventoryOrder(orders);
     }
@@ -147,22 +240,22 @@ public class PlayerInventory : MonoBehaviour
     public void UseItem(int objectId)
     {
         //Cache Name for Message Equip
-        StorageVariable.getInstance().AddS1Items(new VariableItem(GetItemByObjectId(objectId).ItemData.ItemName.Name , objectId));
+        //StorageVariable.getInstance().AddS1Items(new VariableItem(GetItemByObjectId(objectId).ItemData.ItemName.Name , objectId));
 
-        var sendPaket = CreatorPacketsUser.CreateUseItem(objectId, 0);
-        bool enable = GameClient.Instance.IsCryptEnabled();
-        SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
+        //var sendPaket = CreatorPacketsUser.CreateUseItem(objectId, 0);
+       // bool enable = GameClient.Instance.IsCryptEnabled();
+        //SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
     }
 
     public void DestroyItem(int objectId, int quantity)
     {
         //Cache Name for Message Equip
-        StorageVariable.getInstance().AddS1Items(new VariableItem(GetItemByObjectId(objectId).ItemData.ItemName.Name, objectId));
+        //StorageVariable.getInstance().AddS1Items(new VariableItem(GetItemByObjectId(objectId).ItemData.ItemName.Name, objectId));
 
-        AudioManager.Instance.PlayEquipSound("trash_basket");
-        var sendPaket = CreatorPacketsUser.CreateDestroyItem(objectId, quantity);
-        bool enable = GameClient.Instance.IsCryptEnabled();
-        SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
+        //AudioManager.Instance.PlayEquipSound("trash_basket");
+        //var sendPaket = CreatorPacketsUser.CreateDestroyItem(objectId, quantity);
+        //bool enable = GameClient.Instance.IsCryptEnabled();
+        //SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
         //GameClient.Instance.ClientPacketHandler.DestroyItem(objectId, quantity);
     }
 }

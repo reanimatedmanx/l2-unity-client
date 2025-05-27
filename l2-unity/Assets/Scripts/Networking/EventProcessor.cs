@@ -37,12 +37,12 @@ public class EventProcessor : MonoBehaviour {
         {
             while (m_executingEvents.Count > 0)
             {
-                Stopwatch stopwatch = Stopwatch.StartNew();
+                //Stopwatch stopwatch = Stopwatch.StartNew();
                 Action e = m_executingEvents[0];
                 
                 m_executingEvents.RemoveAt(0);
                 e();
-                DebugInfo(e, stopwatch);
+               // DebugInfo(e, stopwatch);
             }
         }
         catch (Exception ex)

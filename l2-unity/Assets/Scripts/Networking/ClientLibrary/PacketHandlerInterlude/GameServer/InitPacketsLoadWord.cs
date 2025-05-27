@@ -65,9 +65,18 @@ public class InitPacketsLoadWord
     }
     private void UpdateItemsInventory()
     {
-        EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.SetInventory(StorageItems.getInstance().GetItems(), StorageItems.getInstance().GetShowWindow()));
+        Dictionary<int, ItemInstance>  items = StorageItems.getInstance().GetItems();
+        List<ItemInstance> itemInstances= items.Values.ToList();
+        int adenaCount = GetAdenaCount(itemInstances);
+        EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.SetInventory(StorageItems.getInstance().GetItems(), StorageItems.getInstance().GetShowWindow() , adenaCount));
     }
 
+
+    private int GetAdenaCount(List<ItemInstance> modified)
+    {
+        ItemInstance item = modified.FirstOrDefault(o => o.Category == ItemCategory.Adena);
+        return (item != null) ? item.Count : 0;
+    }
     private void UpdateShortCuts()
     {
         //EventProcessor.Instance.QueueEvent(() => SkillbarWindow.Instance.UpdateAllShortcuts(StorageItems.getInstance().GetShortCuts()));

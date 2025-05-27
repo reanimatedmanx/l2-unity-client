@@ -14,6 +14,7 @@ public class InventorySlot : L2DraggableSlot
     public long RemainingTime { get { return _remainingTime; } }
     public ItemCategory ItemCategory { get { return _itemCategory; } }
     public int ObjectId { get { return _objectId; } }
+    public int ItemId { get { return _id; } }
 
     public InventorySlot(int position, VisualElement slotElement, L2Tab tab, SlotType slotType)
     : base(position, slotElement, slotType, false, true)

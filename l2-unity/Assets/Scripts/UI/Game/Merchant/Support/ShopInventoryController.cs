@@ -22,7 +22,7 @@ public class ShopInventoryController
         {
             tabSell = new InventoryTab();
             _dealerWindow.SetTabSell(tabSell);
-            tabSell.Initialize(windowEle, contentSell, contentSell);
+            tabSell.Initialize(windowEle, contentSell, contentSell , false , false);
         }
 
         contentSell.Clear();
@@ -50,7 +50,7 @@ public class ShopInventoryController
         {
             tabBuy = new InventoryTab();
             _dealerWindow.SetTabBuy(tabBuy);
-            tabBuy.Initialize(windowEle, contentBuy, contentBuy);
+            tabBuy.Initialize(windowEle, contentBuy, contentBuy , false, false);
         }
 
         contentBuy.Clear();

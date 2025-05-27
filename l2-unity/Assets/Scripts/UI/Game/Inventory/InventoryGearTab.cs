@@ -9,9 +9,9 @@ public class InventoryGearTab : L2Tab
     private Dictionary<ItemSlot, VisualElement> _gearAnchors;
     [SerializeField] private int _selectedSlot = -1;
 
-    public override void Initialize(VisualElement chatWindowEle, VisualElement tabContainer, VisualElement tabHeader)
+    public override void Initialize(VisualElement chatWindowEle, VisualElement tabContainer, VisualElement tabHeader , bool initEmpty, bool isSwitchTab)
     {
-        base.Initialize(chatWindowEle, tabContainer, tabHeader);
+        base.Initialize(chatWindowEle, tabContainer, tabHeader , initEmpty, isSwitchTab);
 
         _selectedSlot = -1;
 

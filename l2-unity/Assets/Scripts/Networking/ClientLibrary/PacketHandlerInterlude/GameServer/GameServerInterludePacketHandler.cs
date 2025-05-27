@@ -333,12 +333,13 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
             if(nsm != null)
             {
+                Debug.Log("NpcHtmlMessage 2 ");
                 nsm.ChangeIntention(NpcIntention.STARTED_TALKING, npcHtmlMessage);
             }
             else
             {
                 Vector3 position = PlayerEntity.Instance.transform.position;
-                //Debug.Log("Position Player: " + position);
+                Debug.Log("NpcHtmlMessage 1 ");
                 ManualRotate(npc.transform, position);
                 HtmlWindow.Instance.InjectToWindow(npcHtmlMessage.Elements());
                 HtmlWindow.Instance.ShowWindowToCenter();
@@ -407,12 +408,24 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
     private void OnCharItemList(byte[] data)
     {
-        //Debug.Log("GameServerPacket OnCharItemList : Обработали но не сохранили т.к не реализован механизм ");
         ItemList itemList = new ItemList(data);
-        var Items = itemList.Items;
-        var ShowWindow = itemList.ShowWindow;
-        StorageItems.getInstance().AddItems(Items);
-        StorageItems.getInstance().AddShow(ShowWindow);
+
+        Debug.Log(" OnCharItemList " + itemList.Items.Count);
+
+        if (InitPacketsLoadWord.getInstance().IsInit)
+        {
+            var _items = itemList.Items;
+            var ShowWindow = itemList.ShowWindow;
+            StorageItems.getInstance().AddItems(_items);
+            StorageItems.getInstance().AddShow(ShowWindow);
+        }
+        else
+        {
+            var _items = itemList.Items;
+            var ShowWindow = itemList.ShowWindow;
+            PlayerInventory.Instance.UpdateInventoryItems(_items, true);
+        }
+      
         
         //Debug.Log("GameServerPacket OnCharItemList : Завершено ");
     }
@@ -650,13 +663,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         InventoryUpdate packet = new InventoryUpdate(data);
         PlayerInventory.Instance.UpdateInventory(packet.Items);
         //EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.UpdateInventory(packet.Items));
-
-        // World.Instance.StatusUpdate(packet.ObjectId, packet.Attributes);
-        //Debug.Log("INVENTORY UPDATE ОБРАБООТАЛИ");
     }
 
     
-
+  
 
     protected override byte[] DecryptPacket(byte[] data)
     {

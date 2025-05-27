@@ -1,23 +1,30 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static UnityEditor.FilePathAttribute;
 using static UnityEditor.Progress;
 
 public class InventoryUpdate : ServerPacket
 {
-    private ItemInstance[] items;
+    private Dictionary<int , ItemInstance> items;
+    private Dictionary<int, ItemInstance>  equipItems;
     public InventoryUpdate(byte[] d) : base(d)
     {
         Parse();
     }
-
-    public ItemInstance[] Items { get { return items; } }
+    private int indexItems = 0;
+    private int indexEquipItems = 0;
+    public Dictionary<int, ItemInstance> Items { get { return items; } }
+    public Dictionary<int, ItemInstance> EquipItems { get { return equipItems; } }
     public override void Parse()
     {
+        
         int size =  ReadSh();
-        items = new ItemInstance[size];
+        Debug.Log("Update inventory 1 in " + size);
+        items = new Dictionary<int, ItemInstance>(size);
+        equipItems = new Dictionary<int, ItemInstance>();
         for (int i = 0; i < size; i++)
         {
             // Update type : 01-add, 02-modify, 03-remove
@@ -25,6 +32,7 @@ public class InventoryUpdate : ServerPacket
 
             int type1 = ReadSh();
             int objectId = ReadI();
+            Debug.Log(" objectId in " + objectId);
             int displayId = ReadI();
             int count = ReadI();
            // Item Type 2 : 00-weapon, 01-shield/armor, 02-ring/earring/necklace, 03-questitem, 04-adena, 05-item
@@ -45,10 +53,30 @@ public class InventoryUpdate : ServerPacket
             if (equipped == 1)
             {
                 location = ItemLocation.Equipped;
+                ItemInstance item = new ItemInstance(objectId, displayId, location, indexEquipItems++, count, category, equipped == 1, slot, enchant, 9999);
+                item.LastChange = type;
+                equipItems.Add(objectId, item);
+            }
+            else
+            {
+   
+                var itemInstance  = new ItemInstance(objectId, displayId, location, indexItems++, count, category, equipped == 1, slot, enchant, 9999);
+                itemInstance.LastChange = type;
+                items.Add(objectId, itemInstance);
             }
 
-            items[i] = new ItemInstance(objectId, displayId, location, i, count, category, equipped == 1 , slot , enchant, 9999);
-            items[i].LastChange = type;
+           
         }
     }
+
+   // List<ItemInstance> items_I = FilterOnlyInventory(items);
+
+    //private List<ItemInstance> FilterOnlyInventory(List<ItemInstance> items)
+    //{
+    //    List<ItemInstance> filter = items.Where(item => !item.Equipped).ToList();
+
+     //   return filter;
+   // }
 }
+
+
