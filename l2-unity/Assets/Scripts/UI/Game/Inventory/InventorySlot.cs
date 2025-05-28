@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Progress;
 
 public class InventorySlot : L2DraggableSlot
 {
@@ -75,7 +76,7 @@ public class InventorySlot : L2DraggableSlot
         }
 
         if (_slotElement != null)
-        {
+        { 
             StyleBackground background = new StyleBackground(IconManager.Instance.GetIcon(_id));
             _slotBg.style.backgroundImage = background;
             _slotDragManipulator.enabled = false;
@@ -92,6 +93,21 @@ public class InventorySlot : L2DraggableSlot
     {
         _slotElement.RemoveFromClassList("empty");
 
+        AddDataItem(item);
+
+        _count = item.Count;
+        _remainingTime = item.RemainingTime;
+
+        if (_slotElement != null)
+        {
+            AddImage(this);
+            AddTooltip(item);
+            _slotDragManipulator.enabled = true;
+        }
+    }
+
+    private void AddDataItem(ItemInstance item)
+    {
         if (item.ItemData != null)
         {
             _id = item.ItemData.Id;
@@ -113,17 +129,19 @@ public class InventorySlot : L2DraggableSlot
             _itemCategory = ItemCategory.Item;
         }
 
-        _count = item.Count;
-        _remainingTime = item.RemainingTime;
+    }
 
-        if (_slotElement != null)
+    private void AddImage(InventorySlot slot)
+    {
+        if (slot.GetType() == typeof(GearSlot))
+        {
+            StyleBackground background = new StyleBackground(IconManager.Instance.GetIcon(_id));
+            _slotElement.style.backgroundImage = background;
+        }
+        else
         {
             StyleBackground background = new StyleBackground(IconManager.Instance.GetIcon(_id));
             _slotBg.style.backgroundImage = background;
-
-            AddTooltip(item);
-
-            _slotDragManipulator.enabled = true;
         }
     }
 

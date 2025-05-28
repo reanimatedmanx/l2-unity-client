@@ -65,10 +65,11 @@ public class InitPacketsLoadWord
     }
     private void UpdateItemsInventory()
     {
-        Dictionary<int, ItemInstance>  items = StorageItems.getInstance().GetItems();
+        var items = StorageItems.getInstance().GetItems();
+        var equipItems = StorageItems.getInstance().GetEquipItems();
         List<ItemInstance> itemInstances= items.Values.ToList();
         int adenaCount = GetAdenaCount(itemInstances);
-        EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.SetInventory(StorageItems.getInstance().GetItems(), StorageItems.getInstance().GetShowWindow() , adenaCount));
+        EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.SetInventory(items, equipItems , StorageItems.getInstance().GetShowWindow() , adenaCount));
     }
 
 

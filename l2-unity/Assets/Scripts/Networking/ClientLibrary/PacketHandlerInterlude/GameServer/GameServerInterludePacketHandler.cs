@@ -410,7 +410,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
     {
         ItemList itemList = new ItemList(data);
 
-        Debug.Log(" OnCharItemList " + itemList.Items.Count);
+       // Debug.Log(" OnCharItemList " + itemList.Items.Count);
 
         if (InitPacketsLoadWord.getInstance().IsInit)
         {
@@ -418,12 +418,17 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             var ShowWindow = itemList.ShowWindow;
             StorageItems.getInstance().AddItems(_items);
             StorageItems.getInstance().AddShow(ShowWindow);
+            StorageItems.getInstance().AddEquipItems(itemList.EquipItems);
         }
         else
         {
             var _items = itemList.Items;
-            var ShowWindow = itemList.ShowWindow;
-            PlayerInventory.Instance.UpdateInventoryItems(_items, true);
+            var showWindow = itemList.ShowWindow;
+            EventProcessor.Instance.QueueEvent(() => {
+                PlayerInventory.Instance.SetInventory(_items, itemList.EquipItems, showWindow, itemList.AdenaCount);
+            });
+            
+           // PlayerInventory.Instance.UpdateInventoryItems(_items, true);
         }
       
         
@@ -661,7 +666,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
     private void OnInventoryUpdate(byte[] data)
     {
         InventoryUpdate packet = new InventoryUpdate(data);
-        PlayerInventory.Instance.UpdateInventory(packet.Items);
+        PlayerInventory.Instance.UpdateInventory(packet.Items , packet.EquipItems);
         //EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.UpdateInventory(packet.Items));
     }
 

@@ -19,6 +19,11 @@ public enum ItemSlot : byte {
     earring = 17,
     boots = 18,
     lhand_shield = 19,
+    hat1 = 20,
+    hat2 = 21,
+    belt = 22,
+    agation = 23,
+    pendant = 24,
 
 }
 

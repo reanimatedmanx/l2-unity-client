@@ -17,7 +17,7 @@ public class InventoryWindow : L2PopupWindow
     private VisualElement _inventoryTabView;
     private VisualElement _minimizedInventoryBtn;
     private InventoryTab _activeTab;
-    private EventProcessor _eventProcessor;
+
 
     private MouseOverDetectionManipulator _minimizedInventoryMouseOverManipulator;
     private DragManipulator _minimizedInventoryDragManipulator;
@@ -58,7 +58,7 @@ public class InventoryWindow : L2PopupWindow
         if (_instance == null)
         {
             _instance = this;
-            _eventProcessor = EventProcessor.Instance;
+            //_eventProcessor = EventProcessor.Instance;
         }
         else
         {
@@ -325,13 +325,14 @@ public class InventoryWindow : L2PopupWindow
 
     }
 
-    public void SetItemList(List<ItemInstance> allItems , int adenaCount)
+    public void SetItemList(List<ItemInstance> allItems , List<ItemInstance> quipAllItems, int adenaCount)
     {
         _adenaCountLabel.text = adenaCount.ToString();
 
         //_tabs[0].ForEach((tab) =>
         //{
         _tabs[0].SetItemList(allItems);
+        _gearTab.UpdateEquipList(quipAllItems);
        // });
         SwitchTab(_tabs[0]);
     }
@@ -371,29 +372,31 @@ public class InventoryWindow : L2PopupWindow
 
 
 
-        // Tabs
-        // _gearTab.UpdateItemList(items);
+ 
 
-
-        // _tabs[].ForEach((tab) =>
-        // {
         _tabs[0].UpdateItemList(removeAndAdd,  modified);
-        //});
-        SwitchTab(_tabs[0]);
+        //SwitchTab(_tabs[0]);
     }
+
+    //public void EquipItems(List<ItemInstance> equipItems)
+    //{
+        // Tabs
+    //    _gearTab.UpdateEquipList(equipItems);
+   // }
 
  
     public void ToggleHideWindowManual()
     {
 
         Dictionary<int, ItemInstance> allItems = GetInventoryItems();
+        Dictionary<int, ItemInstance> equipItems = GetInventoryEquipItems();
         int adenaCount = GetAdenaCount(allItems.Values.ToList());
 
 
         if (_isWindowHidden)
         {
 
-             PlayerInventory.Instance.SetInventory(allItems, true , adenaCount);
+             PlayerInventory.Instance.SetInventory(allItems, equipItems , true, adenaCount);
         }
         else
         {
@@ -403,16 +406,12 @@ public class InventoryWindow : L2PopupWindow
 
     private Dictionary<int, ItemInstance> GetInventoryItems()
     {
+       return  PlayerInventory.Instance.GetPlayerInventory();
+    }
 
-        //if (IsFirstOpen)
-        //{
-         //   IsFirstOpen = true;
-         //   return  StorageItems.getInstance().GetItems();
-       // }
-        //else
-        //{
-            return  PlayerInventory.Instance.GetPlayerInventory();
-        //}
+    private Dictionary<int, ItemInstance> GetInventoryEquipItems()
+    {
+        return PlayerInventory.Instance.GetPlayerEquipInventory();
     }
 
     private int GetAdenaCount(List<ItemInstance> modified)

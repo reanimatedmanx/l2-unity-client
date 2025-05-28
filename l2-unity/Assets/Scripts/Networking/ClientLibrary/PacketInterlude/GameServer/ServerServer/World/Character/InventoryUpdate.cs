@@ -22,7 +22,7 @@ public class InventoryUpdate : ServerPacket
     {
         
         int size =  ReadSh();
-        Debug.Log("Update inventory 1 in " + size);
+
         items = new Dictionary<int, ItemInstance>(size);
         equipItems = new Dictionary<int, ItemInstance>();
         for (int i = 0; i < size; i++)
@@ -32,7 +32,7 @@ public class InventoryUpdate : ServerPacket
 
             int type1 = ReadSh();
             int objectId = ReadI();
-            Debug.Log(" objectId in " + objectId);
+            Debug.Log(" objectId in " + objectId + " type " + type);
             int displayId = ReadI();
             int count = ReadI();
            // Item Type 2 : 00-weapon, 01-shield/armor, 02-ring/earring/necklace, 03-questitem, 04-adena, 05-item

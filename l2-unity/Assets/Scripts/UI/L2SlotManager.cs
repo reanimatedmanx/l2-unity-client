@@ -57,8 +57,24 @@ public class L2SlotManager : L2PopupWindow
         _dragSlotData.Icon = slot.Icon;
         _dragSlotData.Id = slot.Id;
 
-        StyleBackground background = slot.SlotBg.style.backgroundImage;
-        _dragSlotData.SlotBg.style.backgroundImage = background;
+        RefreshImage(slot);
+    }
+
+    private void RefreshImage(L2Slot slot)
+    {
+        if (slot.GetType() == typeof(GearSlot))
+        {
+            StyleBackground background = slot.SlotElement.style.backgroundImage;
+            _dragSlotData.SlotBg.style.backgroundImage = background;
+        }
+        else
+        {
+            if (slot.SlotBg != null)
+            {
+                StyleBackground background = slot.SlotBg.style.backgroundImage;
+                _dragSlotData.SlotBg.style.backgroundImage = background;
+            }
+        }
     }
 
     internal void DragSlot(float right, float bottom)

@@ -48,13 +48,14 @@ public class L2ClickableSlot : L2Slot
         _slotElement.UnregisterCallback<MouseDownEvent>(HandleSlotClickDown, TrickleDown.TrickleDown);
         _slotElement.UnregisterCallback<MouseUpEvent>(HandleSlotClickUp, TrickleDown.TrickleDown);
     }
-
+    private VisualElement slotFrame;
     public void SetSelected()
     {
         Debug.Log($"Slot {_position} selected.");
         //_slotElement.AddToClassList("inventory-selected-cell");
 
-        VisualElement slotFrame = _slotElement.Q(className: "slot-frame");
+        if (slotFrame == null) slotFrame = _slotElement.Q(className: "slot-frame");
+
         if (slotFrame != null)
         {
             slotFrame.style.display = DisplayStyle.Flex;
@@ -82,12 +83,18 @@ public class L2ClickableSlot : L2Slot
       clickTime = Time.time; 
     }
 
+   
     public void UnSelect()
     {
         Debug.Log($"Slot {_position} unselected.");
-        //_slotElement.RemoveFromClassList("selected");
-        VisualElement slotFrame = _slotElement.Q(className: "slot-frame");
-        if (slotFrame != null) slotFrame.style.display = DisplayStyle.None;
+        if(slotFrame == null ) slotFrame = _slotElement.Q(className: "slot-frame");
+        //slotFrame = _slotElement.Q(className: "slot-frame");
+
+        if (slotFrame != null)
+        {
+            slotFrame.style.display = DisplayStyle.None;
+        }
+        
     }
 
     private void HandleSlotClickDown(MouseDownEvent evt)

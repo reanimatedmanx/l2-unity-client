@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static UnityEditor.Progress;
 
@@ -8,10 +9,13 @@ public class ItemList : ServerPacket
 {
     private Dictionary<int , ItemInstance> items;
     private Dictionary<int, ItemInstance> equip;
+    private int _adenaCount;
     private bool showWindow;
 
     public bool ShowWindow {  get { return showWindow; } }
     public Dictionary<int, ItemInstance> Items { get { return items; } }
+
+    public int AdenaCount { get { return _adenaCount; } }
 
     public Dictionary<int, ItemInstance> EquipItems { get { return equip; } }
     public ItemList(byte[] d) : base(d)
@@ -66,23 +70,39 @@ public class ItemList : ServerPacket
                 location = ItemLocation.Equipped;
                 if (!equip.ContainsKey(objectId))
                 {
-                    equip.Add(objectId, new ItemInstance(objectId, displayId, location, indexInventory++, count, category, equipped == 1, slot, enchant, 9999));
+                    equip.Add(objectId, new ItemInstance(objectId, displayId, location, indexEquip++, count, category, equipped == 1, slot, enchant, 9999));
                 }
             }
             else
             {
                 if (!items.ContainsKey(objectId))
                 {
-                    items.Add(objectId, new ItemInstance(objectId, displayId, location, indexEquip++, count, category, equipped == 1, slot, enchant, 9999));
+                    items.Add(objectId, new ItemInstance(objectId, displayId, location, indexInventory++, count, category, equipped == 1, slot, enchant, 9999));
                 }
             }
 
-
+            
 
 
             //items[i] = new ItemInstance(objectId , displayId , location , i, count , category, equipped == 1, slot , enchant, 9999);
         }
+        _adenaCount = GetAdenaCount(items.Values.ToList());
+        //Debug.Log(" AssignItem конец итерации размер входной размер >" + items.Count);
     }
 
-    
+    private void PrintItems()
+    {
+        foreach (var (key, val) in items)  // раскладываем объект на свойства
+        {
+            Console.WriteLine($"key: {key}  value item id: {val.ItemId} value: {val.Count}");
+        }
+    }
+
+    private int GetAdenaCount(List<ItemInstance> allItems)
+    {
+        ItemInstance item = allItems.FirstOrDefault(o => o.Category == ItemCategory.Adena);
+        return (item != null) ? item.Count : 0;
+    }
+
+
 }

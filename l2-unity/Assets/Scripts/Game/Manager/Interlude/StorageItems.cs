@@ -10,6 +10,7 @@ public class StorageItems
     private static StorageItems instance;
     private object _sync = new object();
     private Dictionary <int , ItemInstance> items;
+    private Dictionary<int, ItemInstance> equip_items;
     private List<Shortcut> shortCuts;
     private bool showWindow;
     private StorageItems()
@@ -46,6 +47,15 @@ public class StorageItems
        // } 
     }
 
+    public void AddEquipItems(Dictionary<int, ItemInstance> itemsParce)
+    {
+        //lock (_sync)
+        // {
+        equip_items = null;
+        equip_items = itemsParce;
+        // } 
+    }
+
     public void AddShow(bool show)
     {
         showWindow = show;
@@ -61,6 +71,19 @@ public class StorageItems
             }
             return new Dictionary<int , ItemInstance>();
        // }
+
+    }
+
+    public Dictionary<int, ItemInstance> GetEquipItems()
+    {
+        //lock (_sync)
+        // {
+        if (equip_items != null)
+        {
+            return equip_items;
+        }
+        return new Dictionary<int, ItemInstance>();
+        // }
 
     }
 

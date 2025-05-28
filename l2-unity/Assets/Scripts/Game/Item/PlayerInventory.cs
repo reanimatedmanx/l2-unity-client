@@ -15,6 +15,7 @@ public class PlayerInventory : MonoBehaviour
     }
 
     private Dictionary<int , ItemInstance> _playerInventory;
+    private Dictionary<int, ItemInstance> _playerEquipInventory;
 
     private List<ItemInstance> _tempForRemoveAndAdd;
     private List<ItemInstance> _tempForModified;
@@ -28,8 +29,13 @@ public class PlayerInventory : MonoBehaviour
 
     public Dictionary<int, ItemInstance>  GetPlayerInventory()
     {
-        printPacket(_playerInventory);
+        //printPacket(_playerInventory);
         return _playerInventory;
+    }
+    public Dictionary<int, ItemInstance> GetPlayerEquipInventory()
+    {
+        //printPacket(_playerInventory);
+        return _playerEquipInventory;
     }
     private void Awake()
     {
@@ -56,11 +62,13 @@ public class PlayerInventory : MonoBehaviour
         _instance = null;
     }
 
-    public void SetInventory(Dictionary<int, ItemInstance> items, bool openInventory , int adenaCount)
+    public void SetInventory(Dictionary<int, ItemInstance> items, Dictionary<int, ItemInstance> equipItems , bool openInventory , int adenaCount)
     {
         _playerInventory = items;
         List<ItemInstance> items_collect =  _playerInventory.Values.ToList();
-        InventoryWindow.Instance.SetItemList(items_collect , adenaCount);
+        List<ItemInstance> equip_collect = equipItems.Values.ToList();
+        _playerEquipInventory = equipItems;
+        InventoryWindow.Instance.SetItemList(items_collect , equip_collect, adenaCount);
 
         if (openInventory)
         {
@@ -69,15 +77,15 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    public void UpdateInventoryItems(Dictionary<int, ItemInstance> items , bool openInventory)
-    {
-        UpdateInventory(items);
+   // public void UpdateInventoryItems(Dictionary<int, ItemInstance> items , bool openInventory)
+    //{
+      //  UpdateInventory(items);
 
-        if (openInventory)
-        {
-            EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.ShowWindow());
-        }
-    }
+       // if (openInventory)
+       // {
+      //      EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.ShowWindow());
+       // }
+    //}
 
     private void printPacket(Dictionary<int, ItemInstance> dict)
     {
@@ -90,23 +98,26 @@ public class PlayerInventory : MonoBehaviour
         }
     }
     private readonly object _lock = new object();
-    public void UpdateInventory(Dictionary<int, ItemInstance> items)
+    public void UpdateInventory(Dictionary<int, ItemInstance> items , Dictionary<int, ItemInstance> equipitems)
     {
         lock (_lock)
         {
+            List<ItemInstance> listEquip = equipitems.Values.ToList();
             var items_f = items.Values.ToArray();
             var _tempForRemoveAndAdd = FilterByRemove(items_f);
             var _tempForModified = FilterByModified(items_f);
 
             try
             {
-                 UpdatePlayerInventory(_tempForRemoveAndAdd, _tempForModified);
-                int adenaCount = GetAdenaCount(_playerInventory.Values.ToList());
-                //Debug.Log("Send Add or Remove Size " + _tempForRemoveAndAdd[0].ItemData.ItemName);
 
+                UpdatePlayerInventory(_tempForRemoveAndAdd, _tempForModified);
+
+                int adenaCount = GetAdenaCount(_playerInventory.Values.ToList());
+                
                 EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.UpdateItemList(_tempForRemoveAndAdd, _tempForModified, adenaCount, _playerInventory.Count));
+                //EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.EquipItems(listEquip));
                 //StorageItems.getInstance().AddItems(_playerInventory.ToArray());
-                //InventoryWindow.Instance.UpdateItemList(_playerInventory);
+
             }
             catch (Exception ex)
             {
@@ -163,7 +174,7 @@ public class PlayerInventory : MonoBehaviour
 
     private void Modified(Dictionary<int, ItemInstance> _playerInventory, ItemInstance item)
     {
-      
+        Debug.Log("Modified data count " + item.Count + " item obj id " + item.ObjectId + " itemid" + item.ItemId);
         if (!_playerInventory.ContainsKey(item.ObjectId))
         {
             _playerInventory.Add(item.ObjectId, item);

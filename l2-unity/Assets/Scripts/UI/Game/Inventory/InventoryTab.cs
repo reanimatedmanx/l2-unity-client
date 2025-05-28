@@ -128,16 +128,42 @@ public class InventoryTab : L2Tab
     }
     public void SetItemList(List<ItemInstance> allItems)
     {
+
+        if(allItems != null && allItems.Count > 0)
+        {
+            AddDataInventory(allItems);
+            AddAllEmptyInventory(allItems.Count);
+        }
+        else
+        {
+            AddAllEmptyInventory(0);
+        }
+
+
+       // Debug.Log(" AssignItem конец итерации размер +++++++++++++++++++++++++>" + allItems.Count);
+    }
+
+    private void AddDataInventory(List<ItemInstance> allItems)
+    {
         for (int i = 0; i < allItems.Count; i++)
         {
             ItemInstance item = allItems[i];
-            _inventorySlots[item.Slot].AssignEmpty();
+            //Debug.Log("AssignItem " + item.ItemId + " ObjectId " + item.ObjectId + " Add Slot " + item.Slot);
+            _inventorySlots[item.Slot].AssignItem(item);
         }
-
-        for (int i =0; i < allItems.Count; i++)
+    }
+    private void AddAllEmptyInventory(int size)
+    {
+        int start_i = size;
+        for (int i = start_i; i < _inventorySlots.Length; i++)
         {
-                 ItemInstance item = allItems[i];
-                _inventorySlots[item.Slot].AssignItem(item);
+            var slot = _inventorySlots[i];
+
+            if (slot != null)
+            {
+                slot.AssignEmpty();
+            }
+               
         }
     }
     public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified)
@@ -194,12 +220,9 @@ public class InventoryTab : L2Tab
             ItemInstance item = removeAndAdd[i];
             if (item.LastChange == (int)InventoryChange.ADDED)
             {
-                //InventorySlot slot = GetFreeSlot();
                 InventorySlot i_slot = _inventorySlots[item.Slot];
                 if (i_slot != null)
                 {
-
-                    //InventorySlot i_slot = _inventorySlots[slot.Position];
                     i_slot.AssignItem(item);
                 }
                 else
@@ -207,13 +230,17 @@ public class InventoryTab : L2Tab
                     Debug.Log("ADD And Rmove Count Not ADD 3 " + removeAndAdd.Count);
                 }
             }
-            else
+            else if(item.LastChange == (int)InventoryChange.REMOVED)
             {
-                InventorySlot slot = GetInventorySlot(item.ItemId);
+                InventorySlot slot = GetInventorySlot(item.ObjectId);
                 if (slot != null)
                 {
-                    Debug.Log("Add new Object 1 Inventory Tab " + item.ItemId);
+                    Debug.Log("Remove new Object 1 Inventory Tab " + item.ItemId);
                     _inventorySlots[slot.Position].AssignEmpty();
+                }
+                else
+                {
+                    Debug.Log("Remove not found  new Object 1 Inventory Tab " + item.ItemId);
                 }
             }
         }
