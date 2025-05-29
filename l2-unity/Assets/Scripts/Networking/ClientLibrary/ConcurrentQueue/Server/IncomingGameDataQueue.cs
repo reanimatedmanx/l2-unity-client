@@ -43,7 +43,7 @@ public class IncomingGameDataQueue : IQueue
     {
         if(FilterAccessType.IsAccessTypeGame(item))
         {
-            if(item.PaketType() == GameInterludeServerPacketType.InventoryUpdate | item.PaketType() == GameInterludeServerPacketType.ShortCutInit)
+            if(item.PaketType() == GameInterludeServerPacketType.ShortCutInit)
             {
                 _queueHigh.Add(item);
             }

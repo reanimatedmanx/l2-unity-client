@@ -166,14 +166,14 @@ public class TradeItemMover
 
     private void ShiftSell(InventoryTab tabBuy , int newPosition , InventorySlot[] inventorySlotsSell, InventorySlot[] inventorySlotsBuy)
     {
-        _dealerWindow.ShiftElementsLeft(inventorySlotsSell, newPosition);
+        ShiftElements.ShiftElementsLeft(inventorySlotsSell, newPosition);
         tabBuy.UpdateInventorySlots(inventorySlotsBuy);
     }
     //We do not move the target from sell -> buy because we believe that there is already something there and re-updating the cell is not required.We simply clear it
     //and shift all positions to the left if we delete an element
     public void ShiftBuy(InventoryTab tabSell, int newPosition, InventorySlot[] inventorySlotsSell, InventorySlot[] inventorySlotsBuy)
     {
-        _dealerWindow.ShiftElementsLeft(inventorySlotsBuy, newPosition);
+        ShiftElements.ShiftElementsLeft(inventorySlotsBuy, newPosition);
         tabSell.UpdateInventorySlots(inventorySlotsSell);
     }
 

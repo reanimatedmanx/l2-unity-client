@@ -43,12 +43,17 @@ public class InventorySlot : L2DraggableSlot
         _id = 0;
         _name = "Unkown";
         _description = "Unkown item.";
-
+        _itemInstance = null;
+        _product = null;
         if (_slotElement != null)
         {
             StyleBackground background = new StyleBackground(IconManager.Instance.GetInvetoryDefaultBackground());
-            _slotBg.style.backgroundImage = background;
-            _slotDragManipulator.enabled = false;
+            if(SlotBg != null)
+            {
+                _slotBg.style.backgroundImage = background;
+                _slotDragManipulator.enabled = false;
+            }
+
         }
     }
     public void RefreshPosition(int newPosition)
@@ -56,7 +61,10 @@ public class InventorySlot : L2DraggableSlot
         Position = newPosition;
     }
 
-    public Product product;
+    private Product _product;
+    private ItemInstance _itemInstance;
+    public ItemInstance ItemInstance { get { return _itemInstance; } }
+    public Product Product { get { return _product; } }
     public void AssignProduct(Product item)
     {
         _slotElement.RemoveFromClassList("empty");
@@ -82,27 +90,60 @@ public class InventorySlot : L2DraggableSlot
             _slotDragManipulator.enabled = false;
         }
 
-        product = item;
+        _product = item;
     }
 
+
+    public object GetUseElement()
+    {
+        if(_product != null)
+        {
+            return _product;
+        }
+
+        return _itemInstance;
+    }
     public void ManualHideToolTips()
     {
         ToolTipSimple.Instance.ManualHide();
+    }
+
+    public void AssignUniversal(object data)
+    {
+        if (data != null)
+        {
+            if (data.GetType() == typeof(Product))
+            {
+                AssignProduct((Product)data);
+            }
+            else if (data.GetType() == typeof(ItemInstance))
+            {
+                AssignItem((ItemInstance)data);
+            }
+        }
+       
     }
     public void AssignItem(ItemInstance item)
     {
         _slotElement.RemoveFromClassList("empty");
 
         AddDataItem(item);
-
+        _itemInstance = item;
         _count = item.Count;
+        _objectId = item.ObjectId;
+        _id = item.ItemId;
         _remainingTime = item.RemainingTime;
+        _empty = false;
 
         if (_slotElement != null)
         {
             AddImage(this);
             AddTooltip(item);
             _slotDragManipulator.enabled = true;
+        }
+        else
+        {
+            Debug.Log("Не критическая ошибка не смогли найти InventorySlot>SlotElement");
         }
     }
 
@@ -115,7 +156,7 @@ public class InventorySlot : L2DraggableSlot
             _description = item.ItemData.ItemName.Description;
             _icon = item.ItemData.Icon;
             _objectId = item.ObjectId;
-            _empty = false;
+            
             _itemCategory = item.Category;
         }
         else
@@ -133,6 +174,8 @@ public class InventorySlot : L2DraggableSlot
 
     private void AddImage(InventorySlot slot)
     {
+        if (SlotBg == null & _slotElement == null) return;
+
         if (slot.GetType() == typeof(GearSlot))
         {
             StyleBackground background = new StyleBackground(IconManager.Instance.GetIcon(_id));
@@ -140,6 +183,7 @@ public class InventorySlot : L2DraggableSlot
         }
         else
         {
+            if (SlotBg == null) return;
             StyleBackground background = new StyleBackground(IconManager.Instance.GetIcon(_id));
             _slotBg.style.backgroundImage = background;
         }

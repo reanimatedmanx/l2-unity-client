@@ -72,6 +72,7 @@ public class InventoryGearTab : L2Tab
 
     public void UpdateEquipList(List<ItemInstance> equipItems)
     {
+        if (equipItems == null) return;
         Equip(equipItems);
 
         //Debug.Log("Update gear slots");

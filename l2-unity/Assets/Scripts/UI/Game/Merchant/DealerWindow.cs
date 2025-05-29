@@ -240,62 +240,7 @@ public class DealerWindow : L2PopupWindow
  
 
 
-    public void ShiftElementsLeft(InventorySlot[] inventorySlots , int newPosition )
-    {
-        for(int i =0; i < inventorySlots.Length; i++)
-        {
-            if(i == newPosition)
-            {
-                var currentSlot = inventorySlots[i];
-                var nextSlot = GetNextSlot( i, inventorySlots);
-                HandleCurrentPosition(inventorySlots , currentSlot, nextSlot);
-            }
-            else if (i > newPosition)
-            {
-                var currentSlot = inventorySlots[i];
-                var nextSlot = GetNextSlot(i, inventorySlots);
-                if (nextSlot == null) return;
-                HandleSlotsAfterCurrent(inventorySlots , currentSlot, nextSlot);
-            }
-        }
-    }
-
-
-
-    private void HandleCurrentPosition(InventorySlot[] inventorySlots , InventorySlot currentSlot, InventorySlot nextSlot)
-    {
-        inventorySlots[currentSlot.Position].AssignProduct(nextSlot.product);
-
-        if (nextSlot.IsEmpty)
-        {
-            nextSlot.ManualHideToolTips();
-            inventorySlots[currentSlot.Position].AssignEmpty();
-        }
-    }
-
-
-    private void HandleSlotsAfterCurrent(InventorySlot[] inventorySlots , InventorySlot currentSlot, InventorySlot nextSlot)
-    {
-        ElseNextSlotEmpty(inventorySlots , nextSlot, currentSlot);
-    }
-
-
-    private void ElseNextSlotEmpty(InventorySlot[] inventorySlots , InventorySlot nextSlot, InventorySlot slot)
-    {
-        if (nextSlot.IsEmpty)
-        {
-            inventorySlots[slot.Position].AssignEmpty();
-        }
-        else
-        {
-            inventorySlots[slot.Position].AssignProduct(nextSlot.product);
-        }
-    }
-
-    private InventorySlot GetNextSlot(int i , InventorySlot[] _inventorySlotsBuy)
-    {
-        return (i + 1 < _inventorySlotsBuy.Length) ? _inventorySlotsBuy[i + 1] : null;
-    }
+    
  
 
    

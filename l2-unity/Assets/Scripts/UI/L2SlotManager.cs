@@ -86,6 +86,7 @@ public class L2SlotManager : L2PopupWindow
 
     public void ReleaseDrag()
     {
+        Debug.Log("Event Hide Windows");
         HideWindow();
 
         if (!IsValidDrag() || IsSameSlot())
@@ -100,6 +101,7 @@ public class L2SlotManager : L2PopupWindow
 
     private void HandleDragRelease()
     {
+        Debug.Log("Event Hide Windows " + _draggedSlot.Type);
         switch (_draggedSlot.Type)
         {
             case L2Slot.SlotType.Gear:
@@ -142,6 +144,7 @@ public class L2SlotManager : L2PopupWindow
         }
         else if (_hoverSlot.Type == L2Slot.SlotType.Trash)
         {
+            Debug.Log("Evenet Destroy items");
             DestroyItem();
         }
     }

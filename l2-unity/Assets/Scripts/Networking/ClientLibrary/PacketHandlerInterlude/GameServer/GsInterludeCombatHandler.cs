@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UnityEditor.Experimental.GraphView;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UIElements;
 using static AttackingState;
 using static StorageVariable;
@@ -17,9 +18,11 @@ using static UnityEngine.GraphicsBuffer;
 public class GsInterludeCombatHandler : ServerPacketHandler
 {
     private PlayerPositionSender _pp_sender;
+    private SynchronizationContext _synchronizationContext;
     public GsInterludeCombatHandler()
     {
         _pp_sender = new PlayerPositionSender();
+        _synchronizationContext = SynchronizationContext.Current;
     }
     public override void HandlePacket(IData itemQueue)
     {
@@ -46,9 +49,54 @@ public class GsInterludeCombatHandler : ServerPacketHandler
             case GSInterludeCombatPacketType.MagicSkillLaunched:
                 MagicSkillLaunched(itemQueue.DecodeData());
                 break;
+            case GSInterludeCombatPacketType.InventoryUpdate:
+                OnInventoryUpdate(itemQueue.DecodeData());
+                break;
+            case GSInterludeCombatPacketType.ItemList:
+                OnCharItemList(itemQueue.DecodeData());
+                break;
+
         }
 
     }
+
+    public void OnCharItemList(byte[] data)
+    {
+        ItemList itemList = new ItemList(data);
+
+        if (InitPacketsLoadWord.getInstance().IsInit)
+        {
+            var _items = itemList.Items;
+            var ShowWindow = itemList.ShowWindow;
+            StorageItems.getInstance().AddItems(_items);
+            StorageItems.getInstance().AddShow(ShowWindow);
+            StorageItems.getInstance().AddEquipItems(itemList.EquipItems);
+        }
+        else
+        {
+            var _items = itemList.Items;
+            var showWindow = itemList.ShowWindow;
+
+            //_synchronizationContext.Post(_ =>
+            //{
+
+            //}, null);
+            Debug.Log("Пришел пакет IntelList");
+            PlayerInventory.Instance.SetInventory(_items, itemList.EquipItems, showWindow, itemList.AdenaCount);
+
+            
+        }
+
+    }
+
+    private void OnInventoryUpdate(byte[] data)
+    {
+        InventoryUpdate packet = new InventoryUpdate(data);
+
+        PlayerInventory.Instance.UpdateInventory(packet.Items, packet.EquipItems);
+        Debug.Log("Пришел пакет UpdateInventory");
+    }
+
 
     public void OnMyTargetSelected(byte[] data)
     {
@@ -66,24 +114,6 @@ public class GsInterludeCombatHandler : ServerPacketHandler
     {
         return await World.Instance.GetEntityNoLock(objId);
     }
-
-    private async void StopAttackElseTargetDie(PlayerEntity entity)
-    {
-        if (PlayerStateMachine.Instance.State == PlayerState.ATTACKING)
-        {
-            if (entity.Target != null)
-            {
-                Entity enityt = await GetEntity(entity.TargetId);
-                if (enityt.GetDead())
-                {
-                    Debug.Log("[EVENT] STOP MOVE STATE RUNNING STOP ATTACK");
-                    PlayerStateMachine.Instance.ChangeIntention(Intention.INTENTION_IDLE);
-                }
-            }
-
-        }
-    }
-
 
 
 
@@ -103,6 +133,7 @@ public class GsInterludeCombatHandler : ServerPacketHandler
 
     }
 
+  
     private void MagicSkillLaunched(byte[] data)
     {
         MagicSkillLaunched magicSkillLaunched = new  MagicSkillLaunched(data);

@@ -66,37 +66,30 @@ public class PlayerInventory : MonoBehaviour
     {
         _playerInventory = items;
         List<ItemInstance> items_collect =  _playerInventory.Values.ToList();
-        List<ItemInstance> equip_collect = equipItems.Values.ToList();
-        _playerEquipInventory = equipItems;
-        InventoryWindow.Instance.SetItemList(items_collect , equip_collect, adenaCount);
-
-        if (openInventory)
+        List<ItemInstance> equip_collect = null;
+        if (equipItems != null)
         {
-            EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.ShowWindow());
-            
+            equip_collect = equipItems.Values.ToList();
+            _playerEquipInventory = equipItems;
         }
+        Debug.Log("Add new Object 2 Item ID Filter OK SET LIST COUNT " + items_collect.Count);
+
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            InventoryWindow.Instance.SetItemList(items_collect, equip_collect, adenaCount);
+
+            if (openInventory)
+            {
+                //EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.ShowWindow());
+                InventoryWindow.Instance.ShowWindow();
+            }
+        });
+        
+
+      
     }
 
-   // public void UpdateInventoryItems(Dictionary<int, ItemInstance> items , bool openInventory)
-    //{
-      //  UpdateInventory(items);
-
-       // if (openInventory)
-       // {
-      //      EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.ShowWindow());
-       // }
-    //}
-
-    private void printPacket(Dictionary<int, ItemInstance> dict)
-    {
-        foreach (KeyValuePair<int, ItemInstance> entry in dict)
-        {
-            int playerName = entry.Key;
-            ItemInstance playerName1 = entry.Value;
-
-            //Debug.Log($"Dict Original key " + playerName + " itemID   " + playerName1.ItemId);
-        }
-    }
+ 
     private readonly object _lock = new object();
     public void UpdateInventory(Dictionary<int, ItemInstance> items , Dictionary<int, ItemInstance> equipitems)
     {
@@ -113,10 +106,9 @@ public class PlayerInventory : MonoBehaviour
                 UpdatePlayerInventory(_tempForRemoveAndAdd, _tempForModified);
 
                 int adenaCount = GetAdenaCount(_playerInventory.Values.ToList());
-                
-                EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.UpdateItemList(_tempForRemoveAndAdd, _tempForModified, adenaCount, _playerInventory.Count));
-                //EventProcessor.Instance.QueueEvent(() => InventoryWindow.Instance.EquipItems(listEquip));
-                //StorageItems.getInstance().AddItems(_playerInventory.ToArray());
+
+                UnityMainThreadDispatcher.Instance().Enqueue(() => InventoryWindow.Instance.UpdateItemList(_tempForRemoveAndAdd, _tempForModified, adenaCount, _playerInventory.Count));
+            
 
             }
             catch (Exception ex)
@@ -149,12 +141,14 @@ public class PlayerInventory : MonoBehaviour
 
     private void AddAndRemove(Dictionary<int, ItemInstance> _playerInventory , ItemInstance item)
     {
-        Debug.Log("Add new Object 1 NoFilter" + item.ItemId + " ObjectID " + item.ObjectId);
+        //Debug.Log("Add new Object 1 NoFilter" + item.ItemId + " ObjectID " + item.ObjectId);
         if (item.LastChange == (int)InventoryChange.REMOVED)
         {
             if (_playerInventory.ContainsKey(item.ObjectId))
             {
+                Debug.Log("Remove object id " + item.ObjectId + " remove item id " + item.ItemId);
                 _playerInventory.Remove(item.ObjectId);
+                RefreshPosition(_playerInventory);
             }
             
         }
@@ -163,12 +157,22 @@ public class PlayerInventory : MonoBehaviour
             
             if (!_playerInventory.ContainsKey(item.ObjectId))
             {
-                Debug.Log("Add new Object 2 Item ID Filter OK" + item.ItemId + " ObjectID " + item.ObjectId);
+
                 int count = _playerInventory.Count();
                 item.SetSlot(count);
+                Debug.Log("item add position " + count + " item " + item.Slot + " objectID" + item.ObjectId);
                 _playerInventory.Add(item.ObjectId, item);
             }
             
+        }
+    }
+
+    private void RefreshPosition(Dictionary<int, ItemInstance> _playerInventory)
+    {
+        int index = 0;
+        foreach (var item in _playerInventory)
+        {
+            item.Value.SetSlot(index++);
         }
     }
 
@@ -260,13 +264,29 @@ public class PlayerInventory : MonoBehaviour
 
     public void DestroyItem(int objectId, int quantity)
     {
-        //Cache Name for Message Equip
-        //StorageVariable.getInstance().AddS1Items(new VariableItem(GetItemByObjectId(objectId).ItemData.ItemName.Name, objectId));
 
-        //AudioManager.Instance.PlayEquipSound("trash_basket");
-        //var sendPaket = CreatorPacketsUser.CreateDestroyItem(objectId, quantity);
-        //bool enable = GameClient.Instance.IsCryptEnabled();
-        //SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
-        //GameClient.Instance.ClientPacketHandler.DestroyItem(objectId, quantity);
+        //Cache Name for Message Equip
+       
+        if (_playerInventory.ContainsKey(objectId))
+        {
+            Debug.Log("Destroy item found delete " + objectId);
+            ItemInstance item = _playerInventory[objectId];
+            StorageVariable.getInstance().AddS1Items(new VariableItem(item.ItemData.ItemName.Name, objectId));
+
+            //AudioManager.Instance.PlayEquipSound("trash_basket");
+            var sendPaket = CreatorPacketsUser.CreateDestroyItem(objectId, quantity);
+            bool enable = GameClient.Instance.IsCryptEnabled();
+            SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
+        }
+        else
+        {
+            Debug.Log("Destroy item not found delete " + objectId);
+        }
     }
+
+    public bool IsContaineInventory(int objectId)
+    {
+        return _playerInventory.ContainsKey(objectId);
+    }
+
 }

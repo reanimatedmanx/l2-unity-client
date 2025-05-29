@@ -65,10 +65,7 @@ public class FilterAccessType
         {
             return true;
         }
-        else if (item.PaketType() == GameInterludeServerPacketType.ItemList)
-        {
-            return true;
-        }
+
         else if (item.PaketType() == GameInterludeServerPacketType.ShortCutInit)
         {
             return true;
@@ -110,10 +107,6 @@ public class FilterAccessType
             return true;
         }
         else if (item.PaketType() == GameInterludeServerPacketType.StatusUpdate)
-        {
-            return true;
-        }
-        else if (item.PaketType() == GameInterludeServerPacketType.InventoryUpdate)
         {
             return true;
         }
@@ -174,6 +167,14 @@ public class FilterAccessType
             return true;
         }
         else if (type == GSInterludeCombatPacketType.SetupGauge)
+        {
+            return true;
+        }
+        else if (type == GSInterludeCombatPacketType.ItemList)
+        {
+            return true;
+        }
+        else if (type == GSInterludeCombatPacketType.InventoryUpdate)
         {
             return true;
         }

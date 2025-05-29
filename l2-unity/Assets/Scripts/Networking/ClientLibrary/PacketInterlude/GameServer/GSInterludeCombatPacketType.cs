@@ -12,6 +12,8 @@ public enum GSInterludeCombatPacketType : byte
     CharMoveToLocation = 0x01,
     MagicSkillUse = 0x48,
     SetupGauge = 0x6D,
+    ItemList = 0x1B,
+    InventoryUpdate = 0x27,
     MagicSkillLaunched = 0x76,
     ActionFailed = 0x25,
 }

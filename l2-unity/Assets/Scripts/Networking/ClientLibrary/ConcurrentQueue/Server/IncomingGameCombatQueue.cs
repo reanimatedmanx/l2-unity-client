@@ -51,6 +51,7 @@ public class IncomingGameCombatQueue : IQueue
             if (!InitPacketsLoadWord.getInstance().IsInit)
             {
                 FastSinglExecuter.Instance.Execute(item);
+
             }
               
             _ewh.Set();
@@ -111,11 +112,11 @@ public class IncomingGameCombatQueue : IQueue
             if (item != null)
             {
                 //we need something that doesn’t freeze the flow processing incoming messages
-                Task.Run(() =>
-                {
+                //Task.Run(() =>
+                //{
                     //Debug.Log("Запускаем извлеченный пакет " + item.ToString());
                     _serverPacketHandler.HandlePacket(item);
-                });
+                //});
 
             }
         }

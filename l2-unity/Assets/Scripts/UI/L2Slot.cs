@@ -68,9 +68,11 @@ public class L2Slot
 
         if (slotElement != null)
         {
-            //_tooltipManipulator = new TooltipManipulator(_slotElement, "");
-            //_slotElement.AddManipulator(_tooltipManipulator);
-            ToolTipManager.GetInstance().RegisterSimple(type , _slotElement , position);
+            if(type != SlotType.Trash)
+            {
+                ToolTipManager.GetInstance().RegisterSimple(type, _slotElement, position);
+            }
+           
         }
 
         if (_hoverManipulator == null)

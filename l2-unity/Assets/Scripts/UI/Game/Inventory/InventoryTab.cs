@@ -51,7 +51,7 @@ public class InventoryTab : L2Tab
             {
                 if (i == _inventorySlots.Length - 1)
                 {
-                    Debug.Log(" slot int i " + i);
+                   // Debug.Log(" slot int i " + i);
                     VisualElement disabledElement = CreateVisualElementDisabled();
                     _contentContainer.Add(disabledElement);
                 }
@@ -148,13 +148,15 @@ public class InventoryTab : L2Tab
         for (int i = 0; i < allItems.Count; i++)
         {
             ItemInstance item = allItems[i];
-            //Debug.Log("AssignItem " + item.ItemId + " ObjectId " + item.ObjectId + " Add Slot " + item.Slot);
-            _inventorySlots[item.Slot].AssignItem(item);
+            item.SetSlot(i);
+            Debug.Log("AssignItem Set Inventory>>>> " + item.ItemId + " ObjectId " + item.ObjectId + " Add Slot " + item.Slot);
+            _inventorySlots[i].AssignItem(item);
         }
     }
     private void AddAllEmptyInventory(int size)
     {
         int start_i = size;
+
         for (int i = start_i; i < _inventorySlots.Length; i++)
         {
             var slot = _inventorySlots[i];
@@ -219,28 +221,34 @@ public class InventoryTab : L2Tab
         {
             ItemInstance item = removeAndAdd[i];
             if (item.LastChange == (int)InventoryChange.ADDED)
-            {
-                InventorySlot i_slot = _inventorySlots[item.Slot];
-                if (i_slot != null)
+            {   
+                if (!PlayerInventory.Instance.IsContaineInventory(item.ObjectId))
                 {
-                    i_slot.AssignItem(item);
+                    //Debug.Log("ADD Inventory Slot slot-position update inventory <<<<< " + item.Slot + " position " + item + " object id " + item.ObjectId);
+
+                    InventorySlot i_slot = _inventorySlots[item.Slot];
+
+                    if (i_slot != null)
+                    {
+                        i_slot.AssignItem(item);
+                    }
+         
                 }
                 else
                 {
-                    Debug.Log("ADD And Rmove Count Not ADD 3 " + removeAndAdd.Count);
+                    Debug.Log("ADD And Rmove Count Not ADD ObjectID " + item.ObjectId);
                 }
+          
             }
             else if(item.LastChange == (int)InventoryChange.REMOVED)
             {
                 InventorySlot slot = GetInventorySlot(item.ObjectId);
                 if (slot != null)
                 {
-                    Debug.Log("Remove new Object 1 Inventory Tab " + item.ItemId);
+                    //Debug.Log("Remove new Object 1 Inventory Tab " + item.ItemId + " objId " + slot.ObjectId + " posiion " + slot.Position);
                     _inventorySlots[slot.Position].AssignEmpty();
-                }
-                else
-                {
-                    Debug.Log("Remove not found  new Object 1 Inventory Tab " + item.ItemId);
+                    //Debug.Log("use Shift elements 1 position  " + slot.Position);
+                    ShiftElements.ShiftElementsLeft(_inventorySlots, slot.Position);
                 }
             }
         }
@@ -267,12 +275,18 @@ public class InventoryTab : L2Tab
 
     public InventorySlot GetInventorySlot(int objectId)
     {
-        return _inventorySlots.FirstOrDefault(slot => slot.ObjectId == objectId);
+        return _inventorySlots?
+                               .Where(slot => slot != null && slot.ObjectId == objectId)
+                               .FirstOrDefault();
     }
 
     public InventorySlot GetFreeSlot()
     {
-        return _inventorySlots.FirstOrDefault(slot => slot.ObjectId == 0);
+        //return _inventorySlots.FirstOrDefault(slot => slot.ObjectId == 0);
+
+        return _inventorySlots?
+                               .Where(slot => slot != null && slot.ObjectId == 0)
+                               .FirstOrDefault();
     }
 
     public override void SelectSlot(int slotPosition)

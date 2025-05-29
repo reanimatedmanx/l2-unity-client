@@ -77,10 +77,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
                 //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
                 OnSellList(itemQueue.DecodeData());
                 break;
-            case GameInterludeServerPacketType.ItemList:
+            //case GameInterludeServerPacketType.ItemList:
                // Debug.Log("GameServerPacket NpcInfo  : начало обработки ItemList ");
-                OnCharItemList(itemQueue.DecodeData());
-                break;
+                //OnCharItemList(itemQueue.DecodeData());
+                //break;
             case GameInterludeServerPacketType.ShortCutInit:
                 //Debug.Log("GameServerPacket NpcInfo  : начало обработки ShortCutInit ");
                 OnCharShortCutInit(itemQueue.DecodeData());
@@ -137,10 +137,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
                 //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
                 OnStatusUpdate(itemQueue.DecodeData());
                 break;
-            case GameInterludeServerPacketType.InventoryUpdate:
+            //case GameInterludeServerPacketType.InventoryUpdate:
                 //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
-                OnInventoryUpdate(itemQueue.DecodeData());
-                break;
+                //OnInventoryUpdate(itemQueue.DecodeData());
+                //break;
             case GameInterludeServerPacketType.TargetUnselected:
                 //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
                 OnTargetUnselected(itemQueue.DecodeData());
@@ -406,34 +406,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         Debug.Log($"Buy list: {sellList}");
     }
 
-    private void OnCharItemList(byte[] data)
-    {
-        ItemList itemList = new ItemList(data);
-
-       // Debug.Log(" OnCharItemList " + itemList.Items.Count);
-
-        if (InitPacketsLoadWord.getInstance().IsInit)
-        {
-            var _items = itemList.Items;
-            var ShowWindow = itemList.ShowWindow;
-            StorageItems.getInstance().AddItems(_items);
-            StorageItems.getInstance().AddShow(ShowWindow);
-            StorageItems.getInstance().AddEquipItems(itemList.EquipItems);
-        }
-        else
-        {
-            var _items = itemList.Items;
-            var showWindow = itemList.ShowWindow;
-            EventProcessor.Instance.QueueEvent(() => {
-                PlayerInventory.Instance.SetInventory(_items, itemList.EquipItems, showWindow, itemList.AdenaCount);
-            });
-            
-           // PlayerInventory.Instance.UpdateInventoryItems(_items, true);
-        }
-      
-        
-        //Debug.Log("GameServerPacket OnCharItemList : Завершено ");
-    }
+   
 
     private void OnCharShortCutInit(byte[] data)
     {
@@ -663,12 +636,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         EventProcessor.Instance.QueueEvent(() => TargetManager.Instance.UnselectedTarget(packet.ObjId));
     }
 
-    private void OnInventoryUpdate(byte[] data)
-    {
-        InventoryUpdate packet = new InventoryUpdate(data);
-        PlayerInventory.Instance.UpdateInventory(packet.Items , packet.EquipItems);
-        //EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.UpdateInventory(packet.Items));
-    }
+
 
     
   

@@ -48,6 +48,7 @@ public class FastSinglExecuter : MonoBehaviour
             case GSInterludeCombatPacketType.ActionFailed:
                 ActionFailed(itemQueue.DecodeData());
                 break;
+
         }
 
   
@@ -67,6 +68,8 @@ public class FastSinglExecuter : MonoBehaviour
         //}, null);
 
     }
+
+   
 
     private void Attack(byte[] data)
     {

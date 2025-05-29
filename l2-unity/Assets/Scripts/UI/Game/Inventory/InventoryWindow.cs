@@ -110,7 +110,7 @@ public class InventoryWindow : L2PopupWindow
         Button trashBtn = (Button)GetElementById("TrashBtn");
         trashBtn.AddManipulator(new ButtonClickSoundManipulator(trashBtn));
         trashBtn.AddManipulator(new TooltipManipulator(adenaDistribution, "Trash"));
-        //L2Slot trashSlot = new L2Slot(trashBtn, -2 , L2Slot.SlotType.Trash);
+        L2Slot trashSlot = new L2Slot(trashBtn, 100 , L2Slot.SlotType.Trash);
 
         _inventoryCountLabel = GetLabelById("InventoryCount");
 
@@ -368,21 +368,10 @@ public class InventoryWindow : L2PopupWindow
 
         //Adena
         _adenaCountLabel.text = adenaCount.ToString();
-
-
-
-
- 
-
         _tabs[0].UpdateItemList(removeAndAdd,  modified);
         //SwitchTab(_tabs[0]);
     }
 
-    //public void EquipItems(List<ItemInstance> equipItems)
-    //{
-        // Tabs
-    //    _gearTab.UpdateEquipList(equipItems);
-   // }
 
  
     public void ToggleHideWindowManual()
@@ -423,54 +412,6 @@ public class InventoryWindow : L2PopupWindow
  
 
   
-    //Fiex Error Open 2 Windows Or More
-   //public void HideWindowManual()
-    //{
-       // _isWindowHiddenMain = true;
-       // _windowEle.style.display = DisplayStyle.None;
-        //_mouseOverDetection.Disable();
-    //}
-
-    //public void ShowWindowManual()
-    //{
-       // try
-       // {
-           // Debug.Log("Event open Windows"); ;
-           // Debug.Log(" Show name packet 1 " + _windowEle.name + " Children element " + _windowEle.childCount);
-            //_isWindowHiddenMain = false;
-            //_windowEle.style.display = DisplayStyle.Flex;
-            //_mouseOverDetection.Enable();
-           // PrintChildren();
-            //_windowEle.MarkDirtyRepaint();
-            //BringToFront();
-        //}
-       // catch (Exception ex)
-        //{
-           // Debug.LogException(ex);
-       // }
-
-    //}
-
-    private void PrintChildren()
-    {
-        Debug.Log(" Show name packet 2 " + _windowEle.name + " Children element " + _windowEle.childCount);
-        for (int i =0; i < _windowEle.childCount; i++)
-        {
-            Debug.Log("iteration 1");
-            Debug.Log("_windowEle " + _windowEle[i].name);
-        }
-    }
-
-    private IEnumerator CoroutineShow()
-    {
-        yield return new WaitForEndOfFrame();
-        _isWindowHiddenMain = false;
-        _windowEle.style.display = DisplayStyle.Flex;
-        _mouseOverDetection.Enable();
-        BringToFront();
-        
-
-    }
 
     public void SelectSlot(int slot)
     {
