@@ -5,6 +5,7 @@ public class CreateIntentionPlayer
 {
     public static IntentionBase GetIntention(Intention currentState, PlayerStateMachine _stateMachine)
     {
+        
         switch (currentState)
         {
             case Intention.INTENTION_IDLE:
@@ -19,7 +20,10 @@ public class CreateIntentionPlayer
                 return new NewAttackIntention(_stateMachine);
             case Intention.INTENTION_DEAD:
                 return new NewDeadIntention(_stateMachine);
+            case Intention.INTENTION_MAGIC_ATTACK:
+                return new NewMagicAttackIntention(_stateMachine);
             default:
+                Debug.LogError("CreateIntentionPlayer> Invalid Intention Request " + currentState);
                 throw new ArgumentException("Invalid Intention");
         }
     }

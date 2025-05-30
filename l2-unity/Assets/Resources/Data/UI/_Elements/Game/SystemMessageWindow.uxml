@@ -16,6 +16,10 @@
                         <engine:VisualElement name="ButtonBg" class="l2-button-bg" />
                         <engine:Label text="OK" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0;" />
                     </engine:Button>
+                    <engine:Button text="CancelButton" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CancelButton" class="l2-button" style="height: 20px; background-color: rgba(188, 188, 188, 0);">
+                        <engine:VisualElement name="ButtonBg" class="l2-button-bg" />
+                        <engine:Label text="Cancel" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0;" />
+                    </engine:Button>
                 </engine:GroupBox>
             </engine:GroupBox>
         </engine:Instance>

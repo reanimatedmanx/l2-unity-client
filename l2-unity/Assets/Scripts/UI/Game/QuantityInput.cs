@@ -1,28 +1,27 @@
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.Windows;
+
 using static L2Slot;
-using static UnityEditor.Experimental.GraphView.Port;
-using static UnityEditor.Rendering.FilterWindow;
+
+
+
 
 public class QuantityInput : L2PopupWindow
 {
     private static QuantityInput _instance;
-    private DealerWindow _dealerWindow;
+    private object _parentWindow;
     private VisualElement _root;
     private TextField _userInput;
-    private Product _selectProduct;
-    private SlotType _type;
-    private List<Product> _listServer;
-    private int _position;
+
     public static QuantityInput Instance { get { return _instance; } }
+    public event Action<string> OnButtonOk; 
+    public event Action OnButtonClose;
+    private int _count;
 
     private void Awake()
     {
@@ -89,7 +88,6 @@ public class QuantityInput : L2PopupWindow
         Button buttonALL = (Button)GetElementById("ButtonALL");
         buttonALL.RegisterCallback<ClickEvent>(OnAll);
 
-        Debug.Log("");
     }
 
 
@@ -125,16 +123,15 @@ public class QuantityInput : L2PopupWindow
 
     private void OnAll(ClickEvent evt)
     {
-        if(_selectProduct.Count > 0)
+        if (_count > 0)
         {
-            _userInput.value = _selectProduct.Count.ToString();
+            _userInput.value = _count.ToString();
         }
     }
 
 
     private void OnClick(ClickEvent evt ,  VisualElement inputBg)
     {
-        Debug.Log("Click Input files !!!");
         if (!inputBg.ClassListContains("calculator_field_click_bg"))
         {
             inputBg.AddToClassList("calculator_field_click_bg");
@@ -144,16 +141,23 @@ public class QuantityInput : L2PopupWindow
     private void OnClickSuccess(ClickEvent evt)
     {
         string value = ToolTipsUtils.ConvertPriceToNormal(_userInput.value);
-        _dealerWindow.RefreshOpacity(1);
-        _dealerWindow.Move—ellElseQuantitySelected(_type,  _listServer, _position , int.Parse(value));
+        OnButtonOk?.Invoke(value);
         base.HideWindow();
     }
 
+
+
     private void OnClickClose(ClickEvent evt)
     {
-        _dealerWindow.RefreshOpacity(1);
+        OnButtonClose?.Invoke();
         base.HideWindow();
     }
+
+
+ 
+
+  
+
 
     private void OnValueChanged(ChangeEvent<string> evt)
     {
@@ -192,13 +196,9 @@ public class QuantityInput : L2PopupWindow
         _userInput.cursorIndex = formattedValue.Length + 1;
     }
 
-    public void ShowWindow(DealerWindow dealerWindow , Product selectProduct , SlotType type, List<Product> listServer, int position)
+    public void ShowWindow(int  allCount)
     {
-        _type = type;
-        _listServer = listServer;
-        _position = position;
-        _selectProduct = selectProduct;
-        _dealerWindow = dealerWindow;
+        _count = allCount;
         base.ShowWindow();
         OnCenterScreen(_root);
         _userInput.value = "0";

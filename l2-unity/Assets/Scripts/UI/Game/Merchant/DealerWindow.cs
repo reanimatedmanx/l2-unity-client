@@ -4,10 +4,12 @@ using Mono.Cecil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static L2Slot;
+
 
 public class DealerWindow : L2PopupWindow
 {
@@ -158,6 +160,10 @@ public class DealerWindow : L2PopupWindow
         return ve.name.Split('_');
     }
 
+    private List<Product> _listServer;
+    private int _position;
+    private SlotType _type;
+  
     private void Move—ellElsePriceType(SlotType type , List<Product> listServer, int position)
     {
 
@@ -172,11 +178,14 @@ public class DealerWindow : L2PopupWindow
             if (source.Count > 1)
             {
                 RefreshOpacity(0.7f);
-                QuantityInput.Instance.ShowWindow(this, source , type,  listServer, position);
+                RefreshSelectData(listServer, position, type);
+                QuantityInput.Instance.ShowWindow(source.Count);
+                QuantityInput.Instance.OnButtonOk += OnSelectedQuantity;
+                QuantityInput.Instance.OnButtonClose += OnCloseQuantity;
             }
             else
             {
-                UnityEngine.Debug.Log("Moving PriceBuy 4");
+
                 _tradeItemMover.MovingBuyWithRemoval(_isModifySell  ,source, position);
             }
 
@@ -191,7 +200,10 @@ public class DealerWindow : L2PopupWindow
             if (source.Count > 1)
             {
                 RefreshOpacity(0.7f);
-                QuantityInput.Instance.ShowWindow(this, source, type,  listServer, position);
+                RefreshSelectData(listServer, position, type);
+                QuantityInput.Instance.ShowWindow(source.Count);
+                QuantityInput.Instance.OnButtonOk += OnSelectedQuantity;
+                QuantityInput.Instance.OnButtonClose += OnCloseQuantity;
             }
             else
             {
@@ -201,6 +213,35 @@ public class DealerWindow : L2PopupWindow
     }
 
 
+    private void RefreshSelectData(List<Product> listServer , int position , SlotType type)
+    {
+        _listServer = listServer;
+        _position = position;
+        _type = type;
+    }
+
+    private void OnSelectedQuantity(string value)
+    {
+        QuantityInput.Instance.OnButtonOk -= OnSelectedQuantity;
+        UseSuccessInParentWindow(this, value, _listServer);
+    }
+
+    private void OnCloseQuantity()
+    {
+        QuantityInput.Instance.OnButtonClose -= OnCloseQuantity;
+        UseCloseInParentWindow();
+    }
+
+    private void UseCloseInParentWindow()
+    {
+       RefreshOpacity(1);
+    }
+
+    private void UseSuccessInParentWindow(DealerWindow _dealerWindow, string value, List<Product> listServer)
+    {
+         _dealerWindow.RefreshOpacity(1);
+         _dealerWindow.Move—ellElseQuantitySelected(_type, listServer, _position, int.Parse(value));
+    }
 
     public void Move—ellElseQuantitySelected(SlotType type, List<Product> listServer, int position , int selectCount)
     {

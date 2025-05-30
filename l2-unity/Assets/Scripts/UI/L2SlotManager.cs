@@ -144,7 +144,7 @@ public class L2SlotManager : L2PopupWindow
         }
         else if (_hoverSlot.Type == L2Slot.SlotType.Trash)
         {
-            Debug.Log("Evenet Destroy items");
+            //QuantityInput.Instance.ShowWindow(this, source, type, listServer, position);
             DestroyItem();
         }
     }
@@ -258,12 +258,41 @@ public class L2SlotManager : L2PopupWindow
         Debug.Log($"Drop {slot.Id}.");
     }
 
+    private InventorySlot _slotTemp = null;
     private void DestroyItem()
     {
         // Destroy item logic
         InventorySlot slot = (InventorySlot)_draggedSlot;
+        _slotTemp = slot;
+        if (slot.Count > 1)
+        {
+            PauseAndShowQuantity(slot.Count);
+        }
+        else
+        {
+            SystemMessageWindow.Instance.OnButtonOk += OkDestroy;
+            SystemMessageWindow.Instance.ShowWindowDialogYesOrNot("Do you want to destroy your " + slot.Name);
+            
+        }
         Debug.Log($"Destroy {slot.Id}.");
-        PlayerInventory.Instance.DestroyItem(slot.ObjectId, 1);
+       
+    }
+
+    private void OkDestroy()
+    {
+        PlayerInventory.Instance.DestroyItem(_slotTemp.ObjectId, 1);
+        SystemMessageWindow.Instance.OnButtonOk -= OkDestroy;
+    }
+    private void PauseAndShowQuantity(int count)
+    {
+        QuantityInput.Instance.ShowWindow(count);
+        QuantityInput.Instance.OnButtonOk += OnSelectedQuantity;
+    }
+
+    private void OnSelectedQuantity(string value)
+    {
+        PlayerInventory.Instance.DestroyItem(_slotTemp.ObjectId, int.Parse(value));
+        QuantityInput.Instance.OnButtonOk -= OnSelectedQuantity;
     }
 
     private void AddActionToSkillbar()

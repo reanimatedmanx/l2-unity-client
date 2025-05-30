@@ -48,12 +48,6 @@ public class PlayerStateMachine : MonoBehaviour
         this.enabled = false;
     }
 
-    private void Start()
-    {
-
-    }
-
-
 
     private void Update()
     {

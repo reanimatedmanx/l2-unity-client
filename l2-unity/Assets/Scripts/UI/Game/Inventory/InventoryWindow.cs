@@ -338,30 +338,6 @@ public class InventoryWindow : L2PopupWindow
     }
     public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified , int adenaCount , int usedSlots)
     {
-
-        //_usedSlots = 0;
-
-        //if (items == null)
-        //{
-        //    items = new List<ItemInstance>();
-        //}
-        //else
-        //{
-           // if(items.Count > 0)
-            //{
-                //_usedSlots = items.Where(o => o.Location == ItemLocation.Inventory).Count();
-
-                
-                //if (adenaItem != null)
-                //{
-                //    _adenaCount = adenaItem.Count;
-                //}
-           // }
-
-        //}
-
-        //_playerItems = items;
-
         // Slot count
         _slotCount = PLAYER_INVENTORY_SIZE;
         _inventoryCountLabel.text = $"({usedSlots}/{_slotCount})";
