@@ -9,11 +9,9 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UIElements;
-using static AttackingState;
+
 using static StorageVariable;
-using static UnityEditor.Progress;
-using static UnityEngine.EventSystems.EventTrigger;
-using static UnityEngine.GraphicsBuffer;
+
 
 public class GsInterludeCombatHandler : ServerPacketHandler
 {
@@ -91,10 +89,9 @@ public class GsInterludeCombatHandler : ServerPacketHandler
 
     private void OnInventoryUpdate(byte[] data)
     {
+        Debug.Log(" Inventory Update Server Get ");
         InventoryUpdate packet = new InventoryUpdate(data);
-
         PlayerInventory.Instance.UpdateInventory(packet.Items, packet.EquipItems);
-        Debug.Log("Пришел пакет UpdateInventory");
     }
 
 
@@ -107,14 +104,6 @@ public class GsInterludeCombatHandler : ServerPacketHandler
             _pp_sender.SendServerArrivedPosition(PlayerController.Instance.transform.position);
         });
     }
-
-
-
-    private async Task<Entity> GetEntity(int objId)
-    {
-        return await World.Instance.GetEntityNoLock(objId);
-    }
-
 
 
 

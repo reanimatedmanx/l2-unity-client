@@ -66,10 +66,7 @@ public class StorageVariable
     }
     public void AddS1Items(VariableItem itemsParce)
     {
-       // lock (_sync)
-       // {
             variables[0] = itemsParce;
-       // }
     }
     public void AddS2Items(VariableItem itemsParce)
     {

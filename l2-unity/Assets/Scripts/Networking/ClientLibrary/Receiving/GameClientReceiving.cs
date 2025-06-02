@@ -51,7 +51,7 @@ public class GameClientReceiving : MonoBehaviour
                     {
                         if (length == -1)
                         {
-                            length = Getlength(stream);
+                            length = GetLength(stream);
                         }
 
                         byte[] buffer = new byte[length];
@@ -71,11 +71,21 @@ public class GameClientReceiving : MonoBehaviour
                             }
                             else
                             {
+                                //test slowdown of packets if they fly too fast some of them are dropped by the blocking collection a fix may be needed
+                                if (item.ByteType() == 0x27)
+                                {
+                                    Debug.Log(" Inventory Update Server Get ");
+                                }
+
                                 IncomingGameCombatQueue.Instance().AddItem(item);
                                 IncomingGameDataQueue.Instance().AddItem(item);
                                 IncomingGameMessageQueue.Instance().AddItem(item);
                                 //Debug.Log("");
                             }
+                        }
+                        else
+                        {
+                            Debug.Log(" Пришел кривой пакет размер его 0! ");
                         }
                     }
 
@@ -151,27 +161,34 @@ public class GameClientReceiving : MonoBehaviour
         {
             int read = stream.Read(data, offset, remaining);
             if (read <= 0)
-                throw new EndOfStreamException
-                    (String.Format("End of stream reached with {0} bytes left to read", remaining));
+                throw new EndOfStreamException(String.Format("End of stream reached with {0} bytes left to read", remaining));
             remaining -= read;
             offset += read;
         }
         return data;
     }
 
-    private int Getlength(Stream stream)
+   
+
+    private int GetLength(Stream stream)
     {
-        int length = 0;
-        byte[] bytes = ReadWholeArray(stream, new byte[header]);
-        length = ReadSh(bytes);
+          int length = 0;
+          byte[] bytes = ReadWholeArray(stream, new byte[header]);
+          length = ReadSh(bytes);
+
+        if (length <= 0)
+            throw new EndOfStreamException();
+         
 
         if (length > 0)
-        {
+          {
             length = length - header;
-        }
-        return length;
+          }
+        
+         return length;
     }
 
+   
     protected int ReadSh(byte[] _packetData)
     {
         byte[] data = new byte[2];

@@ -39,7 +39,7 @@ public class UserInfo : ServerPacket
         _info.Stats.Level = ReadI();
          long exp =  ReadOtherL();
         int ost = (int)exp - (int)_info.Stats.Exp;
-        StorageVariable.getInstance().AddS1Items(new VariableItem(ost.ToString(), _info.Identity.Id));
+        if (ost > 0) StorageVariable.getInstance().AddS1Items(new VariableItem(ost.ToString(), _info.Identity.Id));
         _info.Stats.Exp = exp;
         _info.Stats.MaxExp  = LevelServer.GetExp(_info.Stats.Level + 1);
         _info.Stats.Str = ReadI();

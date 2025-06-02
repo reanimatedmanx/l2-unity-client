@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using static UnityEditor.FilePathAttribute;
-using static UnityEditor.Progress;
+
 
 public class InventoryUpdate : ServerPacket
 {
@@ -32,7 +28,6 @@ public class InventoryUpdate : ServerPacket
 
             int type1 = ReadSh();
             int objectId = ReadI();
-            Debug.Log(" objectId in " + objectId + " type " + type);
             int displayId = ReadI();
             int count = ReadI();
            // Item Type 2 : 00-weapon, 01-shield/armor, 02-ring/earring/necklace, 03-questitem, 04-adena, 05-item
@@ -64,19 +59,10 @@ public class InventoryUpdate : ServerPacket
                 itemInstance.LastChange = type;
                 items.Add(objectId, itemInstance);
             }
-
-           
         }
     }
 
-   // List<ItemInstance> items_I = FilterOnlyInventory(items);
 
-    //private List<ItemInstance> FilterOnlyInventory(List<ItemInstance> items)
-    //{
-    //    List<ItemInstance> filter = items.Where(item => !item.Equipped).ToList();
-
-     //   return filter;
-   // }
 }
 
 
