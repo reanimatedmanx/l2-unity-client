@@ -70,7 +70,7 @@ public class InitPacketsLoadWord
         List<ItemInstance> itemInstances= items.Values.ToList();
         int adenaCount = GetAdenaCount(itemInstances);
         //EventProcessor.Instance.QueueEvent(() => PlayerInventory.Instance.SetInventory(items, equipItems , StorageItems.getInstance().GetShowWindow() , adenaCount));
-        PlayerInventory.Instance.SetInventory(items, equipItems, StorageItems.getInstance().GetShowWindow(), adenaCount);
+        PlayerInventory.Instance.SetInventory(items, equipItems, StorageItems.getInstance().GetShowWindow(), adenaCount , items.Count + equipItems.Count());
     }
 
 

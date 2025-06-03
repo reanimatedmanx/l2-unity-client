@@ -51,7 +51,7 @@ public class L2ClickableSlot : L2Slot
     private VisualElement slotFrame;
     public void SetSelected()
     {
-        Debug.Log($"Slot {_position} selected.");
+        Debug.Log($"Slot {_position} {Id}selected.");
         //_slotElement.AddToClassList("inventory-selected-cell");
 
         if (slotFrame == null) slotFrame = _slotElement.Q(className: "slot-frame");

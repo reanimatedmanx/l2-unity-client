@@ -37,6 +37,11 @@ public class GearItem
     {
         _gearSlot.AssignItem(item);
     }
+
+    public void AssignEmpty()
+    {
+        _gearSlot.AssignEmpty();
+    }
     public bool IsEmptyGearSlot()
     {
         return _gearSlot.IsEmpty;

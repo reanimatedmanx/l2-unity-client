@@ -10,12 +10,13 @@ using UnityEngine;
 public class IncomingGameMessageQueue: IQueue
 {
 
-    private BlockingCollection<ItemServer> _queue;
+    private ConcurrentQueue<ItemServer> _queue;
     private static IncomingGameMessageQueue _instance;
     private GSInterludeMessageHandler _serverPacketHandler;
     private static CancellationTokenSource _cancelTokenSource;
     private static CancellationToken _token;
-    private static ManualResetEvent _ewh;
+    private bool _isRunning = false;
+
     public static IncomingGameMessageQueue Instance()
     {
         if (_instance == null)
@@ -23,7 +24,7 @@ public class IncomingGameMessageQueue: IQueue
             _cancelTokenSource = new CancellationTokenSource();
             _token = _cancelTokenSource.Token;
             _instance = new IncomingGameMessageQueue();
-            _ewh = new ManualResetEvent(false);
+
         }
 
         return _instance;
@@ -45,35 +46,35 @@ public class IncomingGameMessageQueue: IQueue
     {
         RestartQueue();
     }
+
+
     public void AddItem(ItemServer item)
     {
-        if (FilterAccessType.IsAccessTypeMessage(item))
+        try
         {
-            try
+            if (FilterAccessType.IsAccessTypeMessage(item))
             {
-                _ewh.Set();
-                if (!_queue.TryAdd(item))
-                {
-                    Debug.Log("IncomingGameMessageQueue: Критическая ошибка не все пакеты были добавлен!!!!  TryAdd не сработал!");
-                }
-                //_queue.Add(item);
+                _queue.Enqueue(item);
             }
-            catch (Exception ex)
-            {
-                Debug.Log("IncomingGameMessageQueue: Критическая ошибка не все пакеты были добавлен!!!! " + ex);
-            }
-        
         }
-
+        catch (Exception ex)
+        {
+            Debug.LogError("IncomingGameMessageQueue->AddItem " + ex.ToString());
+        }
     }
 
     private void RestartQueue()
     {
         if (_queue == null)
         {
-            _queue = new();
+            _queue = new ConcurrentQueue<ItemServer>();
+        }
+        if (!_isRunning)
+        {
+            _isRunning = true;
             WaitData();
         }
+
     }
 
 
@@ -81,52 +82,40 @@ public class IncomingGameMessageQueue: IQueue
     {
         Task.Run(() =>
         {
-            while (true)
+            try
             {
-                _ewh.WaitOne();
-
-                if (_token.IsCancellationRequested)
+                while (!_token.IsCancellationRequested)
                 {
-                    break;
+                    UseNormal();
                 }
-
-                if (_queue.Count > 0)
-                {
-                     ItemServer item;
-                     bool ok = _queue.TryTake(out item);
-                    if (ok == true)
-                    {
-                        //Task.Run(() =>
-                        // {
-                        //Debug.Log("Running Thread running");
-                        _serverPacketHandler.HandlePacket(item);
-                        //});
-                    }
-                    else
-                    {
-                        Debug.Log("IncomingGameMessageQueue: Критическая ошибка не все пакеты ,были обработаны!!!! ");
-                    }
-                }
-                else
-                {
-                    _ewh.Reset();
-                }
-                //Debug.Log("Running Thread");
-                //Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Error in WaitData->CombatData " + ex.Message);
+                RestartQueue();
+            }
+            finally
+            {
+                _isRunning = false;
             }
         });
+    }
+    private void UseNormal()
+    {
+        if (_queue.TryDequeue(out ItemServer item))
+        {
+            _serverPacketHandler.HandlePacket(item);
+        }
+
     }
 
     public void Dispose()
     {
         if (!_cancelTokenSource.IsCancellationRequested)
         {
-            _ewh.Set();
             _cancelTokenSource.Cancel();
-            //_queue.CompleteAdding();
             _queue = null;
             _instance = null;
-            _serverPacketHandler.Dispose();
         }
     }
 }

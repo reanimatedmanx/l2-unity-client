@@ -17,15 +17,35 @@ public class PlayerInventory : MonoBehaviour
     private Dictionary<int , ItemInstance> _playerInventory;
     private Dictionary<int, ItemInstance> _playerEquipInventory;
 
-    private List<ItemInstance> _tempForRemoveAndAdd;
-    private List<ItemInstance> _tempForModified;
+    //private List<ItemInstance> _tempForRemoveAndAdd;
+    //private List<ItemInstance> _tempForModified;
 
 
     public static PlayerInventory _instance;
     public static PlayerInventory Instance { get { return _instance; } }
 
 
+    public List<ItemInstance> FilterInventory(List<ItemCategory> filteredCategories)
+    {
+        if(_playerInventory != null & _playerEquipInventory != null)
+        {
+                var filteredItemsInventory = _playerInventory
+               .Where(kvp => filteredCategories.Contains(kvp.Value.Category))
+               .Select(kvp => kvp.Value)
+               .ToList();
 
+
+               var filteredEquip = _playerEquipInventory
+                .Where(kvp => filteredCategories.Contains(kvp.Value.Category))
+                .Select(kvp => kvp.Value)
+                .ToList();
+
+
+            return filteredEquip.Union(filteredItemsInventory).ToList();
+        }
+
+        return new List<ItemInstance>();
+    }
     public Dictionary<int, ItemInstance>  GetPlayerInventory()
     {
 
@@ -45,6 +65,8 @@ public class PlayerInventory : MonoBehaviour
         return null;
     }
 
+    
+
     private void Awake()
     {
         if (_instance == null)
@@ -55,8 +77,8 @@ public class PlayerInventory : MonoBehaviour
         {
             Destroy(this);
         }
-        _tempForRemoveAndAdd = new List<ItemInstance>();
-        _tempForModified = new List<ItemInstance>();
+        //_tempForRemoveAndAdd = new List<ItemInstance>();
+        //_tempForModified = new List<ItemInstance>();
         _playerInventory = new Dictionary<int, ItemInstance>();
     }
 
@@ -70,7 +92,7 @@ public class PlayerInventory : MonoBehaviour
         _instance = null;
     }
 
-    public void SetInventory(Dictionary<int, ItemInstance> items, Dictionary<int, ItemInstance> equipItems , bool openInventory , int adenaCount)
+    public void SetInventory(Dictionary<int, ItemInstance> items, Dictionary<int, ItemInstance> equipItems , bool openInventory , int adenaCount , int usedSlot)
     {
         _playerInventory = items;
         List<ItemInstance> items_collect =  _playerInventory.Values.ToList();
@@ -83,7 +105,7 @@ public class PlayerInventory : MonoBehaviour
 
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            InventoryWindow.Instance.SetItemList(items_collect, equip_collect, adenaCount);
+            InventoryWindow.Instance.SetItemList(items_collect, equip_collect, adenaCount , usedSlot);
 
             if (openInventory)
             {
@@ -119,7 +141,7 @@ public class PlayerInventory : MonoBehaviour
                 int adenaCount = GetAdenaCount(_playerInventory.Values.ToList());
 
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    InventoryWindow.Instance.UpdateItemList(_tempForRemoveAndAdd, _tempForModified, listEquip, adenaCount, _playerInventory.Count);
+                    InventoryWindow.Instance.UpdateItemList(_tempForRemoveAndAdd, _tempForModified, listEquip, adenaCount, _playerInventory.Count + _playerEquipInventory.Count);
                     InventoryWindow.Instance.RemoveOldEquipItemOrNoQuipItem(_obsoleteItemsInventory , _obsoleteItemsGear);
                 });
             

@@ -41,6 +41,7 @@ public class ItemInstance
         _remainingTime = remainingTime;
         _enchantLevel = enchantLevel;
 
+
         if (_category == ItemCategory.Weapon)
         {
             _itemData = ItemTable.Instance.GetWeapon(_itemId);

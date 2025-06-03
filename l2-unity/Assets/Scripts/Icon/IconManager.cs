@@ -56,7 +56,11 @@ public class IconManager
         foreach (EtcItem etcItem in ItemTable.Instance.EtcItems.Values)
         {
             Texture2D icon = LoadTextureByName(etcItem.Icon);
-            _icons.Add(etcItem.Id, icon);
+            if (!_icons.ContainsKey(etcItem.Id))
+            {
+                _icons.Add(etcItem.Id, icon);
+            }
+            
         }
     }
 
@@ -71,7 +75,7 @@ public class IconManager
             return result;
         }
 
-        //Debug.LogWarning($"Missing icon: {name}.");
+        Debug.LogWarning($"Missing icon: {name}.");
 
         return _noImageIcon;
     }

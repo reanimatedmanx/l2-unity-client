@@ -82,7 +82,7 @@ public class ShopInventoryController
             VisualElement slotElement = inventorySlotTemplate.Instantiate()[0];
             contentSell.Add(slotElement);
 
-            InventorySlot slot = new InventorySlot(i, slotElement, tabSell, SlotType.PriceSell);
+            InventorySlot slot = new InventorySlot(i, slotElement, tabSell, SlotType.PriceSell , false);
             inventorySlotsSell[i] = slot;
         }
         
@@ -159,7 +159,7 @@ public class ShopInventoryController
 
     private InventorySlot CreateSlotInventory(VisualElement slotElement , InventoryTab tabSell , int i , SlotType type)
     {
-        InventorySlot slot = new InventorySlot(i, slotElement, tabSell, type);
+        InventorySlot slot = new InventorySlot(i, slotElement, tabSell, type , false);
         return slot;
     }
 
@@ -351,7 +351,7 @@ public class ShopInventoryController
             VisualElement slotElement = InventorySlotTemplate.Instantiate()[0];
             contentBuy.Add(slotElement);
 
-            InventorySlot slot = new InventorySlot(i, slotElement, tabBuy, SlotType.PriceBuy);
+            InventorySlot slot = new InventorySlot(i, slotElement, tabBuy, SlotType.PriceBuy , false);
             inventorySlotsBuy[i] = slot;
         }
 

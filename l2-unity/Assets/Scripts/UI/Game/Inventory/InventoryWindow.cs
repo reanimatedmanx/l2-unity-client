@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -58,7 +59,6 @@ public class InventoryWindow : L2PopupWindow
         if (_instance == null)
         {
             _instance = this;
-            //_eventProcessor = EventProcessor.Instance;
         }
         else
         {
@@ -250,6 +250,7 @@ public class InventoryWindow : L2PopupWindow
 
         for (int i = _tabs.Count - 1; i >= 0; i--)
         {
+
             VisualElement tabElement = _tabTemplate.CloneTree()[0];
             tabElement.name = _tabs[i].TabName;
             tabElement.AddToClassList("unselected-tab");
@@ -278,8 +279,13 @@ public class InventoryWindow : L2PopupWindow
         _weightLabel.text = "00.00%";
     }
 
+    public int GetEmptySlot()
+    {
+        return _tabs[0].GetEmptySlot();
+    }
     public bool SwitchTab(InventoryTab switchTo)
     {
+        
         if (_activeTab != switchTo)
         {
             if (_activeTab != null)
@@ -291,12 +297,27 @@ public class InventoryWindow : L2PopupWindow
             switchTo.TabContainer.RemoveFromClassList("unselected-tab");
             switchTo.TabHeader.AddToClassList("active");
             //ScrollDown(switchTo.Scroller);
-
+            SwitchItemList(switchTo);
             _activeTab = switchTo;
             return true;
         }
-
+        
         return false;
+    }
+
+    private void SwitchItemList(InventoryTab switchTo)
+    {
+        //Equip
+        //Supplies
+        //Quest
+        if (!switchTo.TabName.Equals("ALL"))
+        {
+            List<ItemInstance> filterList = PlayerInventory.Instance.FilterInventory(switchTo.GetFilterCategories);
+            if (filterList != null && filterList.Count > 0)
+            {
+                switchTo.SetItemList(filterList);
+            }
+        }
     }
 
     public void UpdateStats(PlayerInterludeStats stats)
@@ -325,29 +346,49 @@ public class InventoryWindow : L2PopupWindow
 
     }
 
-    public void SetItemList(List<ItemInstance> allItems , List<ItemInstance> quipAllItems, int adenaCount)
+    public void SetItemList(List<ItemInstance> allItems , List<ItemInstance> quipAllItems, int adenaCount, int usedSlots)
     {
-        _adenaCountLabel.text = adenaCount.ToString();
-
+        //_adenaCountLabel.text = adenaCount.ToString();
+        SetAdenaCountLabel(adenaCount);
         //_tabs[0].ForEach((tab) =>
         //{
         _tabs[0].SetItemList(allItems);
-        _gearTab.UpdateEquipList(quipAllItems);
-       // });
+        _gearTab.SetEquipList(quipAllItems);
+        _slotCount = PLAYER_INVENTORY_SIZE;
+        _inventoryCountLabel.text = $"({usedSlots}/{_slotCount})";
+        // });
         SwitchTab(_tabs[0]);
-    }
-    public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified , int adenaCount , int usedSlots)
+
+}
+    public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified , List<ItemInstance> listEquipModified,  int adenaCount , int usedSlots)
     {
         // Slot count
         _slotCount = PLAYER_INVENTORY_SIZE;
         _inventoryCountLabel.text = $"({usedSlots}/{_slotCount})";
-
-        //Adena
-        _adenaCountLabel.text = adenaCount.ToString();
+        SetAdenaCountLabel(adenaCount);
         _tabs[0].UpdateItemList(removeAndAdd,  modified);
-        //SwitchTab(_tabs[0]);
+        _gearTab.UpdateEquipList(listEquipModified);
     }
 
+    public void RemoveOldEquipItemOrNoQuipItem(List<ItemInstance> obsoleteItemsInventory, List<ItemInstance> obsoleteItemsGear)
+    {
+        foreach(ItemInstance item in obsoleteItemsInventory)
+        {
+            Debug.Log("Delete item slot " + item.ItemId + " item objectId " + item.ObjectId);
+            _tabs[0].ModifiedRemove(item);
+        }
+
+        foreach(ItemInstance item in obsoleteItemsGear) {
+            Debug.Log("Delete gear 2 " + item.BodyPart);
+            _gearTab.ModifiedRemove(item.BodyPart);
+        }
+    }
+
+
+    private void SetAdenaCountLabel(int count )
+    {
+        _adenaCountLabel.text = ToolTipsUtils.ConvertToPrice(count);
+    }
 
  
     public void ToggleHideWindowManual()
@@ -361,7 +402,7 @@ public class InventoryWindow : L2PopupWindow
         if (_isWindowHidden)
         {
 
-             PlayerInventory.Instance.SetInventory(allItems, equipItems , true, adenaCount);
+             PlayerInventory.Instance.SetInventory(allItems, equipItems , true, adenaCount , allItems.Count + equipItems.Count);
         }
         else
         {

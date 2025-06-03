@@ -80,7 +80,7 @@ public class GsInterludeCombatHandler : ServerPacketHandler
 
             //}, null);
             Debug.Log("Пришел пакет IntelList");
-            PlayerInventory.Instance.SetInventory(_items, itemList.EquipItems, showWindow, itemList.AdenaCount);
+            PlayerInventory.Instance.SetInventory(_items, itemList.EquipItems, showWindow, itemList.AdenaCount , itemList.Items.Count + itemList.EquipItems.Count);
 
             
         }

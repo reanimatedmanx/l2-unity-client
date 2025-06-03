@@ -142,6 +142,14 @@ public class ItemNameTable {
                         }
 
                     }
+                    else
+                    {
+                        ItemName itemName = new ItemName();
+                        itemName.Id = itemData.Id;
+                        itemName.Name = itemData.Name;
+                        itemName.Description = itemData.Description;
+                        _itemNames.Add(itemData.Id, itemName);
+                    }
                 }
 
             }

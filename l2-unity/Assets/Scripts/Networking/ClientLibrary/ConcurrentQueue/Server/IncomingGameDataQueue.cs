@@ -8,12 +8,12 @@ using UnityEngine;
 
 public class IncomingGameDataQueue : IQueue
 {
-    private BlockingCollection<ItemServer> _queue;
-    private BlockingCollection<ItemServer> _queueHigh;
+    private ConcurrentQueue<ItemServer> _queue;
     private static IncomingGameDataQueue _instance;
     private ServerPacketHandler _serverPacketHandler;
     private static CancellationTokenSource _cancelTokenSource;
     private static CancellationToken _token;
+    private bool _isRunning = false;
     public static IncomingGameDataQueue Instance()
     {
         if (_instance == null)
@@ -39,32 +39,37 @@ public class IncomingGameDataQueue : IQueue
     {
         return new ItemServer(data, init, cryptEnbled);
     }
-    public void AddItem(ItemServer item )
+
+
+    public void AddItem(ItemServer item)
     {
-        if(FilterAccessType.IsAccessTypeGame(item))
+        try
         {
-            if(item.PaketType() == GameInterludeServerPacketType.ShortCutInit)
+            if (FilterAccessType.IsAccessTypeGame(item))
             {
-                _queueHigh.Add(item);
+                _queue.Enqueue(item);
             }
-            else
-            {
-                _queue.Add(item);
-            }
-            
-        }      
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("IncomingGameDataQueue->AddItem " + ex.ToString());
+        }
     }
 
-    
-    
+
+
     private void RestartQueue()
     {
         if (_queue == null)
         {
-            _queue = new();
-            _queueHigh = new();
+            _queue = new ConcurrentQueue<ItemServer>();
+        }
+        if (!_isRunning)
+        {
+            _isRunning = true;
             WaitData();
         }
+
     }
 
 
@@ -72,54 +77,38 @@ public class IncomingGameDataQueue : IQueue
     {
         Task.Run(() =>
         {
-            while (true)
+            try
             {
-                if (_token.IsCancellationRequested)
+                while (!_token.IsCancellationRequested)
                 {
-                    break;
+                    UseNormal();
                 }
-                UseHigh();
-                UseNormal();
-                //Thread.Sleep(10);
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Error in WaitData->GameData " + ex.Message);
+                RestartQueue();
+            }
+            finally
+            {
+                _isRunning = false;
             }
         });
     }
 
 
-    private void UseHigh()
-    {
-        if (_queueHigh.Count > 0)
-        {
-            ItemServer item = _queueHigh.Take();
-            if (item != null)
-            {
-                //we need something that doesn’t freeze the flow processing incoming messages
-                Task.Run(() =>
-                {
-                    //Debug.Log("Âûñîêèé óðîâåíü íà îáðàáîòêó " + item.ByteType());
-                    _serverPacketHandler.HandlePacket(item);
-                });
-
-            }
-        }
-    }
-
     private void UseNormal()
     {
-        if (_queue.Count > 0)
+        if (_queue.TryDequeue(out ItemServer item))
         {
-            ItemServer item = _queue.Take();
-            if (item != null)
+            Task.Run(() =>
             {
-                //we need something that doesn’t freeze the flow processing incoming messages
-                Task.Run(() =>
-                {
-                    _serverPacketHandler.HandlePacket(item);
-                });
-
-            }
+                _serverPacketHandler.HandlePacket(item);
+            });
         }
+
     }
+
     public void Dispose()
     {
         if (!_cancelTokenSource.IsCancellationRequested)

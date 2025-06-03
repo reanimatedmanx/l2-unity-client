@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -29,6 +30,7 @@ public class EtcItemgrpTable {
 
     public void Initialize() {
         ReadEtcItemgrpDat();
+        ReadEtcItemInterlude();
     }
 
     private void ReadEtcItemgrpDat() {
@@ -65,10 +67,6 @@ public class EtcItemgrpTable {
                     }
                 }
 
-                if(etcItemgrp.ObjectId == 5789)
-                {
-                    Debug.Log("");
-                }
 
                 if (!ItemTable.Instance.ShouldLoadItem(etcItemgrp.ObjectId)) {
                     continue;
@@ -79,5 +77,51 @@ public class EtcItemgrpTable {
 
             Debug.Log($"Successfully imported {_etcItemGrps.Count} etcItemgrp(s)");
         }
+    }
+
+
+    private int indexIcon = 13;
+
+    public void ReadEtcItemInterlude()
+    {
+        //_actionsInterlude = new Dictionary<int, ActionData>();
+        string dataPath = Path.Combine(Application.streamingAssetsPath, "Data/Meta/EtcItemgrp_interlude.txt");
+
+        using (StreamReader reader = new StreamReader(dataPath))
+        {
+            string line;
+            int index = 0;
+            while ((line = reader.ReadLine()) != null)
+            {
+                //string[] test = line.Split('\t');
+                if (index != 0)
+                {
+                    string[] ids = line.Split('\t');
+                    int id = Int32.Parse(ids[1]);
+
+
+                    if (!_etcItemGrps.ContainsKey(id))
+                    {
+                        EtcItemgrp etcItemgrp = new EtcItemgrp();
+
+                        if (IsIndexValid(ids, indexIcon))
+                        {
+
+                            etcItemgrp.ObjectId = id;
+                            etcItemgrp.Icon = ids[indexIcon];
+                            _etcItemGrps.Add(id, etcItemgrp);
+                        }
+                    }
+                }
+
+                index++;
+            }
+
+        }
+    }
+
+    bool IsIndexValid<T>(T[] array, int index)
+    {
+        return index >= 0 && index < array.Length;
     }
 }

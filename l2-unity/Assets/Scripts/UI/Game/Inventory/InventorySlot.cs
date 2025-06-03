@@ -17,8 +17,8 @@ public class InventorySlot : L2DraggableSlot
     public int ObjectId { get { return _objectId; } }
     public int ItemId { get { return _id; } }
 
-    public InventorySlot(int position, VisualElement slotElement, L2Tab tab, SlotType slotType)
-    : base(position, slotElement, slotType, false, true)
+    public InventorySlot(int position, VisualElement slotElement, L2Tab tab, SlotType slotType , bool rightMouseup)
+    : base(position, slotElement, slotType, false, rightMouseup)
     {
         _currentTab = tab;
         _empty = true;
@@ -52,6 +52,10 @@ public class InventorySlot : L2DraggableSlot
             {
                 _slotBg.style.backgroundImage = background;
                 _slotDragManipulator.enabled = false;
+            }
+            else
+            {
+                _slotElement.style.backgroundImage = null;
             }
 
         }
@@ -241,7 +245,12 @@ public class InventorySlot : L2DraggableSlot
     {
         if (!_empty)
         {
-            PlayerInventory.Instance.UseItem(_objectId);
+            if (!PlayerInventory.Instance.UseItem(_objectId))
+            {
+                AssignEmpty();
+            }
+            
         }
+
     }
 }

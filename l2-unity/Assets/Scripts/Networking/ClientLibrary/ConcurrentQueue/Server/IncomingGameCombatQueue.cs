@@ -1,21 +1,24 @@
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEditor.Search;
 using UnityEngine;
 
 
 public class IncomingGameCombatQueue : IQueue
 {
-    private BlockingCollection<ItemServer> _queue;
+    private ConcurrentQueue<ItemServer> _queue;
     private static IncomingGameCombatQueue _instance;
     private ServerPacketHandler _serverPacketHandler;
     private static CancellationTokenSource _cancelTokenSource;
     private static CancellationToken _token;
-    private static EventWaitHandle _ewh;
+
     private bool _isRunning = false;
+
     public static IncomingGameCombatQueue Instance()
     {
         if (_instance == null)
@@ -23,7 +26,6 @@ public class IncomingGameCombatQueue : IQueue
             _cancelTokenSource = new CancellationTokenSource();
             _token = _cancelTokenSource.Token;
             _instance = new IncomingGameCombatQueue();
-            _ewh = new EventWaitHandle(false, EventResetMode.ManualReset);
         }
 
         return _instance;
@@ -46,16 +48,23 @@ public class IncomingGameCombatQueue : IQueue
 
     public void AddItem(ItemServer item)
     {
-        if (FilterAccessType.IsAccessTypeCombat(item))
+        try
         {
-            if (!InitPacketsLoadWord.getInstance().IsInit)
+            if (FilterAccessType.IsAccessTypeCombat(item))
             {
-                FastSinglExecuter.Instance.Execute(item);
+                if (!InitPacketsLoadWord.getInstance().IsInit)
+                {
+                    FastSinglExecuter.Instance.Execute(item);
 
+                }
+                Debug.Log("Inventory update часть 1");
+                _queue.Enqueue(item);
+                Debug.Log("Inventory update часть 2");
             }
-              
-            _ewh.Set();
-            _queue.Add(item);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("IncomingGameCombatQueue->AddItem " + ex.ToString());
         }
     }
 
@@ -63,7 +72,7 @@ public class IncomingGameCombatQueue : IQueue
     {
         if (_queue == null)
         {
-            _queue = new();
+            _queue = new ConcurrentQueue<ItemServer>();
         }
         if (!_isRunning)
         {
@@ -79,20 +88,13 @@ public class IncomingGameCombatQueue : IQueue
         {
             try
             {
-                while (true)
+                while (!_token.IsCancellationRequested)
                 {
-                    _ewh.WaitOne();
-
-                    if (_token.IsCancellationRequested)
-                    {
-                        break;
-                    }
                     UseNormal();
                 }
             }
             catch (Exception ex)
             {
-                _isRunning = false;
                 Debug.Log("Error in WaitData->CombatData " + ex.Message);
                 RestartQueue();
             }
@@ -100,38 +102,24 @@ public class IncomingGameCombatQueue : IQueue
             {
                 _isRunning = false;
             }
-        
         });
     }
 
     private void UseNormal()
     {
-        if (_queue.Count > 0)
+        if (_queue.TryDequeue(out ItemServer item))
         {
-            ItemServer item = _queue.Take();
-            if (item != null)
-            {
-                //we need something that doesn’t freeze the flow processing incoming messages
-               // Task.Run(() =>
-                //{
-                    //Debug.Log("Запускаем извлеченный пакет " + item.ToString());
-                    _serverPacketHandler.HandlePacket(item);
-                //});
+            Debug.Log("Inventory update часть 3_1");
+            Debug.Log("Inventory update часть 3_2");
+            _serverPacketHandler.HandlePacket(item);
+        }
 
-            }
-        }
-        else
-        {
-            //Thread.Sleep(10);
-            _ewh.Reset();
-        }
     }
 
     public void Dispose()
     {
         if (!_cancelTokenSource.IsCancellationRequested)
         {
-            _ewh.Set();
             _cancelTokenSource.Cancel();
             _queue = null;
             _instance = null;

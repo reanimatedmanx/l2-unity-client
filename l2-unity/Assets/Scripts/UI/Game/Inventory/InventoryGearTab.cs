@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static L2Slot;
+using static UnityEditor.Progress;
 
 [System.Serializable]
 public class InventoryGearTab : L2Tab
@@ -51,7 +53,7 @@ public class InventoryGearTab : L2Tab
             { ItemSlot.boots, new GearItem(_windowEle.Q<VisualElement>("Boots"), ItemSlot.boots) },
             { ItemSlot.rfinger, new GearItem(_windowEle.Q<VisualElement>("Rring"), ItemSlot.rfinger) },
             { ItemSlot.lfinger, new GearItem(_windowEle.Q<VisualElement>("Lring"), ItemSlot.lfinger) },
-             { ItemSlot.pendant, new GearItem(_windowEle.Q<VisualElement>("Pendant"), ItemSlot.pendant) }
+            { ItemSlot.pendant, new GearItem(_windowEle.Q<VisualElement>("Pendant"), ItemSlot.pendant) }
 
         };
 
@@ -69,11 +71,29 @@ public class InventoryGearTab : L2Tab
             gearItem.SetGearSlot(slot);
         }
     }
+   
 
-    public void UpdateEquipList(List<ItemInstance> equipItems)
+    public void UpdateEquipList(List<ItemInstance> modified)
+    {
+        if(PlayerInventory.Instance.GetPlayerEquipInventory().Count == 0)
+        {
+            EquipEmptyAll();
+        }
+
+         for(int i = 0; i < modified.Count; i++)
+         {
+            ItemInstance currentSlotEquip = modified[i];
+            if(currentSlotEquip.Equipped == true)
+            {
+                if (currentSlotEquip == null) return;
+                EquipItem(currentSlotEquip);
+            }
+        }
+    }
+    public void SetEquipList(List<ItemInstance> equipItems)
     {
         if (equipItems == null) return;
-        Equip(equipItems);
+        EquipList(equipItems);
 
         //Debug.Log("Update gear slots");
 
@@ -120,72 +140,149 @@ public class InventoryGearTab : L2Tab
         }
     }
 
-    private void Equip(List<ItemInstance> equipItems)
+    private void EquipList(List<ItemInstance> equipItems)
     {
-        equipItems.ForEach(item =>
+        for (int i = 0; i < equipItems.Count; i++)
         {
-            if (item.Equipped)
-            {
-                //Debug.Log("Equip item: " + item);
-                switch (item.BodyPart)
+            ItemInstance itemInstance = equipItems[i];
+            EquipItem(itemInstance);
+        }
+    }
+    private void EquipEmptyAll()
+    {
+        foreach (KeyValuePair<ItemSlot, GearItem> entry in _gearAnchors)
+        {
+            GearItem gearItem = entry.Value;
+            gearItem.AssignEmpty();
+        }
+
+    }
+
+   
+    private void EquipItem(ItemInstance item)
+    {
+        switch (item.BodyPart)
+        {
+            case ItemSlot.lrhand:
+                AddGearSlotAssign(ItemSlot.lhand, item);
+                AddGearSlotAssign(ItemSlot.rhand, item);
+                break;
+
+            case ItemSlot.fullarmor:
+                AddGearSlotAssign(ItemSlot.chest, item);
+                AddGearSlotAssign(ItemSlot.legs, item);
+                break;
+
+            case ItemSlot.lfinger:
+                if (GearSlotIsEmpty(item.BodyPart))
                 {
-                    case ItemSlot.lrhand:
-                        AddGearSlotAssign(ItemSlot.lhand, item);
-                        AddGearSlotAssign(ItemSlot.rhand, item);
-                        break;
-
-                    case ItemSlot.fullarmor:
-                        AddGearSlotAssign(ItemSlot.chest, item);
-                        AddGearSlotAssign(ItemSlot.legs, item);
-                        break;
-
-                    case ItemSlot.lfinger:
-                        if (GearSlotIsEmpty(item.BodyPart))
-                        {
-                            AddGearSlotAssign(ItemSlot.lfinger, item);
-                        }
-                        else
-                        {
-                            AddGearSlotAssign(ItemSlot.rfinger, item);
-                        }
-                        break;
-
-                    case ItemSlot.lear:
-                        
-                        if (GearSlotIsEmpty(item.BodyPart))
-                        {
-                            AddGearSlotAssign(ItemSlot.lear, item);
-                        }
-                        else
-                        {
-                            AddGearSlotAssign(ItemSlot.rear, item);
-                        }
-                        break;
-
-                    default:
-                        //Debug.Log("Item id >>>>> " + item.ItemId);
-                        //Debug.Log("Slot ID  >>>>> " + item.Slot);
-                        //Debug.Log("BodyPart ID  >>>> " + item.BodyPart);
-                        ItemSlot slot = item.BodyPart;
-                        if (slot != ItemSlot.none)
-                        {
-                            if (_gearAnchors.ContainsKey(slot))
-                            {
-                                AddGearSlotAssign(slot , item);
-                            }
-                            else
-                            {
-                                Debug.LogError("GearSlots reInitialize not found assigned slots " + slot);
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogError("Can't equip item, assigned slot is " + slot);
-                        }
-                        break;
+                    AddGearSlotAssign(ItemSlot.lfinger, item);
                 }
-            }
-        });
+                else
+                {
+                    AddGearSlotAssign(ItemSlot.rfinger, item);
+                }
+                break;
+
+            case ItemSlot.lear:
+
+                if (GearSlotIsEmpty(item.BodyPart))
+                {
+                    AddGearSlotAssign(ItemSlot.lear, item);
+                }
+                else
+                {
+                    AddGearSlotAssign(ItemSlot.rear, item);
+                }
+                break;
+
+            default:
+                //Debug.Log("Item id >>>>> " + item.ItemId);
+                //Debug.Log("Slot ID  >>>>> " + item.Slot);
+                //Debug.Log("BodyPart ID  >>>> " + item.BodyPart);
+                ItemSlot slot = item.BodyPart;
+                if (slot != ItemSlot.none)
+                {
+                    if (_gearAnchors.ContainsKey(slot))
+                    {
+                        AddGearSlotAssign(slot, item);
+                    }
+                    else
+                    {
+                        Debug.LogError("GearSlots reInitialize not found assigned slots " + slot);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Can't equip item, assigned slot is " + slot);
+                }
+                break;
+        }
+    }
+
+    public void ModifiedRemove(ItemSlot bodyPart)
+    {
+        EquipItemEmpty(bodyPart);
+    }
+    private void EquipItemEmpty(ItemSlot bodyPart)
+    {
+        switch (bodyPart)
+        {
+            case ItemSlot.lrhand:
+                AddGearEmptySlot(ItemSlot.lhand);
+                AddGearEmptySlot(ItemSlot.rhand);
+                break;
+
+            case ItemSlot.fullarmor:
+                AddGearEmptySlot(ItemSlot.chest);
+                AddGearEmptySlot(ItemSlot.legs);
+                break;
+
+            case ItemSlot.lfinger:
+                if (GearSlotIsEmpty(bodyPart))
+                {
+                    AddGearEmptySlot(ItemSlot.lfinger);
+                }
+                else
+                {
+                    AddGearEmptySlot(ItemSlot.rfinger);
+                }
+                break;
+
+            case ItemSlot.lear:
+
+                if (GearSlotIsEmpty(bodyPart))
+                {
+                    AddGearEmptySlot(ItemSlot.lear);
+                }
+                else
+                {
+                    AddGearEmptySlot(ItemSlot.rear);
+                }
+                break;
+
+            default:
+                //Debug.Log("Item id >>>>> " + item.ItemId);
+                //Debug.Log("Slot ID  >>>>> " + item.Slot);
+                //Debug.Log("BodyPart ID  >>>> " + item.BodyPart);
+                ItemSlot slot = bodyPart;
+                if (slot != ItemSlot.none)
+                {
+                    if (_gearAnchors.ContainsKey(slot))
+                    {
+                        AddGearEmptySlot(slot);
+                    }
+                    else
+                    {
+                        Debug.LogError("GearSlots reInitialize not found assigned slots " + slot);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Can't equip item, assigned slot is " + slot);
+                }
+                break;
+        }
     }
 
 
@@ -193,6 +290,14 @@ public class InventoryGearTab : L2Tab
     {
         if (_gearAnchors.ContainsKey(slotType)){
             _gearAnchors[slotType].Assign(item);
+        }
+    }
+
+    public void AddGearEmptySlot(ItemSlot slotType)
+    {
+        if (_gearAnchors.ContainsKey(slotType))
+        {
+            _gearAnchors[slotType].AssignEmpty();
         }
     }
 

@@ -72,10 +72,10 @@ public class GameClientReceiving : MonoBehaviour
                             else
                             {
                                 //test slowdown of packets if they fly too fast some of them are dropped by the blocking collection a fix may be needed
-                                if (item.ByteType() == 0x27)
-                                {
-                                    Debug.Log(" Inventory Update Server Get ");
-                                }
+                                //if (item.ByteType() == 0x27)
+                                //{
+                                //    Debug.Log(" Inventory Update Server Get ");
+                               // }
 
                                 IncomingGameCombatQueue.Instance().AddItem(item);
                                 IncomingGameDataQueue.Instance().AddItem(item);
