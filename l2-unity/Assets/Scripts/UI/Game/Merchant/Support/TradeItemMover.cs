@@ -44,6 +44,12 @@ public class TradeItemMover
             clone.SetCount(selectCount);
 
             MovingWithCopy(clone, listServer, position);
+        }else if (source.GetConsumeCategory() != ConsumeCategory.Normal)
+        {
+            Product clone = source.Clone();
+            clone.SetCount(selectCount);
+
+            MovingWithCopy(clone, listServer, position);
         }
     }
 

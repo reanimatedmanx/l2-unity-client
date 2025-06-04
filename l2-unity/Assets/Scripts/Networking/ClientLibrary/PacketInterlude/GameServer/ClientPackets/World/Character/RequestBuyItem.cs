@@ -7,13 +7,21 @@ public class RequestBuyItem : ClientPacket
     public RequestBuyItem(int listId , List<Product> buyList) : base((byte)GameInterludeClientPacketType.RequestBuyItem)
     {
         WriteI(listId);
-        WriteI(buyList.Count);
-
-        foreach (var item in buyList)
+        if (buyList == null || buyList.Count == 0)
         {
-            WriteI(item.ItemId);
-            WriteI(item.Count);
+            WriteI(0);
         }
+        else
+        {
+            WriteI(buyList.Count);
+
+            foreach (var item in buyList)
+            {
+                WriteI(item.ItemId);
+                WriteI(item.Count);
+            }
+        }
+
 
         BuildPacketNoPad();
     }

@@ -140,9 +140,6 @@ public class InventoryTab : L2Tab
         {
             AddAllEmptyInventory(0);
         }
-
-
-       // Debug.Log(" AssignItem конец итерации размер +++++++++++++++++++++++++>" + allItems.Count);
     }
 
     private void AddDataInventory(List<ItemInstance> allItems)
@@ -155,7 +152,7 @@ public class InventoryTab : L2Tab
             _inventorySlots[i].AssignItem(item);
         }
     }
-    private void AddAllEmptyInventory(int size)
+    public void AddAllEmptyInventory(int size)
     {
         int start_i = size;
 

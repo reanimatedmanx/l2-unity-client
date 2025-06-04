@@ -63,7 +63,11 @@ public class EtcItemgrpTable {
                     switch (key) {
                         case "etcitem_type": 
                             etcItemgrp.EtcItemType = value;
-                            break;                
+                            break;
+                        case "consume_type":
+                            //Debug.Log("Consume Category " + value  + " ID "  + etcItemgrp.ObjectId);
+                            etcItemgrp.ConsumeType = ConsumeType.ParceCategory(value);
+                            break;
                     }
                 }
 

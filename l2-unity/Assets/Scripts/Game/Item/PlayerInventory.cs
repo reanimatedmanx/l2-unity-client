@@ -27,21 +27,15 @@ public class PlayerInventory : MonoBehaviour
 
     public List<ItemInstance> FilterInventory(List<ItemCategory> filteredCategories)
     {
-        if(_playerInventory != null & _playerEquipInventory != null)
+        if(_playerInventory != null)
         {
                 var filteredItemsInventory = _playerInventory
                .Where(kvp => filteredCategories.Contains(kvp.Value.Category))
+               .Where(kvp => !kvp.Value.Equipped)
                .Select(kvp => kvp.Value)
                .ToList();
 
-
-               var filteredEquip = _playerEquipInventory
-                .Where(kvp => filteredCategories.Contains(kvp.Value.Category))
-                .Select(kvp => kvp.Value)
-                .ToList();
-
-
-            return filteredEquip.Union(filteredItemsInventory).ToList();
+            return filteredItemsInventory;
         }
 
         return new List<ItemInstance>();
@@ -50,6 +44,15 @@ public class PlayerInventory : MonoBehaviour
     {
 
         return _playerInventory;
+    }
+
+    public List<ItemInstance> GetPlayerInvetoryToList()
+    {
+        return _playerInventory.Values.ToList();
+    }
+    public List<ItemInstance> GetPlayerEquipToList()
+    {
+        return _playerEquipInventory.Values.ToList();
     }
     public Dictionary<int, ItemInstance> GetPlayerEquipInventory()
     {

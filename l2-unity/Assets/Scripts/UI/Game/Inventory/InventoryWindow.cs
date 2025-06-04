@@ -310,13 +310,25 @@ public class InventoryWindow : L2PopupWindow
         //Equip
         //Supplies
         //Quest
-        if (!switchTo.TabName.Equals("ALL"))
+        if (!switchTo.TabName.Equals("All"))
         {
+            //Debug.Log("Switch to root tab  1 " + switchTo.TabName);
             List<ItemInstance> filterList = PlayerInventory.Instance.FilterInventory(switchTo.GetFilterCategories);
             if (filterList != null && filterList.Count > 0)
             {
+                //Debug.Log("Switch to root tab  2 " + switchTo.TabName + " filter list " + filterList.Count);
                 switchTo.SetItemList(filterList);
             }
+            else
+            {
+                switchTo.AddAllEmptyInventory(0);
+            }
+        }
+        else
+        {
+            //Debug.Log("Switch to root tab " + switchTo.TabName);
+            List<ItemInstance> items_collect = PlayerInventory.Instance.GetPlayerInvetoryToList();
+            switchTo.SetItemList(items_collect);
         }
     }
 
@@ -362,12 +374,26 @@ public class InventoryWindow : L2PopupWindow
 }
     public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified , List<ItemInstance> listEquipModified,  int adenaCount , int usedSlots)
     {
-        // Slot count
-        _slotCount = PLAYER_INVENTORY_SIZE;
-        _inventoryCountLabel.text = $"({usedSlots}/{_slotCount})";
-        SetAdenaCountLabel(adenaCount);
-        _tabs[0].UpdateItemList(removeAndAdd,  modified);
-        _gearTab.UpdateEquipList(listEquipModified);
+        if (_activeTab.MainTab)
+        {
+
+            // Slot count
+            _slotCount = PLAYER_INVENTORY_SIZE;
+            _inventoryCountLabel.text = $"({usedSlots}/{_slotCount})";
+            SetAdenaCountLabel(adenaCount);
+            _tabs[0].UpdateItemList(removeAndAdd, modified);
+            _gearTab.UpdateEquipList(listEquipModified);
+        }
+        else
+        {
+
+            _slotCount = PLAYER_INVENTORY_SIZE;
+            _inventoryCountLabel.text = $"({usedSlots}/{_slotCount})";
+            SetAdenaCountLabel(adenaCount);
+            _activeTab.SetItemList(PlayerInventory.Instance.FilterInventory(_activeTab.GetFilterCategories));
+            _gearTab.SetEquipList(PlayerInventory.Instance.GetPlayerEquipToList());
+        }
+
     }
 
     public void RemoveOldEquipItemOrNoQuipItem(List<ItemInstance> obsoleteItemsInventory, List<ItemInstance> obsoleteItemsGear)

@@ -6,5 +6,5 @@ public enum ItemCategory : byte
     Jewel = 2,
     Quest = 3,
     Adena = 4,
-    Item = 5
+    Item = 5,
 }

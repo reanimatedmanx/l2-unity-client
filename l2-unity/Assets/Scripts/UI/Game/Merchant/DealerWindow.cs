@@ -9,6 +9,7 @@ using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static L2Slot;
+using Debug = UnityEngine.Debug;
 
 
 public class DealerWindow : L2PopupWindow
@@ -175,7 +176,7 @@ public class DealerWindow : L2PopupWindow
 
             Product source = _listSell[position];
 
-            if (source.Count > 1)
+            if (source.Count > 1 | source.GetConsumeCategory() != ConsumeCategory.Normal)
             {
                 RefreshOpacity(0.7f);
                 RefreshSelectData(listServer, position, type);
@@ -185,7 +186,7 @@ public class DealerWindow : L2PopupWindow
             }
             else
             {
-
+                source.SetCount(1);
                 _tradeItemMover.MovingBuyWithRemoval(_isModifySell  ,source, position);
             }
 
@@ -195,9 +196,10 @@ public class DealerWindow : L2PopupWindow
         {
             if (!IsIndexValid(listServer, position)) return;
             Product source = listServer[position];
+
             if (source == null) return;
 
-            if (source.Count > 1)
+            if (source.Count > 1 | source.GetConsumeCategory() != ConsumeCategory.Normal)
             {
                 RefreshOpacity(0.7f);
                 RefreshSelectData(listServer, position, type);
@@ -207,6 +209,7 @@ public class DealerWindow : L2PopupWindow
             }
             else
             {
+                source.SetCount(1);
                 _listSell = _tradeItemMover.MovingSellWithRemoval(_isModifySell , _listSell , source, listServer, position);
             }
         }
@@ -240,6 +243,7 @@ public class DealerWindow : L2PopupWindow
     private void UseSuccessInParentWindow(DealerWindow _dealerWindow, string value, List<Product> listServer)
     {
          _dealerWindow.RefreshOpacity(1);
+        Debug.Log("Move value 1 " + value);
          _dealerWindow.Move—ellElseQuantitySelected(_type, listServer, _position, int.Parse(value));
     }
 
@@ -446,7 +450,6 @@ public class DealerWindow : L2PopupWindow
 
         if (!_isModifySell)
         {
-            SetAddCount1(_listSell);
             var sendPaket = CreatorPacketsUser.CreateRequestBuyItem(_listId, _listSell);
             SendGameDataQueue.Instance().AddItem(sendPaket, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
         }
@@ -458,13 +461,6 @@ public class DealerWindow : L2PopupWindow
        
     }
 
-    private void SetAddCount1(List<Product> _listSell)
-    {
-        foreach (var item in _listSell)
-        {
-            item.SetCount(1);
-        }
-    }
 
     protected override IEnumerator BuildWindow(VisualElement root)
     {

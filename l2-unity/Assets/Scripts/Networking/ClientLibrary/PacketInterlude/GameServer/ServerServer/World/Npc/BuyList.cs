@@ -331,6 +331,13 @@ public class Product
         return  other.ItemId == _itemId && other.ObjId == _objId;
     }
 
+    public ConsumeCategory GetConsumeCategory()
+    {
+        EtcItemgrp etcgrp = EtcItemgrpTable.Instance.GetEtcItem(ItemId);
+        if (etcgrp != null) return etcgrp.ConsumeType;
+        return ConsumeCategory.Normal;
+    }
+
     public override int GetHashCode()
     {
         int _objId1 = _objId.GetHashCode();
