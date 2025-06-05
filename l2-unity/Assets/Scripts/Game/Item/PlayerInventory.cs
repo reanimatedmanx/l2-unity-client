@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 
 using static StorageVariable;
@@ -16,11 +17,7 @@ public class PlayerInventory : MonoBehaviour
 
     private Dictionary<int , ItemInstance> _playerInventory;
     private Dictionary<int, ItemInstance> _playerEquipInventory;
-
-    //private List<ItemInstance> _tempForRemoveAndAdd;
-    //private List<ItemInstance> _tempForModified;
-
-
+    private ChangeInventoryData _changeInventoryData;
     public static PlayerInventory _instance;
     public static PlayerInventory Instance { get { return _instance; } }
 
@@ -75,6 +72,7 @@ public class PlayerInventory : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
+            _changeInventoryData = new ChangeInventoryData();
         }
         else if (_instance != this)
         {
@@ -117,18 +115,15 @@ public class PlayerInventory : MonoBehaviour
         });
     }
 
-    //We remove items from the dictionary before we remove them in the Tab Inventory itself, so we put them in this temporary collection.
-    //It will only store items that are removed as a result of moving from the inventory to the equip inventory and back.
-    private List<ItemInstance> _obsoleteItemsInventory = new List<ItemInstance>();
-    private List<ItemInstance> _obsoleteItemsGear = new List<ItemInstance>();
+
 
     private readonly object _lock = new object();
     public void UpdateInventory(Dictionary<int, ItemInstance> items , Dictionary<int, ItemInstance> equipitems)
     {
         lock (_lock)
         {
-            _obsoleteItemsInventory.Clear();
-            _obsoleteItemsGear.Clear();
+
+            _changeInventoryData.ClearData();
 
             List<ItemInstance> listEquip = equipitems.Values.ToList();
 
@@ -139,13 +134,14 @@ public class PlayerInventory : MonoBehaviour
             try
             {
 
-                UpdatePlayerInventory(_tempForRemoveAndAdd, _tempForModified);
+                UpdatePlayerInventory(_tempForRemoveAndAdd, _tempForModified , listEquip);
                 ModifiedEquip(_playerInventory, _playerEquipInventory, listEquip);
+                Debug.Log("Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
                 int adenaCount = GetAdenaCount(_playerInventory.Values.ToList());
-
+                int useSlot = _playerInventory.Count + _playerEquipInventory.Count;
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    InventoryWindow.Instance.UpdateItemList(_tempForRemoveAndAdd, _tempForModified, listEquip, adenaCount, _playerInventory.Count + _playerEquipInventory.Count);
-                    InventoryWindow.Instance.RemoveOldEquipItemOrNoQuipItem(_obsoleteItemsInventory , _obsoleteItemsGear);
+                    InventoryWindow.Instance.UpdateItemList(_tempForRemoveAndAdd, _tempForModified, listEquip, adenaCount, useSlot, _changeInventoryData);
+                    InventoryWindow.Instance.RemoveOldEquipItemOrNoQuipItem(_changeInventoryData);
                 });
             
 
@@ -163,7 +159,7 @@ public class PlayerInventory : MonoBehaviour
         ItemInstance item =  modified.FirstOrDefault(o => o.Category == ItemCategory.Adena);
         return (item != null) ? item.Count : 0;
     }
-    private void UpdatePlayerInventory(List<ItemInstance> removeAndAdd, List<ItemInstance> modified)
+    private void UpdatePlayerInventory(List<ItemInstance> removeAndAdd, List<ItemInstance> modified , List<ItemInstance> listEquip)
     {
         for (int i = 0; i < removeAndAdd.Count; i++)
         {
@@ -174,7 +170,7 @@ public class PlayerInventory : MonoBehaviour
         for (int i = 0; i < modified.Count; i++)
         {
             ItemInstance item_m = modified[i];
-            Modified(_playerInventory, _playerEquipInventory , item_m);
+            Modified(_playerInventory, _playerEquipInventory , listEquip , item_m);
         }
     }
 
@@ -206,31 +202,21 @@ public class PlayerInventory : MonoBehaviour
 
     private void AddInventory(ItemInstance item)
     {
-        //int count = _playerInventory.Count();
         int slot = InventoryWindow.Instance.GetEmptySlot();
         item.SetSlot(slot);
-        //Debug.Log("Item add position " + count + " item " + item.Slot + " objectID" + item.ObjectId);
-        //Debug.Log("RemoveInventory Add ITEM POSITION " + item.Slot + " objectID" + item.ObjectId);
-        
         _playerInventory.Add(item.ObjectId, item);
 
     }
 
     private void RefreshPosition(Dictionary<int, ItemInstance> playerInventory)
     {
-        int index = 0;
-        foreach (var item in playerInventory)
-        {
-            
-            //item.Value.SetSlot(index++);
-            //Debug.Log("RemoveInventory Add Remove " + item.Value.ItemId + " position " + index);
-        }
+     
     }
 
-    private void Modified(Dictionary<int, ItemInstance> playerInventory, Dictionary<int, ItemInstance> playerEquipInventory, ItemInstance item)
+    private void Modified(Dictionary<int, ItemInstance> playerInventory, Dictionary<int, ItemInstance> playerEquipInventory, List<ItemInstance> listEquip , ItemInstance item)
     {
         //Debug.Log("Modified data count " + item.Count + " item obj id " + item.ObjectId + " itemid" + item.ItemId + " equiped " + item.Equipped);
-        UpdateInventory(playerInventory, playerEquipInventory , item);
+        UpdateInventory(playerInventory, playerEquipInventory , listEquip , item);
         UpdateEquip(playerInventory , playerEquipInventory, item);
     }
 
@@ -244,14 +230,23 @@ public class PlayerInventory : MonoBehaviour
         
     }
 
-    private void UpdateInventory(Dictionary<int, ItemInstance> playerInventory , Dictionary<int, ItemInstance> playerEquipInventory, ItemInstance item)
+    private void UpdateInventory(Dictionary<int, ItemInstance> playerInventory , Dictionary<int, ItemInstance> playerEquipInventory, List<ItemInstance> listEquip ,ItemInstance item)
     {
-
+        //здесь что-то меняется
         if (playerEquipInventory.ContainsKey(item.ObjectId) & !item.Equipped)
         {
-            //StorageVariable.getInstance().AddS1Items(new VariableItem(item.ItemData.ItemName.Name, item.ObjectId));
-            ItemInstance del_item = playerEquipInventory[item.ObjectId];
-            RemoveGearInventory(playerEquipInventory, del_item);
+            //ItemInstance del_item = playerEquipInventory[item.ObjectId];
+            ItemInstance del_item_replace = listEquip.FirstOrDefault(itemEquip => itemEquip.BodyPart == item.BodyPart);
+            if (del_item_replace != null)
+            {
+                GearReplaceSlot(playerEquipInventory, del_item_replace, item);
+            }
+            else
+            {
+                ItemInstance del_item = playerEquipInventory[item.ObjectId];
+                RemoveGearInventory(playerEquipInventory, del_item);
+            }
+
         }
 
         //If we move from gear Inventory to items Inventory
@@ -259,15 +254,13 @@ public class PlayerInventory : MonoBehaviour
         {
             if (!item.Equipped)
             {
-                //StorageVariable.getInstance().AddS1Items(new VariableItem(item.ItemData.ItemName.Name, item.ObjectId));
-                AddInventory(item);
+                AddInventory(item); 
             }
         }
         else
         {
             
             ItemInstance oldItem = playerInventory[item.ObjectId];
-            //Debug.Log("item add position update position " + oldItem.Slot);
             item.SetSlot(oldItem.Slot);
             oldItem.Update(item);
         }
@@ -280,19 +273,18 @@ public class PlayerInventory : MonoBehaviour
         {
             ItemInstance del_item = playerInventory[item.ObjectId];
             RemoveInventory(playerInventory, del_item);
-            //StorageVariable.getInstance().AddS1Items(new VariableItem(item.ItemData.ItemName.Name, item.ObjectId));
+
         }
         
         if (playerEquipInventory.ContainsKey(item.ObjectId) & item.Equipped == false)
         {
             ItemInstance del_item = playerEquipInventory[item.ObjectId];
             RemoveGearInventory(playerEquipInventory, del_item);
-            //StorageVariable.getInstance().AddS1Items(new VariableItem(item.ItemData.ItemName.Name, item.ObjectId));
         }
         else if (!playerEquipInventory.ContainsKey(item.ObjectId) & item.Equipped == true)
         {
             playerEquipInventory.Add(item.ObjectId, item);
-            //StorageVariable.getInstance().AddS1Items(new VariableItem(item.ItemData.ItemName.Name, item.ObjectId));
+            Debug.Log("1 добавляем в equip");
         }
     }
 
@@ -306,15 +298,27 @@ public class PlayerInventory : MonoBehaviour
         playerInventory.Remove(del_item.ObjectId);
         RefreshPosition(playerInventory);
         //Debug.Log("RemoveInventory Add Remove old itemId " + del_item.ItemId  + " Slot " + del_item.Slot);
-        _obsoleteItemsInventory.Add(del_item);
+        //_obsoleteItemsInventory.Add(del_item);
+        _changeInventoryData.AddRemoveInventory(del_item);
     }
 
     private void RemoveGearInventory(Dictionary<int, ItemInstance> playerEquipInventory, ItemInstance del_item)
     {
-        _obsoleteItemsGear.Add(del_item);
-        playerEquipInventory.Remove(del_item.ObjectId);
+        ///_obsoleteItemsGear.Add(del_item);
+        _changeInventoryData.AddRemoveGear(del_item);
+       // playerEquipInventory.Remove(del_item.ObjectId);
+        if (playerEquipInventory.ContainsKey(del_item.ObjectId)) playerEquipInventory.Remove(del_item.ObjectId);
         //RefreshPosition(playerEquipInventory);
     }
+
+    private void GearReplaceSlot(Dictionary<int, ItemInstance> playerEquipInventory, ItemInstance sourceItem , ItemInstance gearItem)
+    {
+
+        if(playerEquipInventory.ContainsKey(gearItem.ObjectId)) playerEquipInventory.Remove(gearItem.ObjectId);
+        _changeInventoryData.AddReplaceGear(sourceItem, gearItem);
+
+    }
+
 
 
     private void UpdateEquip(Dictionary<int, ItemInstance> playerInventory, Dictionary<int, ItemInstance> playerEquipInventory, ItemInstance item)
