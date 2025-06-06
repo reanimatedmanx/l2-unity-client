@@ -57,9 +57,8 @@ public class IncomingGameCombatQueue : IQueue
                     FastSinglExecuter.Instance.Execute(item);
 
                 }
-                Debug.Log("Inventory update часть 1");
                 _queue.Enqueue(item);
-                Debug.Log("Inventory update часть 2");
+
             }
         }
         catch (Exception ex)
@@ -95,7 +94,8 @@ public class IncomingGameCombatQueue : IQueue
             }
             catch (Exception ex)
             {
-                Debug.Log("Error in WaitData->CombatData " + ex.Message);
+                Debug.LogError("Error in WaitData->CombatData " + ex.Message);
+                _isRunning = false;
                 RestartQueue();
             }
             finally

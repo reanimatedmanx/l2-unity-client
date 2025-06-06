@@ -627,7 +627,16 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
     private void OnStatusUpdate(byte[] data)
     {
         StatusUpdate packet = new StatusUpdate(data);
-        EventProcessor.Instance.QueueEvent(() => World.Instance.StatusUpdate(packet.ObjectId, packet.Attributes));
+
+        if(EventProcessor.Instance != null)
+        {
+            if(World.Instance != null)
+            {
+                EventProcessor.Instance.QueueEvent(() => World.Instance.StatusUpdate(packet.ObjectId, packet.Attributes));
+            }
+           
+        }
+        
     }
 
     private void OnTargetUnselected(byte[] data)

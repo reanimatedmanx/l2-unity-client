@@ -87,6 +87,7 @@ public class IncomingGameDataQueue : IQueue
             catch (Exception ex)
             {
                 Debug.Log("Error in WaitData->GameData " + ex.Message);
+                _isRunning = false;
                 RestartQueue();
             }
             finally

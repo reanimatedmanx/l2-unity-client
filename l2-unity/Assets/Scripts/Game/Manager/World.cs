@@ -550,11 +550,19 @@ public class World : MonoBehaviour {
             //Debug.Log("Entity id status update  " + e.IdentityInterlude.Id + " Name " + e.IdentityInterlude.Name);
             //Debug.Log("Entity name  status update" + e.IdentityInterlude.Name);
             //TimeUtils.PrintFullTime("Attack Packet Update name " + e.IdentityInterlude.Name);
-            WorldCombat.Instance.StatusUpdate(e, attributes , id);
-            if (e.GetType() == typeof(PlayerEntity)) {
-               
-                CharacterInfoWindow.Instance.UpdateValues();
+            if(WorldCombat.Instance != null)
+            {
+                WorldCombat.Instance.StatusUpdate(e, attributes, id);
+                if (e.GetType() == typeof(PlayerEntity))
+                {
+                    if(CharacterInfoWindow.Instance != null)
+                    {
+                        CharacterInfoWindow.Instance.UpdateValues();
+                    }
+                   
+                }
             }
+
         });
     }
 

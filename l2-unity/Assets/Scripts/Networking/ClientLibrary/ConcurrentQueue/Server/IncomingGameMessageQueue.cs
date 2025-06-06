@@ -92,6 +92,7 @@ public class IncomingGameMessageQueue: IQueue
             catch (Exception ex)
             {
                 Debug.Log("Error in WaitData->CombatData " + ex.Message);
+                _isRunning = false;
                 RestartQueue();
             }
             finally

@@ -11,6 +11,7 @@ public class InventorySlot : L2DraggableSlot
     private int _objectId;
     private ItemCategory _itemCategory;
     protected bool _empty = true;
+
     public int Count { get { return _count; } }
     public long RemainingTime { get { return _remainingTime; } }
     public ItemCategory ItemCategory { get { return _itemCategory; } }
@@ -28,6 +29,7 @@ public class InventorySlot : L2DraggableSlot
             _slotClickSoundManipulator = new SlotClickSoundManipulator(_slotElement);
             _slotElement.AddManipulator(_slotClickSoundManipulator);
         }
+       
     }
 
     public InventorySlot(int position, VisualElement slotElement, SlotType slotType)
@@ -45,6 +47,7 @@ public class InventorySlot : L2DraggableSlot
         _description = "Unkown item.";
         _itemInstance = null;
         _product = null;
+        _objectId = 0;
         if (_slotElement != null)
         {
             StyleBackground background = new StyleBackground(IconManager.Instance.GetInvetoryDefaultBackground());
@@ -52,14 +55,18 @@ public class InventorySlot : L2DraggableSlot
             {
                 _slotBg.style.backgroundImage = background;
                 _slotDragManipulator.enabled = false;
+                
             }
             else
             {
+               
                 _slotElement.style.backgroundImage = null;
             }
 
         }
     }
+
+
     public void RefreshPosition(int newPosition)
     {
         Position = newPosition;
@@ -78,10 +85,12 @@ public class InventorySlot : L2DraggableSlot
         {
             _id = item.ItemId;
             _empty = false;
+            _objectId = item.ObjId;
         }
         else
         {
             _id = 0;
+            _objectId = 0;
             _name = "Unkown";
             _description = "Unkown item.";
             _empty = true;
@@ -151,6 +160,30 @@ public class InventorySlot : L2DraggableSlot
         }
     }
 
+    public void AssignItem(ItemInstance item , float alpha)
+    {
+        _slotElement.RemoveFromClassList("empty");
+
+        AddDataItem(item);
+        _itemInstance = item;
+        _count = item.Count;
+        _objectId = item.ObjectId;
+        _id = item.ItemId;
+        _remainingTime = item.RemainingTime;
+        _empty = false;
+
+        if (_slotElement != null)
+        {
+            AddImageAlpha(this, alpha);
+            AddTooltip(item);
+            _slotDragManipulator.enabled = true;
+        }
+        else
+        {
+            Debug.Log("Не критическая ошибка не смогли найти InventorySlot>SlotElement");
+        }
+    }
+
     private void AddDataItem(ItemInstance item)
     {
         if (item.ItemData != null)
@@ -190,8 +223,34 @@ public class InventorySlot : L2DraggableSlot
             if (SlotBg == null) return;
             StyleBackground background = new StyleBackground(IconManager.Instance.GetIcon(_id));
             _slotBg.style.backgroundImage = background;
+
+
         }
     }
+
+  
+
+ 
+
+    //I'm not touching the alpha channel yet, but it might come in handy in the future
+    private void AddImageAlpha(InventorySlot slot , float alpha)
+    {
+        if (SlotBg == null & _slotElement == null) return;
+
+        if (slot.GetType() == typeof(GearSlot))
+        {
+            StyleBackground background = new StyleBackground(IconManager.Instance.GetIcon(_id));
+            _slotElement.style.backgroundImage = background;
+        }
+        else
+        {
+            if (SlotBg == null) return;
+            StyleBackground background = new StyleBackground(IconManager.Instance.GetIcon(_id));
+            _slotBg.style.backgroundImage = background;
+        }
+    }
+
+   
 
     private void AddTooltip(ItemInstance item)
     {

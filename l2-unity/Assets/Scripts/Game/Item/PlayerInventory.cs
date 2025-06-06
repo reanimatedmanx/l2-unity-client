@@ -96,13 +96,15 @@ public class PlayerInventory : MonoBehaviour
     public void SetInventory(Dictionary<int, ItemInstance> items, Dictionary<int, ItemInstance> equipItems , bool openInventory , int adenaCount , int usedSlot)
     {
         _playerInventory = items;
+        _playerEquipInventory = equipItems;
+
         List<ItemInstance> items_collect =  _playerInventory.Values.ToList();
-        List<ItemInstance> equip_collect = null;
-        if (equipItems != null)
-        {
-            equip_collect = equipItems.Values.ToList();
-            _playerEquipInventory = equipItems;
-        }
+        List<ItemInstance> equip_collect = _playerEquipInventory.Values.ToList();
+
+        //if (_playerEquipInventory != null)
+       //{
+        //    equip_collect = _playerEquipInventory.Values.ToList();
+       // }
 
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
@@ -136,7 +138,7 @@ public class PlayerInventory : MonoBehaviour
 
                 UpdatePlayerInventory(_tempForRemoveAndAdd, _tempForModified , listEquip);
                 ModifiedEquip(_playerInventory, _playerEquipInventory, listEquip);
-                Debug.Log("Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
+                //Debug.Log("Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
                 int adenaCount = GetAdenaCount(_playerInventory.Values.ToList());
                 int useSlot = _playerInventory.Count + _playerEquipInventory.Count;
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
@@ -236,7 +238,7 @@ public class PlayerInventory : MonoBehaviour
         if (playerEquipInventory.ContainsKey(item.ObjectId) & !item.Equipped)
         {
             //ItemInstance del_item = playerEquipInventory[item.ObjectId];
-            ItemInstance del_item_replace = listEquip.FirstOrDefault(itemEquip => itemEquip.BodyPart == item.BodyPart);
+            ItemInstance del_item_replace = listEquip.FirstOrDefault(itemEquip => itemEquip.EqualsBodyPart(item.BodyPart));
             if (del_item_replace != null)
             {
                 GearReplaceSlot(playerEquipInventory, del_item_replace, item);

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static L2Slot;
@@ -167,10 +168,10 @@ public class InventoryTab : L2Tab
                
         }
     }
-    public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified)
+    public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified , ChangeInventoryData changeInventoryData)
     {
         AddAndRemove(removeAndAdd);
-        Modified(modified);
+        Modified(modified , changeInventoryData);
 
         if (_selectedSlot != -1)
         {
@@ -235,7 +236,7 @@ public class InventoryTab : L2Tab
 
     }
 
-    private void Modified(List<ItemInstance> modified)
+    private void Modified(List<ItemInstance> modified , ChangeInventoryData changeInventoryData)
     {
         for (int i = 0; i < modified.Count; i++)
         {
@@ -243,8 +244,9 @@ public class InventoryTab : L2Tab
             if (currentItem.LastChange == (int)InventoryChange.MODIFIED)
             {
                 InventorySlot oldSlot = GetInventorySlot(currentItem.ObjectId);
-                //UpdateSlot(oldSlot, currentItem);
-               
+                //Replace Inventory->Equip and Equip->Inventory elsewhere in the code, we skip it here
+                if (changeInventoryData.IsReplaceSourceItem(currentItem.ObjectId)) return;
+
                 if (oldSlot != null)
                 {
                     UpdateSlot(oldSlot, currentItem);
@@ -280,6 +282,13 @@ public class InventoryTab : L2Tab
     {
         return _inventorySlots?
                                .Where(slot => slot != null && slot.ObjectId == objectId)
+                               .FirstOrDefault();
+    }
+
+    public InventorySlot GetInventorySlotByBodyPart(ItemSlot bodyPart)
+    {
+        return _inventorySlots?
+                               .Where(slot => slot != null && slot.ItemInstance.EqualsBodyPart(bodyPart))
                                .FirstOrDefault();
     }
 

@@ -37,59 +37,37 @@ public class ItemsType
     // Slot : 0006-lr.ear, 0008-neck, 0030-lr.finger, 0040-head, 0100-l.hand, 0200-gloves, 0400-chest, 0800-pants, 1000-feet, 4000-r.hand, 8000-r.hand
     public static ItemSlot ParceSlot(int slot)
     {
-        if (slot == 8)
+        switch (slot)
         {
-            return ItemSlot.neck;
-            //l2j
-        }
-        else if (slot == 64)
-        {
-            return ItemSlot.head;
-        }
-        else if (slot == 100)
-        {
-            return ItemSlot.lhand;
-        } //l2j
-        else if (slot == 512)
-        {
-            return ItemSlot.gloves;
-        }//l2j
-        else if (slot == 1024)
-        {
-            return ItemSlot.chest;
-        }//l2j
-        else if (slot == 128)
-        {
-            return ItemSlot.rhand;
-        }//l2j
-        else if (slot == 6)
-        {
-            return ItemSlot.lear;
-        }
-        else if (slot == 1000)
-        {
-            return ItemSlot.feet;
-        }//l2j
-        else if (slot == 2048)
-        {
-            return ItemSlot.legs;
-        }//l2j
-        else if (slot == 4096)
-        {
-            return ItemSlot.boots;
-        }
-        //l2j
-        else if (slot == 48)
-        {
-            return ItemSlot.lfinger;
-        }
-        //l2j
-        else if (slot == 256)
-        {
-            return ItemSlot.lhand;
-        }
+            case 8:
+                return ItemSlot.neck;
+            case 64:
+                return ItemSlot.head;
+            case 100:
+                return ItemSlot.lhand;
+            case 512:
+                return ItemSlot.gloves;
+            case 1024:
+                return ItemSlot.chest;
+            case 128:
+                return ItemSlot.rhand;
+            case 6:
+                return ItemSlot.lear;
+            case 1000:
+                return ItemSlot.feet;
+            case 2048:
+                return ItemSlot.legs;
+            case 4096:
+                return ItemSlot.boots;
+            case 48:
+                return ItemSlot.lfinger;
+            case 256:
+                return ItemSlot.lhand;
+            case 16384:
+                return ItemSlot.lrhand;
 
-        return ItemSlot.none;
-
+            default:
+                return ItemSlot.none;
+        }
     }
 }

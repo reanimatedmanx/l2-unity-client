@@ -24,7 +24,6 @@ public enum ItemSlot : byte {
     belt = 22,
     agation = 23,
     pendant = 24,
-
 }
 
 public class ItemSlotParser {

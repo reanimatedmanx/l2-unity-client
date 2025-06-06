@@ -6,6 +6,7 @@ using System.Threading;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Progress;
 
 public class InventoryWindow : L2PopupWindow
 {
@@ -372,7 +373,7 @@ public class InventoryWindow : L2PopupWindow
         SwitchTab(_tabs[0]);
 
 }
-    public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified , List<ItemInstance> listEquipModified,  int adenaCount , int usedSlots)
+    public void UpdateItemList(List<ItemInstance> removeAndAdd , List<ItemInstance> modified , List<ItemInstance> listEquipModified,  int adenaCount , int usedSlots , ChangeInventoryData changeInventoryData)
     {
         if (_activeTab.MainTab)
         {
@@ -381,8 +382,8 @@ public class InventoryWindow : L2PopupWindow
             _slotCount = PLAYER_INVENTORY_SIZE;
             _inventoryCountLabel.text = $"({usedSlots}/{_slotCount})";
             SetAdenaCountLabel(adenaCount);
-            _tabs[0].UpdateItemList(removeAndAdd, modified);
-            _gearTab.UpdateEquipList(listEquipModified);
+            _tabs[0].UpdateItemList(removeAndAdd, modified , changeInventoryData);
+            _gearTab.UpdateEquipList(listEquipModified , changeInventoryData);
         }
         else
         {
@@ -396,18 +397,52 @@ public class InventoryWindow : L2PopupWindow
 
     }
 
-    public void RemoveOldEquipItemOrNoQuipItem(List<ItemInstance> obsoleteItemsInventory, List<ItemInstance> obsoleteItemsGear)
+    public void RemoveOldEquipItemOrNoQuipItem(ChangeInventoryData changeInventoryData)
     {
-        foreach(ItemInstance item in obsoleteItemsInventory)
+        List<ItemInstance> obsoleteItemsInventory = changeInventoryData.ItemsInventory();
+        List<ItemInstance> obsoleteItemsGear = changeInventoryData.ItemsGears();
+        List<ReplaceGearData> obsoleteItemsGearReplace = changeInventoryData.ItemsReplace();
+
+        foreach (ItemInstance item in obsoleteItemsInventory)
         {
-            Debug.Log("Delete item slot " + item.ItemId + " item objectId " + item.ObjectId);
-            _tabs[0].ModifiedRemove(item);
+            if (!obsoleteItemsGearReplace.Any(replaceData => replaceData.GetGear().EqualsBodyPart(item.BodyPart)))
+            {
+                _tabs[0].ModifiedRemove(item);
+            }
         }
 
-        foreach(ItemInstance item in obsoleteItemsGear) {
-            Debug.Log("Delete gear 2 " + item.BodyPart);
-            _gearTab.ModifiedRemove(item.BodyPart);
+        obsoleteItemsGear.ForEach(item=>_gearTab.ModifiedRemove(item.BodyPart , item));
+
+        //foreach (ItemInstance item in obsoleteItemsGear) {
+        //    _gearTab.ModifiedRemove(item.BodyPart);
+        //}
+
+        foreach (ReplaceGearData item in obsoleteItemsGearReplace)
+        {
+
+            ItemInstance source = item.GetSource();
+            ItemInstance gearItem = item.GetGear();
+
+            InventorySlot source_item_slot = _tabs[0].GetInventorySlot(source.ObjectId);
+
+            if (source_item_slot != null && source_item_slot.ItemInstance != null)
+            {
+                _gearTab.ModifiedReplace(source_item_slot.ItemInstance);
+            }
+
+            Debug.Log("GearItem source " + source.ItemId);
+            Debug.Log("GearItem " + gearItem.ItemId);
+
+            if(gearItem != null & source_item_slot != null)
+            {
+                source_item_slot.AssignItem(gearItem);
+            }
+     
+            //source_item_slot.AssignItem(source);
+
         }
+
+
     }
 
 

@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public class ItemInstance
@@ -119,16 +120,39 @@ public class ItemInstance
             return hash;
         }
     }
-    // Packet data
 
-    //writeI(item.getObjectId()); // ObjectId
-    //writeI(item.getItem().getId()); // ItemId
-    //writeB((byte) item.getLocation());  EQUIPPED((byte) 1),INVENTORY((byte) 2),WAREHOUSE((byte) 3);
-    //writeI(item.getSlot()); // Slot
-    //writeL(item.getCount()); // Quantity
-    //writeB(item.getCategory()); // Item Type 2 : 00-weapon, 01-shield/armor, 02-ring/earring/necklace, 03-questitem, 04-adena, 05-item
-    //writeB(item.getEquipped()); // Equipped : 00-No, 01-yes
-    //writeI(item.getItem().getBodyPart().getValue());
-    //writeI(item.getEnchant()); // Enchant level
-    //writeL(item.getTime());
+    public bool EqualsBodyPart(ItemSlot bodyPartSource)
+    {
+        if (IsLRHand(bodyPartSource))
+        {
+            return true;
+        }
+
+        if (_bodyPart == bodyPartSource)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool IsLRHand(ItemSlot bodyPartSource)
+    {
+        if (_bodyPart == ItemSlot.lrhand)
+        {
+            if (bodyPartSource == ItemSlot.rhand | bodyPartSource == ItemSlot.lhand)
+            {
+                return true;
+            }
+        }else if (bodyPartSource == ItemSlot.lrhand)
+        {
+            if (_bodyPart == ItemSlot.rhand | _bodyPart == ItemSlot.lhand)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+ 
 }

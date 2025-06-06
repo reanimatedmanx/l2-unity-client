@@ -90,8 +90,12 @@ public class GsInterludeCombatHandler : ServerPacketHandler
     private void OnInventoryUpdate(byte[] data)
     {
         Debug.Log(" Inventory Update Server Get ");
-        InventoryUpdate packet = new InventoryUpdate(data);
-        PlayerInventory.Instance.UpdateInventory(packet.Items, packet.EquipItems);
+        if (!InitPacketsLoadWord.getInstance().IsInit)
+        {
+            InventoryUpdate packet = new InventoryUpdate(data);
+            PlayerInventory.Instance.UpdateInventory(packet.Items, packet.EquipItems);
+        }
+  
     }
 
 
