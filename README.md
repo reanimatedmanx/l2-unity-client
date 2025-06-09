@@ -12,6 +12,10 @@
 Видео базового функционала [video1](https://jmp.sh/70qYH2gU)   
 Видео синхронизации движения клиента и сервера (3 vs1 ) [video2](https://jmp.sh/GX3m6XIs) 
 
+
+UI Inventory (Полная реализация)
+<img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnc3d3I5dTZybnhnODJ4cDV5YWNpeHhiMWFkMDRqOTkzcGlvOXUzZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/EiX9Izj2Yaf0pbmPMx/giphy.gif" alt="Preview0" style="max-width: 75%; height: auto;">  
+
 ### Основные отличия:    
 Система движения персонажей как у оригинального клиента  
 Система синхронизации персонажа с сервером  
