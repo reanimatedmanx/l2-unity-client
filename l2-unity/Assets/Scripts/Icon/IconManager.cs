@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
@@ -11,6 +13,7 @@ public class IconManager
     private Texture2D _noImageIcon;
 
     private Dictionary<int, Texture2D> _icons = new Dictionary<int, Texture2D>();
+    private Dictionary<int, Texture2D[]> _otherIcons = new Dictionary<int, Texture2D[]>();
 
     private static IconManager _instance;
     public static IconManager Instance
@@ -64,6 +67,31 @@ public class IconManager
         }
     }
 
+    public void CacheOtherIcons()
+    {
+        foreach (Armor armor in ItemTable.Instance.Armors.Values)
+        {
+            string[] otherIcon = armor.Itemgrp.OtherIcon;
+
+            if(otherIcon != null)
+            {
+                Texture2D[] arrayIcon = new Texture2D[otherIcon.Length];
+
+                if (otherIcon.Length > 1)
+                {
+                    for (int n = 0; n < otherIcon.Length; n++)
+                    {
+                        arrayIcon[n] = LoadTextureByName(otherIcon[n]);
+                    }
+
+                    _otherIcons.Add(armor.Id, arrayIcon);
+                }
+            }
+    
+
+        }
+    }
+
     public Texture2D LoadTextureByName(string name)
     {
         string icon = _iconFolder + "\\" + CleanIconName(name);
@@ -106,6 +134,29 @@ public class IconManager
         return icon;
     }
 
+    public Texture2D GetOtherIcon(int id , int indexIcon)
+    {
+        Texture2D[] alIcon;
+        _otherIcons.TryGetValue(id, out alIcon);
+
+        if (alIcon == null)
+        {
+            _icons.Add(id, _noImageIcon);
+            return _noImageIcon;
+        }
+
+        if(IsValidIndex(alIcon, indexIcon))
+        {
+            return alIcon[indexIcon];
+        }
+
+        return null;
+    }
+
+    private bool IsValidIndex(Array array, int index)
+    {
+        return index >= 0 && index < array.Length;
+    }
     private Texture2D GetNoImageIcon()
     {
         return Resources.Load<Texture2D>(_iconFolder + "\\" + "NOIMAGE");

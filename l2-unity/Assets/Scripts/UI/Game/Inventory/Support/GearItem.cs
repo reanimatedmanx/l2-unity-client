@@ -50,6 +50,17 @@ public class GearItem
         _gearSlot.AssignItem(item);
     }
 
+    public void AssignImageAtIndex(ItemInstance item , int indexIcon)
+    {
+        _gearSlot.AssignItemAtIndexImage(item , indexIcon);
+    }
+
+    public void AssignImageAtIndeAlpha(ItemInstance item, int indexIcon)
+    {
+        _gearSlot.AssignItemAtIndexImage(item, indexIcon);
+        _gearSlot.AddBlackOverlay();
+    }
+
     public void AssignAlpha(ItemInstance item , float alpha)
     {
         _gearSlot.AssignItem(item , alpha);

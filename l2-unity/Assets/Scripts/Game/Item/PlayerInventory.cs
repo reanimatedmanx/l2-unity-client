@@ -135,10 +135,11 @@ public class PlayerInventory : MonoBehaviour
 
             try
             {
-
+                Debug.Log("start Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
                 UpdatePlayerInventory(_tempForRemoveAndAdd, _tempForModified , listEquip);
                 ModifiedEquip(_playerInventory, _playerEquipInventory, listEquip);
-                //Debug.Log("Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
+                Debug.Log("Equip " + equipitems.Count + " inventory " + items.Count);
+                Debug.Log("end Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
                 int adenaCount = GetAdenaCount(_playerInventory.Values.ToList());
                 int useSlot = _playerInventory.Count + _playerEquipInventory.Count;
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
@@ -234,7 +235,7 @@ public class PlayerInventory : MonoBehaviour
 
     private void UpdateInventory(Dictionary<int, ItemInstance> playerInventory , Dictionary<int, ItemInstance> playerEquipInventory, List<ItemInstance> listEquip ,ItemInstance item)
     {
-        //здесь что-то меняется
+   
         if (playerEquipInventory.ContainsKey(item.ObjectId) & !item.Equipped)
         {
             //ItemInstance del_item = playerEquipInventory[item.ObjectId];
@@ -286,7 +287,6 @@ public class PlayerInventory : MonoBehaviour
         else if (!playerEquipInventory.ContainsKey(item.ObjectId) & item.Equipped == true)
         {
             playerEquipInventory.Add(item.ObjectId, item);
-            Debug.Log("1 добавляем в equip");
         }
     }
 
@@ -299,8 +299,6 @@ public class PlayerInventory : MonoBehaviour
         
         playerInventory.Remove(del_item.ObjectId);
         RefreshPosition(playerInventory);
-        //Debug.Log("RemoveInventory Add Remove old itemId " + del_item.ItemId  + " Slot " + del_item.Slot);
-        //_obsoleteItemsInventory.Add(del_item);
         _changeInventoryData.AddRemoveInventory(del_item);
     }
 
@@ -315,10 +313,8 @@ public class PlayerInventory : MonoBehaviour
 
     private void GearReplaceSlot(Dictionary<int, ItemInstance> playerEquipInventory, ItemInstance sourceItem , ItemInstance gearItem)
     {
-
         if(playerEquipInventory.ContainsKey(gearItem.ObjectId)) playerEquipInventory.Remove(gearItem.ObjectId);
         _changeInventoryData.AddReplaceGear(sourceItem, gearItem);
-
     }
 
 

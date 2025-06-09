@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour {
         SystemMessageTable.Instance.Initialize();
         IconManager.Instance.Initialize();
         IconManager.Instance.CacheIcons();
+        IconManager.Instance.CacheOtherIcons();
         //KeyImageTable.Instance.Initialize();
     }
 

@@ -40,7 +40,7 @@ public class InventoryGearTab : L2Tab
     {
         _gearAnchors = new Dictionary<ItemSlot, GearItem>
         {
-             { ItemSlot.hat1, new GearItem(_windowEle.Q<VisualElement>("Hat1")  , ItemSlot.hat1 ) },
+            { ItemSlot.hat1, new GearItem(_windowEle.Q<VisualElement>("Hat1")  , ItemSlot.hat1 ) },
             { ItemSlot.hat2, new GearItem(_windowEle.Q<VisualElement>("Hat2")  , ItemSlot.hat2 ) },
             { ItemSlot.head, new GearItem(_windowEle.Q<VisualElement>("Helmet")  , ItemSlot.head ) },
             { ItemSlot.gloves, new GearItem(_windowEle.Q<VisualElement>("Gloves"), ItemSlot.gloves) },
@@ -138,7 +138,6 @@ public class InventoryGearTab : L2Tab
             case ItemSlot.fullarmor:
                 _equip.FullArmor(item);
                 break;
-
             case ItemSlot.lfinger:
                 _equip.LFinger(item);
                 break;
@@ -151,6 +150,12 @@ public class InventoryGearTab : L2Tab
                 break;
             case ItemSlot.lhand:
                 _equip.LHand(item);
+                break;
+            case ItemSlot.chest:
+                _equip.Chest(item);
+                break;
+            case ItemSlot.legs:
+                _equip.Legs(item);
                 break;
             default:
                 _equip.DefaultAssign(item);

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ItemsType 
 {
+    
     public static ItemCategory ParceCategory(int type2)
     {
         if (type2 == 0)
@@ -65,6 +66,8 @@ public class ItemsType
                 return ItemSlot.lhand;
             case 16384:
                 return ItemSlot.lrhand;
+            case 32768: 
+                return ItemSlot.fullarmor;
 
             default:
                 return ItemSlot.none;

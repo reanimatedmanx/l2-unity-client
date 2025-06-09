@@ -184,6 +184,30 @@ public class InventorySlot : L2DraggableSlot
         }
     }
 
+    public void AssignItemAtIndexImage(ItemInstance item , int indexImage)
+    {
+        _slotElement.RemoveFromClassList("empty");
+
+        AddDataItem(item);
+        _itemInstance = item;
+        _count = item.Count;
+        _objectId = item.ObjectId;
+        _id = item.ItemId;
+        _remainingTime = item.RemainingTime;
+        _empty = false;
+
+        if (_slotElement != null)
+        {
+            AddImageAtIndex(this , indexImage);
+            AddTooltip(item);
+            _slotDragManipulator.enabled = true;
+        }
+        else
+        {
+            Debug.Log("Не критическая ошибка не смогли найти InventorySlot>SlotElement");
+        }
+    }
+
     private void AddDataItem(ItemInstance item)
     {
         if (item.ItemData != null)
@@ -228,9 +252,28 @@ public class InventorySlot : L2DraggableSlot
         }
     }
 
-  
+    private void AddImageAtIndex(InventorySlot slot , int indexIamge)
+    {
+        if (SlotBg == null & _slotElement == null) return;
 
- 
+        if (slot.GetType() == typeof(GearSlot))
+        {
+            StyleBackground background = new StyleBackground(IconManager.Instance.GetOtherIcon(_id , indexIamge));
+            _slotElement.style.backgroundImage = background;
+        }
+        else
+        {
+            if (SlotBg == null) return;
+            StyleBackground background = new StyleBackground(IconManager.Instance.GetOtherIcon(_id, indexIamge));
+            _slotBg.style.backgroundImage = background;
+
+
+        }
+    }
+
+
+
+
 
     //I'm not touching the alpha channel yet, but it might come in handy in the future
     private void AddImageAlpha(InventorySlot slot , float alpha)

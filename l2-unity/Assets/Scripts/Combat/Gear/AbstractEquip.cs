@@ -59,6 +59,22 @@ public abstract class AbstractEquip
         }
     }
 
+    protected void AddGearSlotAssignByIndexIcon(ItemSlot slotType, ItemInstance item , int indexImage)
+    {
+        if (_gearAnchors.ContainsKey(slotType))
+        {
+            _gearAnchors[slotType].AssignImageAtIndex(item , indexImage);
+        }
+    }
+
+    protected void AddGearSlotAssignByIndexIconAlpha(ItemSlot slotType, ItemInstance item, int indexImage)
+    {
+        if (_gearAnchors.ContainsKey(slotType))
+        {
+            _gearAnchors[slotType].AssignImageAtIndeAlpha(item, indexImage);
+        }
+    }
+
     protected void AddGearSlotAssignAlpha(ItemSlot slotType, ItemInstance item , float alpha)
     {
         if (_gearAnchors.ContainsKey(slotType))

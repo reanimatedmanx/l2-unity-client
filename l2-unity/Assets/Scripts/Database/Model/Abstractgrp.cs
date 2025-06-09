@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 [System.Serializable]
 public class Abstractgrp
@@ -14,6 +15,7 @@ public class Abstractgrp
     [SerializeField] protected string _equipSound;
     [SerializeField] protected string _inventoryType;
     [SerializeField] private bool _crystallizable;
+    private string[] _otherIcon;
 
     public ItemMaterial Material { get { return _material; } set { _material = value; } }
     public int ObjectId { get { return _objectId; } set { _objectId = value; } }
@@ -26,4 +28,13 @@ public class Abstractgrp
     public string InventoryType { get { return _inventoryType; } set { _inventoryType = value; } }
     public bool Crystallizable { get { return _crystallizable; } set { _crystallizable = value; } }
     public ItemGrade Grade { get { return _grade; } set { _grade = value; } }
+
+    public string[] OtherIcon { get { return _otherIcon; } }
+    public void SetOtherIcon(string[] allIcon)
+    {
+        _otherIcon = allIcon
+         .Where(icon => !icon.Equals("None"))
+         .Distinct()                  
+         .ToArray();                  
+    }
 }

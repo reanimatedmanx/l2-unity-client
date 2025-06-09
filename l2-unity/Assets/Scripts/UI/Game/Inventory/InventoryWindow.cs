@@ -437,6 +437,11 @@ public class InventoryWindow : L2PopupWindow
             {
                 source_item_slot.AssignItem(gearItem);
             }
+            //if there are 2 items in LHand and Rhand, we move 1 to the position of the one who is trying to change, and insert the second item into the inventory
+            else if (gearItem != null & source_item_slot == null)
+            {
+                _tabs[0].AddItem(gearItem);
+            }
      
             //source_item_slot.AssignItem(source);
 
@@ -487,12 +492,9 @@ public class InventoryWindow : L2PopupWindow
         return (item != null) ? item.Count : 0;
     }
 
- 
 
-  
-
-    public void SelectSlot(int slot)
+    public ItemInstance GetItemByPosition(int position)
     {
-        _tabs[0].SelectSlot(slot);
+       return  _tabs[0].GetInventorySlotByPosition(position);
     }
 }

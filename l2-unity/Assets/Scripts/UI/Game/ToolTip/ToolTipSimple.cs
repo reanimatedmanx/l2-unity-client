@@ -76,6 +76,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
     {
         string[] ids = GetUniquePosition(ve);
         TemplateContainer template = SwitchToolTip(ids, true);
+
         if(template != null)
         {
             int position = Int32.Parse(ids[0]);
@@ -226,6 +227,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
     {
         int position = Int32.Parse(ids[0]);
         int type = Int32.Parse(ids[1]);
+
         if (isClickLeft)
         {
             if (type == (int)SlotType.PriceSell)
@@ -264,6 +266,23 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                     }
                 }
   
+            }
+        }else if (type == (int)SlotType.Inventory)
+        {
+            ItemInstance item = InventoryWindow.Instance.GetItemByPosition(position);
+            if (item != null)
+            {
+                switch (item.Category)
+                {
+                    case ItemCategory.Weapon:
+                        return SwitchToWeapon();
+                    case ItemCategory.Jewel:
+                        return SwitchToAccessories();
+                    case ItemCategory.Item:
+                        return SwitchToAccessories();
+                    case ItemCategory.ShieldArmor:
+                        return SwitchToArmor();
+                }
             }
         }
         else
@@ -425,6 +444,11 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             Product product = ToolTipManager.GetInstance().FindProductInBuyList(position);
             SetSimpleSingleToolTip(product , template);
         }
+        else if (type == (int)SlotType.Inventory)
+        {
+            ItemInstance itemInstance = InventoryWindow.Instance.GetItemByPosition(position);
+            SetSimpleItemSingleToolTip(itemInstance, template);
+        }
 
     }
 
@@ -449,6 +473,32 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
 
             SetIcon(icon , groubBoxIcon , null);
             SetDataTooTip(_nameText , _descriptedText , text.GetName(), "Price: " + ToolTipsUtils.ConvertToPrice(Int32.Parse(text.GetDiscription())) + " Adena");
+        }
+        else
+        {
+            _windowEle.style.display = DisplayStyle.None;
+            _showToolTip.Hide(null);
+        }
+    }
+
+
+    private void SetSimpleItemSingleToolTip(ItemInstance item, TemplateContainer template)
+    {
+        if (item != null)
+        {
+            IDataTips text = ToolTipManager.GetInstance().GetProductText(item);
+            var _descriptedText = (Label)template.Q<VisualElement>(null, "DescriptedLabel");
+            var _nameText = (Label)template.Q<VisualElement>(null, "Heading");
+
+            _descriptedText.style.fontSize = 12;
+            _nameText.style.paddingLeft = 0;
+            _descriptedText.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
+
+            var icon = template.Q<VisualElement>(null, "Icon");
+            var groubBoxIcon = template.Q<VisualElement>(null, "Grow");
+
+            SetIcon(icon, groubBoxIcon, null);
+            SetDataTooTip(_nameText, _descriptedText, text.GetName(), "Price: " + ToolTipsUtils.ConvertToPrice(Int32.Parse(text.GetDiscription())) + " Adena");
         }
         else
         {

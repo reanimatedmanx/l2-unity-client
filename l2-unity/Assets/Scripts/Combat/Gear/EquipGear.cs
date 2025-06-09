@@ -77,10 +77,33 @@ public class EquipGear : AbstractEquip
         AddGearSlotAssign(ItemSlot.rhand, item);
     }
 
+    public void Legs(ItemInstance item)
+    {
+        if (GearSlotGetItemSlot(ItemSlot.legs) == ItemSlot.fullarmor)
+        {
+            AddGearEmptySlot(ItemSlot.chest);
+            AddGearEmptySlot(ItemSlot.legs);
+        }
+
+        AddGearSlotAssign(ItemSlot.legs, item);
+    }
+
+    public void Chest(ItemInstance item)
+    {
+        if (GearSlotGetItemSlot(ItemSlot.chest) == ItemSlot.fullarmor)
+        {
+            AddGearEmptySlot(ItemSlot.chest);
+            AddGearEmptySlot(ItemSlot.legs);
+        }
+
+        AddGearSlotAssign(ItemSlot.chest, item);
+    }
+
     public void FullArmor(ItemInstance item)
     {
-        AddGearSlotAssign(ItemSlot.chest, item);
-        AddGearSlotAssign(ItemSlot.legs, item);
+        //Texture2D textures = IconManager.Instance.GetOtherIcon(item.ItemId, 2);
+        AddGearSlotAssignByIndexIcon(ItemSlot.chest, item , 0);
+        AddGearSlotAssignByIndexIconAlpha(ItemSlot.legs, item , 2);
     }
 
     public void LFinger(ItemInstance item)

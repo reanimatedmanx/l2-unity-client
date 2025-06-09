@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class ItemInstance
 {
@@ -111,12 +112,12 @@ public class ItemInstance
 
     public override int GetHashCode()
     {
-        // Используем ключевые поля для вычисления хэш-кода
-        unchecked // Чтобы избежать переполнения
+
+        unchecked 
         {
-            int hash = 17; // Начальное значение
-            hash = hash * 23 + _objectId.GetHashCode(); // Умножаем на простое число и добавляем хэш ObjectId
-            hash = hash * 23 + _itemId.GetHashCode(); // Умножаем на простое число и добавляем хэш ItemId
+            int hash = 17; 
+            hash = hash * 23 + _objectId.GetHashCode(); 
+            hash = hash * 23 + _itemId.GetHashCode(); 
             return hash;
         }
     }
@@ -124,6 +125,11 @@ public class ItemInstance
     public bool EqualsBodyPart(ItemSlot bodyPartSource)
     {
         if (IsLRHand(bodyPartSource))
+        {
+            return true;
+        }
+
+        if (IsFullPlate(bodyPartSource))
         {
             return true;
         }
@@ -136,7 +142,9 @@ public class ItemInstance
         return false;
     }
 
-    public bool IsLRHand(ItemSlot bodyPartSource)
+
+
+    private bool IsLRHand(ItemSlot bodyPartSource)
     {
         if (_bodyPart == ItemSlot.lrhand)
         {
@@ -154,5 +162,63 @@ public class ItemInstance
 
         return false;
     }
- 
+
+    private bool IsFullPlate(ItemSlot bodyPartSource)
+    {
+        if (_bodyPart == ItemSlot.chest | _bodyPart == ItemSlot.legs)
+        {
+            if (bodyPartSource == ItemSlot.fullarmor)
+            {
+                return true;
+            }
+        }
+        else if (bodyPartSource == ItemSlot.chest | bodyPartSource == ItemSlot.legs)
+        {
+            if (_bodyPart == ItemSlot.fullarmor)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public string GetName()
+    {
+        if (_category == ItemCategory.Weapon)
+        {
+            return ItemNameTable.Instance.GetItemName(_itemId).Name;
+
+        }
+        else if (_category == ItemCategory.ShieldArmor)
+        {
+            return ItemNameTable.Instance.GetItemName(_itemId).Name;
+        }
+        else if (_category == ItemCategory.Jewel)
+        {
+            return ItemNameTable.Instance.GetItemName(_itemId).Name;
+        }
+        else if (_category == ItemCategory.Item)
+        {
+            return ItemNameTable.Instance.GetItemName(_itemId).Name;
+        }
+        else if (_category == ItemCategory.Adena)
+        {
+            return ItemNameTable.Instance.GetItemName(_itemId).Name;
+        }
+        return "";
+    }
+
+    public string GetDescription()
+    {
+        return "";
+    }
+
+    public string GetItemDescription()
+    {
+        ItemName item = ItemNameTable.Instance.GetItemName(_itemId);
+        if (string.IsNullOrEmpty(item.Description)) return "Not Found description";
+        return item.Description;
+    }
+
 }

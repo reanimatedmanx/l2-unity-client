@@ -26,6 +26,11 @@ public class DatUtils {
         return SplitJSON(value)[0];
     }
 
+    public static string[] ParseOtherIcon(string value)
+    {
+        return SplitJSON(value);
+    }
+
     public static string[] SplitJSON(string value) {
         return value.Replace("{", string.Empty).Replace("}", string.Empty).Replace("[", string.Empty).Replace("]", string.Empty).Split(";");
     }
@@ -42,7 +47,13 @@ public class DatUtils {
                 abstractgrp.DropModel = modTex[0];
                 break;
             case "icon": // {[icon.armor_t02_u_i00];[None];[None];[None];[None]}
-                abstractgrp.Icon = DatUtils.ParseIcon(value);
+                if(abstractgrp.ObjectId == 356)
+                {
+                    Debug.Log("");
+                }
+                var allIcon = DatUtils.ParseOtherIcon(value);
+                abstractgrp.Icon = allIcon[0];
+                if (allIcon.Length > 1) abstractgrp.SetOtherIcon(allIcon);
                 break;
             case "weight":
                 abstractgrp.Weight = int.Parse(value);

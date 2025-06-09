@@ -48,7 +48,7 @@ public class InventoryTab : L2Tab
 
             int slotCount = InventoryWindow.PLAYER_INVENTORY_SIZE;
             _inventorySlots = new InventorySlot[slotCount];
-            SlotType slotType = GetSlotType(MainTab);
+            //SlotType slotType = GetSlotType(MainTab);
 
             for (int i = 0; i < _inventorySlots.Length; i++)
             {
@@ -61,7 +61,7 @@ public class InventoryTab : L2Tab
                 else
                 {
                     VisualElement slotElement = CretaVisualElement();
-                    InventorySlot slot = CreateInventorySlot(i, slotElement, slotType);
+                    InventorySlot slot = CreateInventorySlot(i, slotElement, SlotType.Inventory);
                     _contentContainer.Add(slotElement);
                    _inventorySlots[i] = slot;
                 }
@@ -91,11 +91,11 @@ public class InventoryTab : L2Tab
 
     private SlotType GetSlotType(bool mainTab)
     {
-        L2Slot.SlotType slotType = L2Slot.SlotType.Inventory;
+        SlotType slotType = SlotType.Inventory;
 
         if (!mainTab)
         {
-            slotType = L2Slot.SlotType.InventoryBis;
+            slotType = SlotType.InventoryBis;
         }
         return slotType;
     }
@@ -195,6 +195,12 @@ public class InventoryTab : L2Tab
         }
     }
 
+    public void AddItem(ItemInstance item)
+    {
+        InventorySlot i_slot1 = GetEmptyInventorySlot();
+        i_slot1.AssignItem(item);
+    }
+
    
 
     private void AddAndRemove(List<ItemInstance> removeAndAdd)
@@ -245,23 +251,29 @@ public class InventoryTab : L2Tab
             {
                 InventorySlot oldSlot = GetInventorySlot(currentItem.ObjectId);
                 //Replace Inventory->Equip and Equip->Inventory elsewhere in the code, we skip it here
-                if (changeInventoryData.IsReplaceSourceItem(currentItem.ObjectId)) return;
-
-                if (oldSlot != null)
+                Debug.Log("Modified ->1 " + currentItem.ObjectId);
+                if(!changeInventoryData.IsReplaceSourceItem(currentItem.ObjectId))
                 {
-                    UpdateSlot(oldSlot, currentItem);
-                    Debug.Log(" Modified upd slot " + oldSlot.Position);
-                }
-                else
-                {
-                    InventorySlot i_slot = _inventorySlots[currentItem.Slot];
-
-                    if (i_slot != null)
+                    if (oldSlot != null)
                     {
-                        Debug.Log(" Modified new assign  slot " + i_slot.Position);
-                        i_slot.AssignItem(currentItem);
+                        UpdateSlot(oldSlot, currentItem);
+                        Debug.Log("Modified ->4 " + currentItem.ObjectId);
+                        Debug.Log(" Modified upd slot " + oldSlot.Position);
+                    }
+                    else
+                    {
+                        InventorySlot i_slot = _inventorySlots[currentItem.Slot];
+                        Debug.Log("Modified ->2 " + currentItem.ObjectId);
+                        if (i_slot != null)
+                        {
+                            Debug.Log("Modified ->3 " + currentItem.ObjectId);
+                            Debug.Log(" Modified new assign  slot " + i_slot.Position);
+                            i_slot.AssignItem(currentItem);
+                        }
                     }
                 }
+
+              
 
             }
         }
@@ -285,6 +297,20 @@ public class InventoryTab : L2Tab
                                .FirstOrDefault();
     }
 
+    public ItemInstance GetInventorySlotByPosition(int position)
+    {
+        if(IsValidIndex(_inventorySlots, position))
+        {
+            return _inventorySlots[position].ItemInstance;
+        }
+       return null;
+    }
+
+    private bool IsValidIndex(InventorySlot[] array, int index)
+    {
+        return index >= 0 && index < array.Length;
+    }
+
     public InventorySlot GetInventorySlotByBodyPart(ItemSlot bodyPart)
     {
         return _inventorySlots?
@@ -298,6 +324,13 @@ public class InventoryTab : L2Tab
                               .Where(slot => slot != null && slot.Id == 0)
                               .FirstOrDefault();
         return slot.Position;
+    }
+
+    public InventorySlot GetEmptyInventorySlot()
+    {
+        return  _inventorySlots?
+                              .Where(slot => slot != null && slot.Id == 0)
+                              .FirstOrDefault();
     }
 
     public InventorySlot GetFreeSlot()

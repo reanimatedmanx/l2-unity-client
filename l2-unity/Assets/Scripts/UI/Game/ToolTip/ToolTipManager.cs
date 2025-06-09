@@ -97,9 +97,9 @@ public class ToolTipManager
     //public static final int TYPE2_MONEY = 4;
     //public static final int TYPE2_OTHER = 5;
 
-    public IDataTips GetProductText(Product product)
+    public IDataTips GetProductText(object obj)
     {
-        return new SimpleToolTipData(product);
+        return new SimpleToolTipData(obj);
     }
 
 }

@@ -6,6 +6,7 @@ public class SimpleToolTipData : IDataTips
     private string _description;
     private string _item_description;
     private Product _product;
+    private ItemInstance _itemInstance;
     public SimpleToolTipData(object data)
     {
         if(data.GetType() == typeof(Product))
@@ -14,6 +15,12 @@ public class SimpleToolTipData : IDataTips
             _name = _product.GetName();
             _description = _product.GetDescription();
             _item_description = _product.GetItemDescription();
+        }else if (data.GetType() == typeof(ItemInstance))
+        {
+            _itemInstance = (ItemInstance)data;
+            _name = _itemInstance.GetName();
+            _description = _itemInstance.GetDescription();
+            _item_description = _itemInstance.GetItemDescription();
         }
     }
     public string GetName()
