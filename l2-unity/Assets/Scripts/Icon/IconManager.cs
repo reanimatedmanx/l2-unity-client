@@ -14,6 +14,8 @@ public class IconManager
 
     private Dictionary<int, Texture2D> _icons = new Dictionary<int, Texture2D>();
     private Dictionary<int, Texture2D[]> _otherIcons = new Dictionary<int, Texture2D[]>();
+    private Dictionary<string, Texture2D> _interfaceIcon = new Dictionary<string, Texture2D>();
+
 
     private static IconManager _instance;
     public static IconManager Instance
@@ -87,9 +89,31 @@ public class IconManager
                     _otherIcons.Add(armor.Id, arrayIcon);
                 }
             }
-    
-
+   
         }
+    }
+
+    public void CacheInterfaceIcons()
+    {
+        var grade_a = LoadTextureByName("grade_a");
+        var grade_b = LoadTextureByName("grade_b");
+        var grade_c = LoadTextureByName("grade_c");
+        var grade_d = LoadTextureByName("grade_d");
+        var grade_s = LoadTextureByName("grade_s");
+        _interfaceIcon.Add("grade_a", grade_a);
+        _interfaceIcon.Add("grade_b", grade_b);
+        _interfaceIcon.Add("grade_c", grade_c);
+        _interfaceIcon.Add("grade_d", grade_d);
+        _interfaceIcon.Add("grade_s", grade_s);
+    }
+
+    public Texture2D GetInterfaceIcon(string nameIcon)
+    {
+        if (_interfaceIcon.ContainsKey(nameIcon))
+        {
+            return _interfaceIcon[nameIcon];
+        }
+        return _noImageIcon;
     }
 
     public Texture2D LoadTextureByName(string name)

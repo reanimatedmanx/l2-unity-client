@@ -9,4 +9,6 @@ public interface IDataTips
 
     ItemName[] GetSets();
     string GetIcon();
+
+    Texture2D GetGradeTexture();
 }

@@ -208,6 +208,56 @@ public class ItemInstance
         }
         return "";
     }
+ 
+    public Texture2D GetGradeTexture()
+    {
+        if (Category == ItemCategory.Weapon)
+        {
+            Weapongrp weapon = WeapongrpTable.Instance.GetWeapon(_itemId);
+            return GetGradeImage(weapon.Grade);
+        }
+        else if (Category == ItemCategory.ShieldArmor | Category == ItemCategory.Jewel)
+        {
+            Armorgrp armor = ArmorgrpTable.Instance.GetArmor(_itemId);
+            Weapongrp weapon = WeapongrpTable.Instance.GetWeapon(_itemId);
+            if(armor != null) return GetGradeImage(armor.Grade);
+            if(weapon != null) return GetGradeImage(weapon.Grade);
+        }
+       // else if (Category == ItemCategory.Jewel)
+        //{
+          //  EtcItemgrp etc =  EtcItemgrpTable.Instance.GetEtcItem(_itemId);
+          //  return GetGradeImage(etc.Grade);
+        //}
+        return null;
+    }
+
+    private Texture2D GetGradeImage(ItemGrade grade)
+    {
+        if(grade == ItemGrade.none)
+        {
+            return null;
+        }else if (grade == ItemGrade.d)
+        {
+            return IconManager.Instance.GetInterfaceIcon("grade_d");
+        }
+        else if (grade == ItemGrade.c)
+        {
+            return IconManager.Instance.GetInterfaceIcon("grade_c");
+        }
+        else if (grade == ItemGrade.b)
+        {
+            return IconManager.Instance.GetInterfaceIcon("grade_b");
+        }
+        else if (grade == ItemGrade.a)
+        {
+            return IconManager.Instance.GetInterfaceIcon("grade_a");
+        }
+        else if (grade == ItemGrade.s)
+        {
+            return IconManager.Instance.GetInterfaceIcon("grade_s");
+        }
+        return null;
+    }
 
     public string GetDescription()
     {

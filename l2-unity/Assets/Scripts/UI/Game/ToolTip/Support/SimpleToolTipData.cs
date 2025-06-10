@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class SimpleToolTipData : IDataTips
@@ -25,8 +26,37 @@ public class SimpleToolTipData : IDataTips
     }
     public string GetName()
     {
-        if(_product.Count > 1) _name = _name +" (" + _product.Count + ")";
+        if(_product != null)
+        {
+            if (_product.Count > 1) _name = _name + " (" + _product.Count + ")";
+        }
+        else if (_itemInstance != null)
+        {
+            if(_itemInstance.Category == ItemCategory.Adena)
+            {
+                if (_itemInstance.Count > 1) _name = _name + " (" + ToolTipsUtils.ConvertToPrice(_itemInstance.Count)+")";
+            }
+            else
+            {
+                if (_itemInstance.Count > 1) _name = _name + " (" + _itemInstance.Count + ")";
+            }
+           
+        }
+
         return _name;
+    }
+
+    public Texture2D GetGradeTexture()
+    {
+        if (_product != null)
+        {
+            return null;
+        }
+        else if (_itemInstance != null)
+        {
+            return _itemInstance.GetGradeTexture();
+        }
+        return null;
     }
 
     public ItemName[] GetSets()
