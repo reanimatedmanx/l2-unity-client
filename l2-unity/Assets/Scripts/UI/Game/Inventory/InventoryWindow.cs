@@ -497,4 +497,6 @@ public class InventoryWindow : L2PopupWindow
     {
        return  _tabs[0].GetInventorySlotByPosition(position);
     }
+
+ 
 }

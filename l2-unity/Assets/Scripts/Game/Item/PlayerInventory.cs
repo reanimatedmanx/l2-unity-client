@@ -65,7 +65,21 @@ public class PlayerInventory : MonoBehaviour
         return null;
     }
 
-    
+    public bool IsItemEquipByItemId(int itemId)
+    {
+        foreach (var item in _playerEquipInventory)
+        {
+            if(itemId == item.Value.ItemId)
+            {
+                return true;
+            }
+            
+        }
+
+        return false;
+    }
+
+
 
     private void Awake()
     {

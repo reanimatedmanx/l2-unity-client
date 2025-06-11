@@ -117,17 +117,28 @@ public class ItemNameTable {
                     //int s1 = line.IndexOf("a,") + 2;
                     //int s2 = line.IndexOf(".\\0");
 
+  
 
-                    string parts = DatUtils.CleanupStringOldData(ids[5]);
+                    string parts1 = DatUtils.CleanupStringOldData(ids[5]);
+                    string desctiptionSet1 = DatUtils.CleanupStringOldData(ids[6]);
+
+                    string parts2 = DatUtils.CleanupStringOldData(ids[7]);
+                    string desctiptionSet2 = DatUtils.CleanupStringOldData(ids[8]);
 
 
                     itemData.Id = Int32.Parse(ids[0]);
                     itemData.Name = ids[1];
 
-                    var sets = GetSetsIds(itemData.Id, parts);
-                    SetDescriptionText(itemData, parts, ids);
+                    if (itemData.Id == 356)
+                    {
+                        Debug.Log("");
+                    }
 
-                    //itemData.Description = GetDesciptionText(line, s1, s2);
+                    int[] sets1 = GetSetsIds(parts1);
+                    ItemSets itemSets1 = CreateItems(sets1, desctiptionSet1);
+
+                    int[] sets2 = GetSetsIds(parts2);
+                    ItemSets itemSet2 = CreateItems(sets2, desctiptionSet2);
 
                     if (itemData.Id == 23)
                     {
@@ -135,11 +146,18 @@ public class ItemNameTable {
                     }
                     if (_itemNames.ContainsKey(itemData.Id))
                     {
-                        if (string.IsNullOrEmpty(_itemNames[itemData.Id].Description))
-                        {
-                            _itemNames[itemData.Id].Description = itemData.Description;
-                            _itemNames[itemData.Id].SetSets(sets);
-                        }
+                        //if (string.IsNullOrEmpty(_itemNames[itemData.Id].Description))
+                        //{
+                         //   _itemNames[itemData.Id].Description = itemData.Description;
+                            AddSets(itemData, itemSets1, itemSet2);
+
+
+                        //}
+                       // else
+                        //{
+                        //    AddSets(itemData, itemSets1, itemSet2);
+                            //_itemNames[itemData.Id].SetSets(new ItemSets[1] { itemSets1 });
+                        //}
 
                     }
                     else
@@ -157,6 +175,27 @@ public class ItemNameTable {
         }
     }
 
+
+    private void AddSets(ItemName itemData , ItemSets itemSets1, ItemSets itemSet2)
+    {
+        if (itemSets1 != null & itemSet2 != null)
+        {
+            _itemNames[itemData.Id].SetSets(new ItemSets[2] { itemSets1, itemSet2 });
+        }
+        else if (itemSets1 != null)
+        {
+            _itemNames[itemData.Id].SetSets(new ItemSets[1] { itemSets1 });
+        }
+    }
+    private ItemSets CreateItems(int[] sets1 , string desctiprion)
+    {
+        if(sets1 != null && sets1.Length > 0)
+        {
+            return new ItemSets(sets1, desctiprion);
+        }
+        return null;
+    }
+
     private void  SetDescriptionText(ItemName itemData , string parts , string[] ids)
     {
         if (string.IsNullOrEmpty(parts))
@@ -171,19 +210,18 @@ public class ItemNameTable {
         }
     }
 
-    private int[] GetSetsIds(int id , string text)
+    private int[] GetSetsIds(string text)
     {
         if (!string.IsNullOrEmpty(text))
         {
-            //var text1 = text.Replace(id.ToString()+",", "");
+
             string[] stringArray = text.Split(',');
 
             return stringArray
                 .Select(s => {
                     int number;
-                    return int.TryParse(s, out number) ? number : 0; // или выбросьте исключение, если необходимо
+                    return (int.TryParse(s, out number) ? number : 0);
                 }).ToArray();
-
         }
         else
         {

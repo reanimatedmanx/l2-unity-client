@@ -61,7 +61,30 @@ public class SimpleToolTipData : IDataTips
 
     public ItemName[] GetSets()
     {
-        return _product.GetSets();
+        if (_product != null)
+        {
+            return _product.GetSets();
+        }
+        else if (_itemInstance != null)
+        {
+            return _itemInstance.GetSets();
+        }
+        return null;
+        
+    }
+
+    public ItemSets[] GetSetsEffect()
+    {
+        if (_product != null)
+        {
+            return _product.GetSetsEffects();
+        }
+        else if (_itemInstance != null)
+        {
+            return _itemInstance.GetSetsEffects();
+        }
+        return null;
+
     }
 
     public string GetDiscription()

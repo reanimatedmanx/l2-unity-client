@@ -24,6 +24,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
     private VisualTreeAsset _windowTemplateAcccesories;
     private VisualTreeAsset _windowTemplateArmor;
     private VisualTreeAsset _setsElements;
+    private VisualTreeAsset _setsEffects;
     private VisualElement _contentInside;
     private float _lastHeightContent = 0;
     private float _heightContent = 0;
@@ -59,6 +60,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         _windowTemplateAcccesories = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipAccessories");
         _windowTemplateArmor = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipArmor");
         _setsElements = LoadAsset("Data/UI/_Elements/Game/ToolTips/Elements/SetsElements");
+        _setsEffects = LoadAsset("Data/UI/_Elements/Game/ToolTips/Elements/SetsEffectNameElements");
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)
@@ -123,7 +125,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 _dataProvider.AddDataOther(template, product);
                 break;
             case EnumType2.TYPE2_SHIELD_ARMOR:
-                _dataProvider.AddDataArmor(template, product, _setsElements);
+                _dataProvider.AddDataArmor(template, product, _setsElements , _setsEffects);
                 break;
         }
     }
@@ -134,11 +136,11 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         {
             case ItemCategory.Weapon:
                 Debug.Log("Weapon");
-                //_dataProvider.AddDataWeapon(template, product);
+                _dataProvider.AddDataWeapon(template, item);
                 break;
             case ItemCategory.Jewel:
                 Debug.Log("Jewel");
-                //_dataProvider.AddDataAccessories(template, product);
+                _dataProvider.AddDataAccessories(template, item);
                 break;
             case ItemCategory.Item:
                 Debug.Log("Item");
@@ -146,7 +148,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 break;
             case ItemCategory.ShieldArmor:
                 Debug.Log("ShieldArmor");
-                //_dataProvider.AddDataArmor(template, product, _setsElements);
+                _dataProvider.AddDataArmor(template, item, _setsElements, _setsEffects);
                 break;
         }
     }

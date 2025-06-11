@@ -1,0 +1,10 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:GroupBox name="setsEffect" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 5px; padding-top: 0; padding-bottom: 0; padding-left: 0;">
+        <engine:GroupBox name="listEffect" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; flex-direction: column;">
+            <engine:GroupBox name="setDefaultEffect" style="margin-top: 0; margin-right: 0; margin-bottom: 2px; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; flex-direction: row;">
+                <engine:Label text="2Piece :" name="labelSetName" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; font-size: 10px; color: rgb(100, 70, 0); -unity-text-outline-width: 0.1px; -unity-font-definition: resource(&apos;Data/UI/Assets/Font/tahoma&apos;);" />
+                <engine:Label text="No set effect" parse-escape-sequences="false" name="labelSetText" style="white-space: normal; width: 130px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 2px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; font-size: 10px; color: rgb(72, 72, 72); -unity-text-outline-width: 0.1px; -unity-font-definition: resource(&apos;Data/UI/Assets/Font/tahoma&apos;);" />
+            </engine:GroupBox>
+        </engine:GroupBox>
+    </engine:GroupBox>
+</engine:UXML>

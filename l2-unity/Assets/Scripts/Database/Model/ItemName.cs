@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
@@ -11,7 +13,7 @@ public class ItemName {
     [SerializeField] private bool _destructible;
     [SerializeField] private bool _droppable;
     [SerializeField] private bool _sellable;
-    private int[] _setsThings;
+    private ItemSets[] _setsThings;
 
     public int Id { get { return _id; } set { _id = value; } }
     public string Name { get { return _name; } set { _name = value; } }
@@ -21,24 +23,37 @@ public class ItemName {
     public bool Destructible { get { return _destructible; } set { _destructible = value; } }
     public bool Droppable { get { return _droppable; } set { _droppable = value; } }
     public bool Sellable { get { return _sellable; } set { _sellable = value; } }
+
+    private List<ItemName> items = new List<ItemName>();
     public ItemName[] GetSetsName()
     {
-        ItemName[] items = null;
+        items.Clear();
 
-        if (_setsThings != null)
+        if (_setsThings == null) return null;
+
+        foreach (ItemSets setItem in _setsThings)
         {
-            items = new ItemName[_setsThings.Length];
-            for (int i = 0; i < _setsThings.Length; i++)
+            if (setItem != null & setItem.GetArrayId().Length > 0)
             {
-                int id = _setsThings[i];
-                items[i] = ItemNameTable.Instance.GetItemName(id);
+                int[] array = setItem.GetArrayId();
+
+                for (int i = 0; i < array.Length; i++)
+                {
+                    int id = array[i];
+                    items.Add(ItemNameTable.Instance.GetItemName(id));
+                }
             }
         }
 
-        return items;
+        return items.ToArray();
     }
 
-    public void SetSets(int[] sets)
+    public ItemSets[] GetSetsEffect()
+    {
+        return _setsThings;
+    }
+
+    public void SetSets(ItemSets[] sets)
     {
         if(sets != null)
         {
@@ -46,4 +61,27 @@ public class ItemName {
         }
         
     }
+}
+
+public class ItemSets
+{
+
+    private int[] _id;
+    private string _description;
+    public ItemSets(int[] id , string description)
+    {
+        _id = id;
+        _description = description;
+    }
+
+    public int[] GetArrayId()
+    {
+        return _id;
+    }
+
+    public string GetDescription()
+    {
+        return _description;
+    }
+
 }

@@ -6940,7 +6940,7 @@
 353	Half Plate Armor		a,	-1	a,	a,	a,	a,	0	0	0	a,
 354	Chain Mail Shirt		a,	-1	a,354,381,2413\0	a,P. Def against dagger +6%.\0	a,2495\0	a,Maximum HP +198.\0	0	0	6	a,When all set items are enchanted by 6 or higher, P. Def. and MP regeneration rate will increase.\0
 355	Dwarven Chain Mail Shirt		a,	-1	a,	a,	a,	a,	0	0	0	a,
-356	Full Plate Armor		a,Full body armor.\0	-1	a,2414\0	a,Maximum HP +270.\0	a,2497\0	a,Shield Def +5.26%.\0	0	0	6	a,When all set items are enchanted by 6 or higher, P. Def. and MP regeneration rate will increase.\0
+356	Full Plate Armor		a,Full body armor.\0	-1	a,356,2414\0	a,Maximum HP +270.\0	a,2497\0	a,Shield Def +5.26%.\0	0	0	6	a,When all set items are enchanted by 6 or higher, P. Def. and MP regeneration rate will increase.\0
 357	Zubei's Breastplate		a,	-1	a,357,383,503,5710,5726\0	a,P. Def. +5.26% and maximum HP +294.\0	a,	a,	0	0	6	a,When all set items are enchanted by 6 or higher, P. Def. and MP regeneration rate will increase.\0
 358	Blue Wolf Breastplate		a,	-1	a,358,2380,2416,5718,5734\0	a,Speed +7, and HP recovery rate +5.24%, STR+3, CON-1, and DEX-2.\0	a,	a,	0	0	6	a,When all set items are enchanted by 6 or higher, P. Def. and MP regeneration rate will increase.\0
 359	Shining Dragon Armor		a,	-1	a,	a,	a,	a,	0	0	0	a,

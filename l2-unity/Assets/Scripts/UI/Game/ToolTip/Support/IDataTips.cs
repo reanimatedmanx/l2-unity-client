@@ -8,6 +8,8 @@ public interface IDataTips
     string GetItemDiscription();
 
     ItemName[] GetSets();
+
+    ItemSets[] GetSetsEffect();
     string GetIcon();
 
     Texture2D GetGradeTexture();

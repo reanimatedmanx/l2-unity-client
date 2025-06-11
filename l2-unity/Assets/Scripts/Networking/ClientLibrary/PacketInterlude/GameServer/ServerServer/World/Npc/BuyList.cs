@@ -322,6 +322,12 @@ public class Product
         return item.GetSetsName();
     }
 
+    public ItemSets[] GetSetsEffects()
+    {
+        ItemName item = ItemNameTable.Instance.GetItemName(_itemId);
+        return item.GetSetsEffect();
+    }
+
     public override bool Equals(object obj)
     {
         if (obj == null || GetType() != obj.GetType())
