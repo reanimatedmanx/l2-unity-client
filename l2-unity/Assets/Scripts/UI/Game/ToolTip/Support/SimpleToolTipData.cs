@@ -87,6 +87,16 @@ public class SimpleToolTipData : IDataTips
 
     }
 
+    public string GetPrice()
+    {
+        if(_product != null)
+        {
+            return _product.Price.ToString();
+        }
+
+        return "0";
+    }
+
     public string GetDiscription()
     {
         return _description;

@@ -21,13 +21,14 @@ public class TooltipDataProvider : AbstractDataProvider
                 Product product = (Product)item;
                 Weapongrp weapon = product.GetWeapon();
                 IDataTips text = ToolTipManager.GetInstance().GetProductText(product);
-                SetDataWeaponInTemplate(container, weapon, text);
+                int price = int.Parse(text.GetPrice());
+                SetDataWeaponInTemplate(container, weapon, price, text);
             }else if (item.GetType() == typeof(ItemInstance))
             {
                 ItemInstance item_inventory = (ItemInstance)item;
                 Weapongrp weapon = item_inventory.GetWeapon();
                 IDataTips text = ToolTipManager.GetInstance().GetProductText(item_inventory);
-                SetDataWeaponInTemplate(container, weapon, text);
+                SetDataWeaponInTemplate(container, weapon, 0 , text);
             }
         }
 
@@ -56,51 +57,27 @@ public class TooltipDataProvider : AbstractDataProvider
         }
     }
 
-    public void AddDataOther(TemplateContainer container, Product product)
+    public void AddDataOther(TemplateContainer container, object item)
     {
-        if (product != null)
+        if (item != null)
         {
-            
-            EtcItemgrp etcItem = product.GetEtcItem();
-
-            IDataTips text = ToolTipManager.GetInstance().GetProductText(product);
-
-            container.Q<Label>("nameAccessories").text = text.GetName();
-
-            //set icon
-            VisualElement groupBoxIcon = container.Q<VisualElement>("GrowIcon");
-            VisualElement icon = container.Q<VisualElement>("icon");
-            Texture2D texture = IconManager.Instance.LoadTextureByName(etcItem.Icon);
-            AddElementIfNotNull(groupBoxIcon, icon, texture);
-
-            Label mpLabel = container.Q<Label>("mpLabel");
-            VisualElement mpGroup = container.Q<VisualElement>("mpText");
-            AddElementIfNot0(mpGroup, mpLabel, 0);
-
-            //set price
-            Label price = (Label)container.Q<Label>("priceLabel");
-            //price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
-            price.text = ToolTipsUtils.ConvertToPrice(product.Price) + " Adena";
-
-
-            VisualElement groupBoxMdef = (VisualElement)container.Q<VisualElement>("mdeText");
-            Label lebelMdef = (Label)container.Q<Label>("mdefLabel");
-
-            //set mdef
-            AddElementIfNot0(groupBoxMdef, lebelMdef, 0);
-
-            //set type
-            VisualElement groupTypeLabel = container.Q<VisualElement>("SettingType");
-            Label typeLabel = container.Q<Label>("typeLabel");
-            AddElementIfNotEmpty(groupTypeLabel, typeLabel, product.GetTypeAccessoriesName());
-
-            VisualElement groupBoxWeight = container.Q<VisualElement>("weightText");
-            Label weightLabel = container.Q<Label>("weightlabel");
-            AddElementIfNotEmpty(groupBoxWeight, weightLabel, etcItem.Weight.ToString());
-            
-            container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
-
+            if (item.GetType() == typeof(Product))
+            {
+                Product product = (Product)item;
+                EtcItemgrp etcItem = product.GetEtcItem();
+                IDataTips text = ToolTipManager.GetInstance().GetProductText(product);
+                int price = int.Parse(text.GetPrice());
+                SetOther(container, text, etcItem.Icon, price, product.GetTypeAccessoriesName(), etcItem.Weight.ToString());
+            }
+            else if (item.GetType() == typeof(ItemInstance))
+            {
+                ItemInstance item_inventory = (ItemInstance)item;
+                EtcItemgrp etcItem = item_inventory.GetEtcItem();
+                IDataTips text = ToolTipManager.GetInstance().GetProductText(item_inventory);
+                SetOther(container, text, etcItem.Icon, 0, item_inventory.GetTypeAccessoriesName(), etcItem.Weight.ToString());
+            }
         }
+        
     }
 
 
@@ -112,20 +89,9 @@ public class TooltipDataProvider : AbstractDataProvider
             int price = 0;
             string armorTypeName = "";
 
-            if (item.GetType() == typeof(Product))
-            {
-                Product product = (Product)item;
-                price = product.Price;
-                armorTypeName = product.GetTypeArmorName();
-                data = product.GetOAbstractItem();
-            }
-            else if (item.GetType() == typeof(ItemInstance))
-            {
-                ItemInstance itemInstance = (ItemInstance)item;
-                armorTypeName = itemInstance.GetTypeArmorName();
-                data = itemInstance.GetOAbstractItem();
-            }
-                
+            SetDataInfo(item, ref price, ref armorTypeName, ref data);
+
+
 
             if (data != null)
             {
@@ -143,15 +109,49 @@ public class TooltipDataProvider : AbstractDataProvider
                 else if (data.GetType() == typeof(Weapongrp))
                 {
 
-                    Weapongrp armor = (Weapongrp)data;
-                    if (armor.WeaponType == WeaponType.shield)
+                    Weapongrp weapon = (Weapongrp)data;
+                    if (weapon.WeaponType == WeaponType.shield)
                     {
-                        AddArmorShield(container, price, armorTypeName, text, armor);
+                        armorTypeName = GetWeaponTypeName(item);
+                        AddArmorShield(container, price, armorTypeName, text, weapon);
                     }
 
                 }
             }
         }
+    }
+
+    private void  SetDataInfo(object item , ref int price , ref string armorTypeName , ref Abstractgrp data)
+    {
+        if (item.GetType() == typeof(Product))
+        {
+            Product product = (Product)item;
+            price = product.Price;
+            armorTypeName = product.GetTypeArmorName();
+            data = product.GetOAbstractItem();
+        }
+        else if (item.GetType() == typeof(ItemInstance))
+        {
+            ItemInstance itemInstance = (ItemInstance)item;
+            armorTypeName = itemInstance.GetTypeArmorName();
+            data = itemInstance.GetOAbstractItem();
+        }
+    }
+
+    private string GetWeaponTypeName(object item)
+    {
+        if (item.GetType() == typeof(Product))
+        {
+            Product product = (Product)item;
+            return product.GetTypeWeaponName();
+        }
+        else if (item.GetType() == typeof(ItemInstance))
+        {
+            ItemInstance itemInstance = (ItemInstance)item;
+            return itemInstance.GetTypeWeaponName();
+        }
+
+        return "";
     }
 
     

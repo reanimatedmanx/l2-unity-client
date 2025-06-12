@@ -144,7 +144,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 break;
             case ItemCategory.Item:
                 Debug.Log("Item");
-                //_dataProvider.AddDataOther(template, product);
+                _dataProvider.AddDataOther(template, item);
                 break;
             case ItemCategory.ShieldArmor:
                 Debug.Log("ShieldArmor");
@@ -525,13 +525,22 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
 
             _descriptedText.style.fontSize = 12;
             _nameText.style.paddingLeft = 0;
-            _descriptedText.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
+            _descriptedText.style.color = ToolTipsUtils.GetColorPrice(text.GetPrice());
 
             var icon = template.Q<VisualElement>(null, "Icon");
             var groubBoxIcon = template.Q<VisualElement>(null, "Grow");
 
             SetIcon(icon , groubBoxIcon , null);
-            SetDataTooTip(_nameText , _descriptedText , text.GetName(), "Price: " + ToolTipsUtils.ConvertToPrice(Int32.Parse(text.GetDiscription())) + " Adena");
+            string decription = text.GetPrice();
+            if (!string.IsNullOrEmpty(decription))
+            {
+                SetDataTooTip(_nameText, _descriptedText, text.GetName(), "Price: " + ToolTipsUtils.ConvertToPrice(Int32.Parse(decription)) + " Adena");
+            }
+            else
+            {
+                SetDataTooTip(_nameText, _descriptedText, text.GetName(), "");
+            }
+            
         }
         else
         {

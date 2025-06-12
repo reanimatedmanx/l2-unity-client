@@ -5,6 +5,8 @@ public interface IDataTips
     string GetName();
     string GetDiscription();
 
+    string GetPrice();
+
     string GetItemDiscription();
 
     ItemName[] GetSets();

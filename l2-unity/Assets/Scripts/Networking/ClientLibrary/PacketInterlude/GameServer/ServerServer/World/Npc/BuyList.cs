@@ -74,7 +74,7 @@ public enum EnumType2{
 }
 
 
-public class Product
+public class Product : AbstractServerItem
 {
     private int _itemType1;
     private int _objId;
@@ -113,6 +113,7 @@ public class Product
         _enchant = enchant;
         _price = price;
         _itemId = itemId;
+        SetItemId(itemId);
 
        // Debug.Log("item id " + _itemId + " count " + _count + " _itemType2 " + _itemType2 + " _itemType1" + _itemType1);
     }
@@ -142,29 +143,9 @@ public class Product
         return 0;
     }
 
-    public Abstractgrp GetOAbstractItem()
-    {
-         var armor =  GetArmor();
-         var weapon = GetWeapon();
-         if (armor != null) return armor;
-         if (weapon != null) return weapon;
+   
 
-         return null;
-    }
-
-    public Armorgrp GetArmor()
-    {
-        return ArmorgrpTable.Instance.GetArmor(_itemId);
-    }
-    public Weapongrp GetWeapon()
-    {
-        return WeapongrpTable.Instance.GetWeapon(_itemId);
-    }
-
-    public EtcItemgrp GetEtcItem()
-    {
-        return EtcItemgrpTable.Instance.GetEtcItem(_itemId);
-    }
+   
 
     public EnumType2 GetTypeItem()
     {
@@ -224,110 +205,12 @@ public class Product
         return "";
     }
 
-    public string GetTypeAccessoriesName()
-    {
-        Armorgrp armor = ArmorgrpTable.Instance.GetArmor(_itemId);
-
-        if(armor != null)
-        {
-            if (armor.BodyPart == ItemSlot.neck)
-            {
-                return "Necklace";
-            }
-            else if (armor.BodyPart == ItemSlot.rear | armor.BodyPart == ItemSlot.lear)
-            {
-                return "Earring";
-            }
-            else if (armor.BodyPart == ItemSlot.rfinger | armor.BodyPart == ItemSlot.lfinger)
-            {
-                return "Ring";
-            }
-        }
-     
-
-        return "";
-    }
-
-    public string GetTypeWeaponName()
-    {
-        Weapongrp weapon = WeapongrpTable.Instance.GetWeapon(_itemId);
-
-        if (weapon != null)
-        {
-            if (weapon.BodyPart == ItemSlot.lhand_shield)
-            {
-                return "Shield";
-            }
-        }
+   
 
 
-        return "";
-    }
+   
 
-
-    public string GetTypeArmorName()
-    {
-        Armorgrp armor = ArmorgrpTable.Instance.GetArmor(_itemId);
-        Debug.Log("Body part test > " + armor.BodyPart);
-        if (armor != null)
-        {
-            if (armor.BodyPart == ItemSlot.legs)
-            {
-                if(armor.ArmorType == ArmorType.light) return "Lower Body / Light";
-                if(armor.ArmorType == ArmorType.heavy) return "Lower Body / Heavy";
-
-            }
-            else if (armor.BodyPart == ItemSlot.chest)
-            {
-                if (armor.ArmorType == ArmorType.light) return "Upper Body / Light";
-                if (armor.ArmorType == ArmorType.heavy) return "Upper Body / Heavy";
-            }
-            else if (armor.BodyPart == ItemSlot.boots)
-            {
-                return "Boots";
-            }
-            else if (armor.BodyPart == ItemSlot.feet)
-            {
-                return "Boots";
-            }
-            else if (armor.BodyPart == ItemSlot.head)
-            {
-                return "Helmet";
-            }
-            else if (armor.BodyPart == ItemSlot.gloves)
-            {
-                return "Gloves";
-            }
-        }
-
-
-        return "";
-    }
-
-    public string GetDescription()
-    {
-        return _price.ToString();
-    }
-
-    public string GetItemDescription()
-    {
-        ItemName item = ItemNameTable.Instance.GetItemName(_itemId);
-        if (string.IsNullOrEmpty(item.Description)) return "Not Found description";
-        return item.Description;
-    }
-
-    public ItemName[] GetSets()
-    {
-        ItemName item = ItemNameTable.Instance.GetItemName(_itemId);
-        return item.GetSetsName();
-    }
-
-    public ItemSets[] GetSetsEffects()
-    {
-        ItemName item = ItemNameTable.Instance.GetItemName(_itemId);
-        return item.GetSetsEffect();
-    }
-
+    
     public override bool Equals(object obj)
     {
         if (obj == null || GetType() != obj.GetType())
@@ -337,12 +220,7 @@ public class Product
         return  other.ItemId == _itemId && other.ObjId == _objId;
     }
 
-    public ConsumeCategory GetConsumeCategory()
-    {
-        EtcItemgrp etcgrp = EtcItemgrpTable.Instance.GetEtcItem(ItemId);
-        if (etcgrp != null) return etcgrp.ConsumeType;
-        return ConsumeCategory.Normal;
-    }
+
 
     public override int GetHashCode()
     {

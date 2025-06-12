@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEditor.Progress;
 
-public class ItemInstance
+public class ItemInstance : AbstractServerItem
 {
     [SerializeField] AbstractItem _itemData;
     [SerializeField] private int _objectId;
@@ -34,6 +34,7 @@ public class ItemInstance
     {
         _objectId = objectId;
         _itemId = itemId;
+        SetItemId(itemId);
         _location = location;
         _slot = slot;
         _count = count;
@@ -97,13 +98,13 @@ public class ItemInstance
 
     public override bool Equals(object obj)
     {
-        // Проверяем, является ли объект тем же самым экземпляром
+
         if (ReferenceEquals(this, obj)) return true;
 
-        // Проверяем, является ли объект того же типа
+
         if (obj is ItemInstance other)
         {
-            // Сравниваем ключевые поля для определения равенства
+
             return _objectId == other._objectId && _itemId == other._itemId;
         }
 
@@ -260,115 +261,8 @@ public class ItemInstance
     }
 
 
-    public Armorgrp GetArmor()
-    {
-        return ArmorgrpTable.Instance.GetArmor(_itemId);
-    }
-    public Weapongrp GetWeapon()
-    {
-        return WeapongrpTable.Instance.GetWeapon(_itemId);
-    }
 
 
-    public string GetDescription()
-    {
-        return "";
-    }
-
-    public string GetTypeAccessoriesName()
-    {
-        Armorgrp armor = ArmorgrpTable.Instance.GetArmor(_itemId);
-
-        if(armor != null)
-        {
-            if (armor.BodyPart == ItemSlot.neck)
-            {
-                return "Necklace";
-            }
-            else if (armor.BodyPart == ItemSlot.rear | armor.BodyPart == ItemSlot.lear)
-            {
-                return "Earring";
-            }
-            else if (armor.BodyPart == ItemSlot.rfinger | armor.BodyPart == ItemSlot.lfinger)
-            {
-                return "Ring";
-            }
-        }
-     
-
-        return "";
-    }
-
-    public Abstractgrp GetOAbstractItem()
-    {
-        var armor = GetArmor();
-        var weapon = GetWeapon();
-        if (armor != null) return armor;
-        if (weapon != null) return weapon;
-
-        return null;
-    }
-
-    public string GetItemDescription()
-    {
-        ItemName item = ItemNameTable.Instance.GetItemName(_itemId);
-        if (string.IsNullOrEmpty(item.Description)) return "Not Found description";
-        return item.Description;
-    }
-
-    public ItemName[] GetSets()
-    {
-        ItemName item = ItemNameTable.Instance.GetItemName(_itemId);
-        return item.GetSetsName();
-    }
-
-    public ItemSets[] GetSetsEffects()
-    {
-        ItemName item = ItemNameTable.Instance.GetItemName(_itemId);
-        return item.GetSetsEffect();
-    }
-
-    public string GetTypeArmorName()
-    {
-        Armorgrp armor = ArmorgrpTable.Instance.GetArmor(_itemId);
-        Debug.Log("Body part test > " + armor.BodyPart);
-        if (armor != null)
-        {
-            if (armor.BodyPart == ItemSlot.legs)
-            {
-                if (armor.ArmorType == ArmorType.light) return "Lower Body / Light";
-                if (armor.ArmorType == ArmorType.heavy) return "Lower Body / Heavy";
-
-            }
-            else if (armor.BodyPart == ItemSlot.chest)
-            {
-                if (armor.ArmorType == ArmorType.light) return "Upper Body / Light";
-                if (armor.ArmorType == ArmorType.heavy) return "Upper Body / Heavy";
-            }
-            else if (armor.BodyPart == ItemSlot.boots)
-            {
-                return "Boots";
-            }
-            else if (armor.BodyPart == ItemSlot.feet)
-            {
-                return "Boots";
-            }
-            else if (armor.BodyPart == ItemSlot.head)
-            {
-                return "Helmet";
-            }
-            else if (armor.BodyPart == ItemSlot.fullarmor)
-            {
-                return "Fullbody / Heavy";
-            }
-            else if (armor.BodyPart == ItemSlot.gloves)
-            {
-                return "Gloves";
-            }
-        }
-
-
-        return "";
-    }
+   
 
 }

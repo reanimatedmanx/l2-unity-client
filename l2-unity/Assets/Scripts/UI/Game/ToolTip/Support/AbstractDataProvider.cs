@@ -1,31 +1,81 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using static UnityEditor.Rendering.FilterWindow;
 
 public abstract class AbstractDataProvider
 {
 
-    protected void SetDataWeaponInTemplate(TemplateContainer container, Weapongrp weapon, IDataTips text)
+    protected void SetDataWeaponInTemplate(TemplateContainer container, Weapongrp weapon, int price , IDataTips text)
     {
         container.Q<Label>("nameWeapon").text = text.GetName();
 
         if (ItemGrade.none != weapon.Grade)
         {
+            var groupBoxGrade = container.Q<VisualElement>("typeTextS1");
             var gradeWeapon = container.Q<Label>("gradeWeapon");
-            gradeWeapon.text = ItemGradeParser.Converter(weapon.Grade);
+
+            AddElementIfNotEmpty(groupBoxGrade, gradeWeapon, ItemGradeParser.Converter(weapon.Grade));
+
         }
 
-        container.Q<Label>("typeWeapon").text = WeaponTypeParser.WeaponTypeName(weapon.WeaponType);
-        container.Q<Label>("physLabel").text = weapon.PAtk.ToString();
-        container.Q<Label>("magLabel").text = weapon.Matk.ToString();
-        container.Q<Label>("spdLabel").text = weapon.GetSpeedName();
-        container.Q<Label>("critLabel").text = weapon.CriticalRate.ToString();
-        container.Q<Label>("soullabel").text = "X" + weapon.Soulshot.ToString();
-        container.Q<Label>("spiritlabel").text = "X" + weapon.Spiritshot.ToString();
-        container.Q<Label>("weightlabel").text = weapon.Weight.ToString();
-        container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
+        VisualElement groupPriceLabel = container.Q<VisualElement>("PriceName");
+        Label priceLabel = (Label)container.Q<Label>("priceLabel");
+        AddElementPriceifNot0(groupPriceLabel, priceLabel, price);
+
+        VisualElement groupType = container.Q<VisualElement>("SettingType");
+        Label typeWeapon = container.Q<Label>("typeWeapon");
+        AddElementIfNotEmpty(groupType, typeWeapon, WeaponTypeParser.WeaponTypeName(weapon.WeaponType));
+
+
+
+
+        VisualElement groupPhys = container.Q<VisualElement>("phisAtkText");
+        Label physLabel = container.Q<Label>("physLabel");
+        AddElementIfNotEmpty(groupPhys, physLabel, weapon.PAtk.ToString());
+
+        VisualElement groupMag = container.Q<VisualElement>("magAtkText");
+        Label magLabel = container.Q<Label>("magLabel");
+        AddElementIfNotEmpty(groupMag, magLabel, weapon.Matk.ToString());
+
+
+
+        VisualElement groupSpd = container.Q<VisualElement>("speedText");
+        Label spdLabel = container.Q<Label>("spdLabel");
+        AddElementIfNotEmpty(groupSpd, spdLabel, weapon.GetSpeedName());
+
+
+
+        VisualElement groupCrit = container.Q<VisualElement>("critText");
+        Label critLabel = container.Q<Label>("critLabel");
+        AddElementIfNotEmpty(groupCrit, critLabel, weapon.CriticalRate.ToString());
+
+
+
+        VisualElement groupSoul = container.Q<VisualElement>("soulText");
+        Label soulLabel = container.Q<Label>("soullabel");
+        AddElementIfNotEmpty(groupSoul, soulLabel, "X" + weapon.Soulshot.ToString());
+
+
+
+        VisualElement groupSpirit = container.Q<VisualElement>("spiritText");
+        Label spiritLabel = container.Q<Label>("spiritlabel");
+        AddElementIfNotEmpty(groupSpirit, spiritLabel, "X" + weapon.Spiritshot.ToString());
+
+
+        VisualElement groupWeight = container.Q<VisualElement>("weightText");
+        Label weightLabel = container.Q<Label>("weightlabel");
+        AddElementIfNotEmpty(groupWeight, weightLabel, weapon.Weight.ToString());
+
+
+        VisualElement groupDescr = container.Q<VisualElement>("descriptedText");
+        Label descrLabel = container.Q<Label>("descriptedLabel");
+        AddElementIfNotEmpty(groupDescr, descrLabel, text.GetItemDiscription());
+
+
+        VisualElement groupIcon = container.Q<VisualElement>("GrowIcon");
         var icon = container.Q<VisualElement>("icon");
-        icon.style.backgroundImage = IconManager.Instance.LoadTextureByName(weapon.Icon);
+        AddElementIfNotNull(groupIcon, icon, IconManager.Instance.LoadTextureByName(weapon.Icon));
     }
 
 
@@ -75,6 +125,48 @@ public abstract class AbstractDataProvider
         container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
     }
 
+
+    protected void SetOther(TemplateContainer container , IDataTips text , string etcIcon , int priceItem ,  string accessoriesName , string weight)
+    {
+     
+            container.Q<Label>("nameAccessories").text = text.GetName();
+
+            //set icon
+            VisualElement groupBoxIcon = container.Q<VisualElement>("GrowIcon");
+            VisualElement icon = container.Q<VisualElement>("icon");
+            Texture2D texture = IconManager.Instance.LoadTextureByName(etcIcon);
+            AddElementIfNotNull(groupBoxIcon, icon, texture);
+
+            Label mpLabel = container.Q<Label>("mpLabel");
+            VisualElement mpGroup = container.Q<VisualElement>("mpText");
+            AddElementIfNot0(mpGroup, mpLabel, 0);
+
+            Label groupPriceLabel = (Label)container.Q<Label>("PriceName");
+            Label priceLabel = (Label)container.Q<Label>("priceLabel");
+            AddElementPriceifNot0(groupPriceLabel, priceLabel, priceItem);
+            //price.style.color = ToolTipsUtils.GetColorPrice(text.GetDiscription());
+            //price.text = ToolTipsUtils.ConvertToPrice(priceItem) + " Adena";
+
+
+        VisualElement groupBoxMdef = (VisualElement)container.Q<VisualElement>("mdeText");
+            Label lebelMdef = (Label)container.Q<Label>("mdefLabel");
+
+            //set mdef
+            AddElementIfNot0(groupBoxMdef, lebelMdef, 0);
+
+            //set type
+            VisualElement groupTypeLabel = container.Q<VisualElement>("SettingType");
+            Label typeLabel = container.Q<Label>("typeLabel");
+            AddElementIfNotEmpty(groupTypeLabel, typeLabel, accessoriesName);
+
+            VisualElement groupBoxWeight = container.Q<VisualElement>("weightText");
+            Label weightLabel = container.Q<Label>("weightlabel");
+            AddElementIfNotEmpty(groupBoxWeight, weightLabel, weight);
+
+            container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
+
+        
+    }
 
     protected void AddArmor(TemplateContainer container, int price, string armorTypeName ,  IDataTips text, Armorgrp armor, VisualTreeAsset setsElements, VisualTreeAsset setsEffects, CreatorSets creator)
     {
