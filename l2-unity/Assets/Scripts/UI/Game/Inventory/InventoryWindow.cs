@@ -430,8 +430,8 @@ public class InventoryWindow : L2PopupWindow
                 _gearTab.ModifiedReplace(source_item_slot.ItemInstance);
             }
 
-            Debug.Log("GearItem source " + source.ItemId);
-            Debug.Log("GearItem " + gearItem.ItemId);
+            //Debug.Log("GearItem source " + source.ItemId);
+            //Debug.Log("GearItem " + gearItem.ItemId);
 
             if(gearItem != null & source_item_slot != null)
             {
@@ -495,8 +495,18 @@ public class InventoryWindow : L2PopupWindow
 
     public ItemInstance GetItemByPosition(int position)
     {
-       return  _tabs[0].GetInventorySlotByPosition(position);
+        if(_activeTab != null)
+        {
+            return _activeTab.GetInventorySlotByPosition(position);
+        }
+
+        return null;
     }
 
- 
+    public GearItem GetGearPosition(int position)
+    {
+       return _gearTab.ConvertIdToGearType(position);
+    }
+
+
 }

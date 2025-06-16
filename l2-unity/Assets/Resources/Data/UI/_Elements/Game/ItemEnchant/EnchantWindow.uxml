@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Template name="WindowTemplate" src="project://database/Assets/Resources/Data/UI/_Elements/Template/WindowTemplate.uxml?fileID=9197481963319205126&amp;guid=57919e48a99c2de4787ca2b8810527ea&amp;type=3#WindowTemplate" />
+    <Style src="project://database/Assets/Resources/Data/UI/_Elements/L2StyleSheet.uss?fileID=7433441132597879392&amp;guid=72e99cc94b130bf4ba100dceaa830b13&amp;type=3#L2StyleSheet" />
+    <ui:Instance name="WindowTemplate" template="WindowTemplate" style="overflow: hidden; width: 374px; height: 265px; bottom: 0; position: absolute; max-width: 374px; max-height: none;">
+        <AttributeOverrides element-name="windows-name-label" text="HtmlWindowTitle" />
+        <ui:GroupBox name="content" style="margin-top: 43px; margin-right: 0; margin-bottom: 0; margin-left: 5px; padding-top: 0; padding-bottom: 0; position: absolute; height: 170px; width: 280px; align-items: center; justify-content: center; align-self: center;">
+            <ui:GroupBox style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0;" />
+        </ui:GroupBox>
+    </ui:Instance>
+</ui:UXML>

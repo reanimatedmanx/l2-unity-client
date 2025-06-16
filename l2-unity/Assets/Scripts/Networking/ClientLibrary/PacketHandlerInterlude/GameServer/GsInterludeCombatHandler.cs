@@ -53,6 +53,9 @@ public class GsInterludeCombatHandler : ServerPacketHandler
             case GSInterludeCombatPacketType.ItemList:
                 OnCharItemList(itemQueue.DecodeData());
                 break;
+            case GSInterludeCombatPacketType.ChooseInventoryItem:
+                OnChooseInventoryItem(itemQueue.DecodeData());
+                break;
 
         }
 
@@ -79,7 +82,7 @@ public class GsInterludeCombatHandler : ServerPacketHandler
             //{
 
             //}, null);
-            Debug.Log("Пришел пакет IntelList");
+            //Debug.Log("Пришел пакет IntelList");
             PlayerInventory.Instance.SetInventory(_items, itemList.EquipItems, showWindow, itemList.AdenaCount , itemList.Items.Count + itemList.EquipItems.Count);
 
             
@@ -89,13 +92,25 @@ public class GsInterludeCombatHandler : ServerPacketHandler
 
     private void OnInventoryUpdate(byte[] data)
     {
-        Debug.Log(" Inventory Update Server Get ");
+        //Debug.Log(" Inventory Update Server Get ");
         if (!InitPacketsLoadWord.getInstance().IsInit)
         {
             InventoryUpdate packet = new InventoryUpdate(data);
             PlayerInventory.Instance.UpdateInventory(packet.Items, packet.EquipItems);
         }
   
+    }
+
+    private void OnChooseInventoryItem(byte[] data)
+    {
+        if (!InitPacketsLoadWord.getInstance().IsInit)
+        {
+            ChooseInventoryItem packet = new ChooseInventoryItem(data);
+            EventProcessor.Instance.QueueEvent(() => {
+                EnchantWindow.Instance.ShowWindow();
+            });
+        }
+
     }
 
 

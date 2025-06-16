@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
@@ -89,8 +90,11 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             int type = Int32.Parse(ids[1]);
 
             object data = GetDataClickLeft(type, position);
-            AddData(data, template);
 
+            if(data != null)
+            {
+                AddData(data, template);
+            }
         }
 
         
@@ -265,82 +269,240 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         }
     }
 
-    private TemplateContainer SwitchToolTip(string[] ids , bool isClickLeft)
+    private TemplateContainer SwitchToolTip(string[] ids, bool isClickLeft)
     {
         int position = Int32.Parse(ids[0]);
         int type = Int32.Parse(ids[1]);
 
         if (isClickLeft)
         {
-            if (type == (int)SlotType.PriceSell)
+            switch (type)
             {
-               Product product =  ToolTipManager.GetInstance().FindProductInSellList(position);
-                if(product != null)
-                {
-                    switch (product.GetTypeItem())
+                case (int)SlotType.PriceSell:
+                    Product productSell = ToolTipManager.GetInstance().FindProductInSellList(position);
+                    if (productSell != null)
                     {
-                        case EnumType2.TYPE2_WEAPON:
-                            return SwitchToWeapon();
-                        case EnumType2.TYPE2_ACCESSORY:
-                            return SwitchToAccessories();
-                        case EnumType2.TYPE2_OTHER:
-                            return SwitchToAccessories();
-                        case EnumType2.TYPE2_SHIELD_ARMOR:
-                            return SwitchToArmor();
+                        return GetProductContainer(productSell);
                     }
-                }
+                    break;
 
-            }else if (type == (int)SlotType.PriceBuy)
-            {
-                Product product = ToolTipManager.GetInstance().FindProductInBuyList(position);
-                if(product != null)
-                {
-                    switch (product.GetTypeItem())
+                case (int)SlotType.PriceBuy:
+                    Product productBuy = ToolTipManager.GetInstance().FindProductInBuyList(position);
+                    if (productBuy != null)
                     {
-                        case EnumType2.TYPE2_WEAPON:
-                            return SwitchToWeapon();
-                        case EnumType2.TYPE2_ACCESSORY:
-                            return SwitchToAccessories();
-                        case EnumType2.TYPE2_OTHER:
-                            return SwitchToAccessories();
-                        case EnumType2.TYPE2_SHIELD_ARMOR:
-                            return SwitchToArmor();
+                        return GetProductContainer(productBuy);
                     }
-                }
-  
-            }
-            else if (type == (int)SlotType.Inventory)
-            {
-                ItemInstance item = InventoryWindow.Instance.GetItemByPosition(position);
-                if (item != null)
-                {
-                    switch (item.Category)
+                    break;
+
+                case (int)SlotType.Inventory:
+                    ItemInstance item = InventoryWindow.Instance.GetItemByPosition(position);
+                    if (item != null)
                     {
-                        case ItemCategory.Weapon:
-                            return SwitchToWeapon();
-                        case ItemCategory.Jewel:
-                            return SwitchToAccessories();
-                        case ItemCategory.Item:
-                            return SwitchToAccessories();
-                        case ItemCategory.ShieldArmor:
-                            return SwitchToArmor();
+                        return GetInventoryContainer(item);
                     }
-                }
+                    break;
+                case (int)SlotType.Gear:
+ 
+                    GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
+                    return GetGearContainer(gearItem);
+                    //break;
             }
         }
         else
         {
-            if (type == (int)SlotType.PriceSell | type == (int)SlotType.PriceBuy)
+            switch (type)
             {
-                return SwitchToSimple();
-            }else if (type == (int)SlotType.Inventory)
-            {
-                return SwitchToString();
+                case (int)SlotType.PriceSell:
+                case (int)SlotType.PriceBuy:
+                    return SwitchToSimple();
+
+                case (int)SlotType.Inventory:
+                    return SwitchToString();
+                case (int)SlotType.Gear:
+                    GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
+                    return GetGearStringContainer(gearItem);
             }
         }
 
         return null;
     }
+
+    private TemplateContainer GetProductContainer(Product product)
+    {
+        switch (product.GetTypeItem())
+        {
+            case EnumType2.TYPE2_WEAPON:
+                return SwitchToWeapon();
+            case EnumType2.TYPE2_ACCESSORY:
+            case EnumType2.TYPE2_OTHER:
+                return SwitchToAccessories();
+            case EnumType2.TYPE2_SHIELD_ARMOR:
+                return SwitchToArmor();
+        }
+        return null;
+    }
+
+    private TemplateContainer GetInventoryContainer(ItemInstance item)
+    {
+        switch (item.Category)
+        {
+            case ItemCategory.Weapon:
+                return SwitchToWeapon();
+            case ItemCategory.Jewel:
+            case ItemCategory.Item:
+                return SwitchToAccessories();
+            case ItemCategory.ShieldArmor:
+                return SwitchToArmor();
+        }
+        return null;
+    }
+
+
+    private TemplateContainer GetGearContainer(GearItem gearItem)
+    {
+        if (gearItem != null && gearItem.GetItemId() != 0)
+        {
+            int objectId = gearItem.GetObjectId();
+
+            ItemInstance assignItem = PlayerInventory.Instance.GetItemEquip(objectId);
+
+            if (assignItem.BodyPart == ItemSlot.fullarmor)
+            {
+                if (gearItem.GetSlotType() != ItemSlot.legs)
+                {
+                    return GetInventoryContainer(assignItem);
+                }
+            }
+            else if (assignItem.BodyPart == ItemSlot.lrhand)
+            {
+                if (gearItem.GetSlotType() != ItemSlot.lhand)
+                {
+                    return GetInventoryContainer(assignItem);
+                }
+            }
+            else
+            {
+                return GetInventoryContainer(assignItem);
+            }
+
+        }
+
+        return null;
+    }
+
+    private TemplateContainer GetGearStringContainer(GearItem gearItem)
+    {
+        if (gearItem != null && gearItem.GetItemId() != 0)
+        {
+            int objectId = gearItem.GetObjectId();
+
+            ItemInstance assignItem = PlayerInventory.Instance.GetItemEquip(objectId);
+
+            if (assignItem.BodyPart == ItemSlot.fullarmor)
+            {
+                if (gearItem.GetSlotType() != ItemSlot.legs)
+                {
+                    return SwitchToString();
+                }
+            }
+            else if (assignItem.BodyPart == ItemSlot.lrhand)
+            {
+                if (gearItem.GetSlotType() != ItemSlot.lhand)
+                {
+                    return SwitchToString();
+                }
+            }
+            else
+            {
+                return SwitchToString();
+            }
+
+        }
+
+        return null;
+    }
+
+    //backup code for switch tooltip
+    // private TemplateContainer SwitchToolTip(string[] ids , bool isClickLeft)
+    //{
+    //int position = Int32.Parse(ids[0]);
+    //  int type = Int32.Parse(ids[1]);
+
+    //if (isClickLeft)
+    //{
+    //if (type == (int)SlotType.PriceSell)
+    //{
+    // Product product =  ToolTipManager.GetInstance().FindProductInSellList(position);
+    //if(product != null)
+    //{
+    // switch (product.GetTypeItem())
+    // {
+    // case EnumType2.TYPE2_WEAPON:
+    //  return SwitchToWeapon();
+    // case EnumType2.TYPE2_ACCESSORY:
+    //   return SwitchToAccessories();
+    // case EnumType2.TYPE2_OTHER:
+    //  return SwitchToAccessories();
+    //case EnumType2.TYPE2_SHIELD_ARMOR:
+    //    return SwitchToArmor();
+    // }
+    // }
+
+    // }else if (type == (int)SlotType.PriceBuy)
+    //{
+    //Product product = ToolTipManager.GetInstance().FindProductInBuyList(position);
+    //if(product != null)
+    // {
+    //switch (product.GetTypeItem())
+    //{
+    //case EnumType2.TYPE2_WEAPON:
+    //    return SwitchToWeapon();
+    // case EnumType2.TYPE2_ACCESSORY:
+    //   return SwitchToAccessories();
+    //case EnumType2.TYPE2_OTHER:
+    //  return SwitchToAccessories();
+    //case EnumType2.TYPE2_SHIELD_ARMOR:
+    //  return SwitchToArmor();
+    //}
+    //}
+
+    // }
+    // else if (type == (int)SlotType.Inventory)
+    //{
+    // ItemInstance item = InventoryWindow.Instance.GetItemByPosition(position);
+    // if (item != null)
+    /// {
+    // switch (item.Category)
+    // {
+    // case ItemCategory.Weapon:
+    //    return SwitchToWeapon();
+    // case ItemCategory.Jewel:
+    //    return SwitchToAccessories();
+    // case ItemCategory.Item:
+    //       return SwitchToAccessories();
+    //   case ItemCategory.ShieldArmor:
+    //       return SwitchToArmor();
+    //  }
+    // }
+    // }
+    // }
+    //else
+    // {
+    //if (type == (int)SlotType.PriceSell | type == (int)SlotType.PriceBuy)
+    // {
+    //     return SwitchToSimple();
+    // }else if (type == (int)SlotType.Inventory)
+    // {
+    //    return SwitchToString();
+    // }
+    // else if (type == (int)SlotType.Gear)
+    // {
+    //     return SwitchToString();
+    // }
+    // }
+
+    // return null;
+    //}
 
     public object GetDataClickLeft(int type , int position)
     {
@@ -356,7 +518,17 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             {
                 return InventoryWindow.Instance.GetItemByPosition(position);
             }
-        
+            else if (type == (int)SlotType.Gear)
+            {
+                GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
+
+                if (gearItem != null && gearItem.GetItemId() != 0)
+                {
+                    int objectId = gearItem.GetObjectId();
+                    return  PlayerInventory.Instance.GetItemEquip(objectId);
+                }
+            }
+
         return null;
     }
 
@@ -370,6 +542,8 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         return template;
     }
 
+  
+
     private TemplateContainer SwitchToString()
     {
         _content.Clear();
@@ -378,6 +552,12 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         _contentInside = template.Q<VisualElement>(className: "content");
         _contentInside.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
         return template;
+    }
+
+    private TemplateContainer GetStringContainerToGear(int position)
+    {
+        GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
+        return GetGearContainer(gearItem);
     }
 
     private TemplateContainer SwitchToWeapon()
@@ -487,31 +667,67 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
 
 
 
-    private void AddData(string[]ids , TemplateContainer template)
+    private void AddData(string[] ids, TemplateContainer template)
     {
         int position = Int32.Parse(ids[0]);
         int type = Int32.Parse(ids[1]);
 
-        if(type == (int)SlotType.PriceSell)
+        switch (type)
         {
-            Product product =  ToolTipManager.GetInstance().FindProductInSellList(position);
-            SetSimpleSingleToolTip(product , template);
+            case (int)SlotType.PriceSell:
+                Product productSell = ToolTipManager.GetInstance().FindProductInSellList(position);
+                SetSimpleSingleToolTip(productSell, template);
+                break;
 
-        }
-        else if (type == (int)SlotType.PriceBuy)
-        {
-            Product product = ToolTipManager.GetInstance().FindProductInBuyList(position);
-            SetSimpleSingleToolTip(product , template);
-        }
-        else if (type == (int)SlotType.Inventory)
-        {
-            ItemInstance itemInstance = InventoryWindow.Instance.GetItemByPosition(position);
-            SetSimpleItemSingleToolTip(itemInstance, template);
-        }
+            case (int)SlotType.PriceBuy:
+                Product productBuy = ToolTipManager.GetInstance().FindProductInBuyList(position);
+                SetSimpleSingleToolTip(productBuy, template);
+                break;
 
+            case (int)SlotType.Inventory:
+                ItemInstance itemInstance = InventoryWindow.Instance.GetItemByPosition(position);
+                SetSimpleItemSingleToolTip(itemInstance, template);
+                break;
+            case (int)SlotType.Gear:
+                GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
+
+                if (gearItem != null && gearItem.GetItemId() != 0)
+                {
+                    int objectId = gearItem.GetObjectId();
+
+                    ItemInstance assignItem = PlayerInventory.Instance.GetItemEquip(objectId);
+                    SetSimpleItemSingleToolTip(assignItem, template);
+                }
+                
+                break;
+        }
     }
 
-  
+    //private void AddData(string[]ids , TemplateContainer template)
+    //{
+    //int position = Int32.Parse(ids[0]);
+    //int type = Int32.Parse(ids[1]);
+
+    //if(type == (int)SlotType.PriceSell)
+    // {
+    //Product product =  ToolTipManager.GetInstance().FindProductInSellList(position);
+    //SetSimpleSingleToolTip(product , template);
+
+    //}
+    //else if (type == (int)SlotType.PriceBuy)
+    //{
+    //Product product = ToolTipManager.GetInstance().FindProductInBuyList(position);
+    //  SetSimpleSingleToolTip(product , template);
+    //}
+    //else if (type == (int)SlotType.Inventory)
+    //{
+    // ItemInstance itemInstance = InventoryWindow.Instance.GetItemByPosition(position);
+    // SetSimpleItemSingleToolTip(itemInstance, template);
+    //}
+
+    //}
+
+
 
 
 

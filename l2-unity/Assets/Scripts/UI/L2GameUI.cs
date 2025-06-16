@@ -146,6 +146,12 @@ public class L2GameUI : L2UI
             SystemMessageWindow.Instance.AddWindow(_rootVisualContainer);
             SystemMessageWindow.Instance.HideWindow();
         }
+
+        if (EnchantWindow.Instance != null)
+        {
+            EnchantWindow.Instance.AddWindow(_rootVisualContainer);
+            EnchantWindow.Instance.HideWindow();
+        }
     }
 
     public void EnableMouse()

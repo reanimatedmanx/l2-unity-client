@@ -89,16 +89,7 @@ public class InventoryTab : L2Tab
         return new InventorySlot(i, slotElement, this, slotType , false);
     }
 
-    private SlotType GetSlotType(bool mainTab)
-    {
-        SlotType slotType = SlotType.Inventory;
 
-        if (!mainTab)
-        {
-            slotType = SlotType.InventoryBis;
-        }
-        return slotType;
-    }
     //temporarily disabling
     private void UpdatePadSlots()
     {

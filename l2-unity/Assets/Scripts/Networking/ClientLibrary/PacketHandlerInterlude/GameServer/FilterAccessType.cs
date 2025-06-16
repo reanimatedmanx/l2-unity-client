@@ -178,6 +178,10 @@ public class FilterAccessType
         {
             return true;
         }
+        else if (type == GSInterludeCombatPacketType.ChooseInventoryItem)
+        {
+            return true;
+        }
         else if (type == GSInterludeCombatPacketType.MagicSkillLaunched)
         {
             return true;

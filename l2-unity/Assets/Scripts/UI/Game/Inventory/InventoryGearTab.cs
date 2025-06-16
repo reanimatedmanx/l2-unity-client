@@ -128,7 +128,7 @@ public class InventoryGearTab : L2Tab
    
     private void EquipItem(ItemInstance item)
     {
-        Debug.Log("Body part staff " + item.BodyPart);
+        //Debug.Log("Body part staff " + item.BodyPart);
         switch (item.BodyPart)
         {
             case ItemSlot.lrhand:
@@ -164,7 +164,43 @@ public class InventoryGearTab : L2Tab
     }
 
 
-  
+    public void GetGearToSlot(ItemInstance item)
+    {
+        //Debug.Log("Body part staff " + item.BodyPart);
+        switch (item.BodyPart)
+        {
+            case ItemSlot.lrhand:
+                _equip.LRHand(item);
+                break;
+
+            case ItemSlot.fullarmor:
+                _equip.FullArmor(item);
+                break;
+            case ItemSlot.lfinger:
+                _equip.LFinger(item);
+                break;
+
+            case ItemSlot.lear:
+                _equip.Lear(item);
+                break;
+            case ItemSlot.rhand:
+                _equip.RHand(item);
+                break;
+            case ItemSlot.lhand:
+                _equip.LHand(item);
+                break;
+            case ItemSlot.chest:
+                _equip.Chest(item);
+                break;
+            case ItemSlot.legs:
+                _equip.Legs(item);
+                break;
+            default:
+                _equip.DefaultAssign(item);
+                break;
+        }
+    }
+
 
 
     public void ModifiedRemove(ItemSlot bodyPart , ItemInstance item)
@@ -198,7 +234,7 @@ public class InventoryGearTab : L2Tab
     }
 
   
-    private GearItem ConvertIdToGearType(int slotPosition)
+    public GearItem ConvertIdToGearType(int slotPosition)
     {
         if (_gearCellIds.ContainsKey(slotPosition))
         {

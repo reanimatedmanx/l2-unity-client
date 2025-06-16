@@ -150,7 +150,7 @@ public class HtmlWindow : L2PopupWindow
             SendSenver(action);
         }
         
-        Debug.Log($"Вы нажали на Label с именем: {labelName}  , {action}");
+       // Debug.Log($"Вы нажали на Label с именем: {labelName}  , {action}");
     }
 
     public async Task SendSenver(string command )
