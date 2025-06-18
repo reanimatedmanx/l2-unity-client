@@ -63,7 +63,7 @@ public class GearSlot : InventorySlot
 
     public void RemoveBlackOverlay()
     {
-        PrintAllChildNames(_slotElement);
+
         var blackOverlay = _slotElement.Q<VisualElement>(_blackElementName);
 
         if (blackOverlay != null)
@@ -72,17 +72,7 @@ public class GearSlot : InventorySlot
         }
     }
 
-    private void PrintAllChildNames(VisualElement parent)
-    {
-        foreach (var child in parent.Children())
-        {
-            // Печатаем имя дочернего элемента
-            Debug.Log(child.name);
 
-            // Рекурсивно печатаем имена детей текущего дочернего элемента
-            PrintAllChildNames(child);
-        }
-    }
 
     public void AddBlackOverlay()
     {
