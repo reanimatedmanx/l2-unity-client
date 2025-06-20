@@ -9,7 +9,7 @@ public class IconManager
     private string _iconFolder = "Data\\SysTextures\\Icon";
     private string _cursorFolder = "Data\\UI\\Assets\\Cursor";
     private string _defaultNameIconBackground = "ItemWindow_DF_SlotBox_Default";
-    private string _defaultNameIconEnchant = "refineslot_item.png";
+
 
     private Texture2D _noImageIcon;
 
@@ -129,6 +129,21 @@ public class IconManager
         }
 
         Debug.LogWarning($"Missing icon: {name}.");
+
+        return _noImageIcon;
+    }
+
+    public Texture2D LoadTextureOtherSources(string href)
+    {
+        var result = Resources.Load<Texture2D>(href);
+
+        //Debug.Log($"Loading icon {name}.");
+        if (result != null)
+        {
+            return result;
+        }
+
+        Debug.LogWarning($"Missing texture: {href}.");
 
         return _noImageIcon;
     }

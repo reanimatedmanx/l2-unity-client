@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
@@ -18,8 +19,11 @@ public class EnchantWindow : L2PopupWindow
     private VisualElement _itemBox;
     private VisualElement _progressBar;
     private VisualElement _progressBarBg;
-    private int _startPosition1 = 0;
-    private int _startPosition2 = 66;
+    private VisualElement _animElement;
+    private List<Texture2D> _loadingAnimPng;
+    private bool _isStartAnim = false;
+    private bool _isRun = false;
+    public float _moveDuration = 1.5f;
 
     public static EnchantWindow Instance
     {
@@ -30,13 +34,15 @@ public class EnchantWindow : L2PopupWindow
         if (_instance == null)
         {
             _instance = this;
-
+            _loadingAnimPng = new List<Texture2D>();
+            CachTexture();
         }
         else
         {
             Destroy(this);
         }
     }
+
 
     protected override void LoadAssets()
     {
@@ -45,7 +51,15 @@ public class EnchantWindow : L2PopupWindow
         _inventorySlotChoiceTemplate = LoadAsset("Data/UI/_Elements/Template/SlotEnchantChoice");
     }
 
-
+    private void CachTexture()
+    {
+        List<string> list = EnchantListTextures.GetNameTexturesLoading();
+        
+        foreach (string href in list)
+        {
+            _loadingAnimPng.Add(IconManager.Instance.LoadTextureOtherSources(href));
+        }
+    }
     protected override IEnumerator BuildWindow(VisualElement root)
     {
         InitWindow(root);
@@ -64,6 +78,7 @@ public class EnchantWindow : L2PopupWindow
         var buttonStart = GetElementById("StartButton");
         _progressBar = GetElementById("ProgressGauge");
         _progressBarBg = GetElementById("ProgressBg");
+        _animElement = GetElementById("animelement");
         var footer = GetElementById("footer");
         RegisterCloseWindowEventByName("CancelButton");
         RegisterClickWindowEvent(_windowEle, dragArea);
@@ -109,44 +124,40 @@ public class EnchantWindow : L2PopupWindow
         return _inventorySlotChoiceTemplate.Instantiate()[0];
     }
 
-    private VisualElement CreateVisualElementDisabled()
-    {
-        VisualElement slotElement = CretaVisualElement();
-        slotElement.AddToClassList("inventory-slot");
-        slotElement.AddToClassList("disabled");
-        return slotElement;
-    }
     private EnchantSlot CreateEnchantSlot(int i, VisualElement slotElement, SlotType slotType)
     {
         return new EnchantSlot(i, slotElement, null, slotType, false);
     }
-    private bool isRun = false;
-    private void OnClick(ClickEvent evt)
+   
+    private async void OnClick(ClickEvent evt)
     {
-        StartCoroutine(DecreaseProgressBar());
-        float centerX = _itemBox.resolvedStyle.width / 2;
-        float centerY = _itemBox.resolvedStyle.height / 2;
-        if (!isRun)
+        if (!_isRun)
         {
-            isRun = true;
-            StartCoroutine(MoveElementsToCenter(_slot1, _slot2, centerX, centerY));
+            _isRun = true;
+            DecreaseProgressBar();
+            StartCoroutine(MoveElementsToCenter(_slot1, _slot2));
         }
     }
 
    
-    private IEnumerator DecreaseProgressBar()
+    private async void  DecreaseProgressBar()
     {
         float endValue = 245;
         int index = 0;
 
         while (index <= endValue)
         {
-
+            index = index + 7;
             UpdatePb(_progressBarBg, _progressBar, endValue, index, endValue);
-            index++;
-            yield return new WaitForSeconds(0.1f);
+            //index++;
+            //await Task.Delay(100);
+            float delayPerIteration = _moveDuration / endValue * 1000;
+            await Task.Delay((int)delayPerIteration);
+            Debug.Log("Iteration number index " + index);
+            Debug.Log("Iteration number delayPerIteration " + delayPerIteration);
         }
-
+        SetPb0(_progressBar);
+        _isRun = false ;
     }
 
     private void UpdatePb(VisualElement pbBg, VisualElement pbGauge, float bgWidth, float currentData, float maxData)
@@ -163,56 +174,106 @@ public class EnchantWindow : L2PopupWindow
             pbGauge.style.width = Convert.ToSingle(barWidth);
         }
     }
-    public float moveDuration = 1.0f; // Длительность 
 
-    
-    private IEnumerator MoveElementsToCenter(VisualElement element1, VisualElement element2, float centerX, float centerY)
+
+
+    private void SetPb0(VisualElement pbGauge)
     {
-        float st = _startPosition1 - element1.resolvedStyle.left;
-       
-        //element2.style.left = _startPosition2 - element1.resolvedStyle.left;
-        // Получаем начальные позиции
+        pbGauge.style.width = Convert.ToSingle(0);
+    }
+    
 
-        Debug.Log("Start posirion 1 left " + element1.resolvedStyle.left);
-        element1.style.left = 0;
-        Debug.Log("Start posirion 1 _startPosition1 " + _startPosition1);
-        Debug.Log("Start posirion 1 left " + element1.style.left);
-        Debug.Log("Start posirion 1 st " + st);
 
-        Vector2 startPos1 = new Vector2(0, element1.resolvedStyle.top);
-        Vector2 startPos2 = new Vector2(element2.resolvedStyle.left, element2.resolvedStyle.top);
-        // Вычисляем точку пересечения (среднюю точку между элементами)
+    private IEnumerator MoveElementsToCenter(VisualElement element1, VisualElement element2)
+    {
+
+
+
+        float offsetLeft2 = 76;//default offset element2
+        float offsetLeft1 = 0;//default offset element2
+        float fadeStartTime = _moveDuration / 2;
+
+        element2.style.opacity = 1;
+        element1.style.left = offsetLeft1;
+        element2.style.left = offsetLeft2;
+
+        Vector2 startPos1 = new Vector2(offsetLeft1, element1.resolvedStyle.top);
+        Vector2 startPos2 = new Vector2(offsetLeft2, element2.resolvedStyle.top);
+
         Vector2 intersectionPoint = (startPos1 + startPos2) / 2;
 
         float elapsedTime = 0f;
 
-            while (elapsedTime < moveDuration)
+        while (elapsedTime < _moveDuration)
+        {
+            float t = elapsedTime / _moveDuration;
+
+            float left1 = Mathf.Lerp(startPos1.x, intersectionPoint.x, t);
+            element1.style.left = left1;
+
+            float left2 = Mathf.Lerp(startPos2.x, intersectionPoint.x, t);
+            float newLeft = left2 - offsetLeft2;
+            element2.style.left = newLeft;
+
+            Debug.Log("left2 calc " + left2);
+            Debug.Log("left2 calc x " + startPos2.x);
+            Debug.Log("left2 calc intersectionPoint " + intersectionPoint.x);
+            float animTime = _moveDuration - 0.4f;
+            PlayAnim(_loadingAnimPng, _animElement, animTime);
+            StartFinalEvent(fadeStartTime, elapsedTime, element2);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        SetOpacity0(element2);
+        _isRun = false;
+        _isStartAnim = false;
+    }
+
+    
+    private void StartFinalEvent(float fadeStartTime, float elapsedTime, VisualElement element2)
+    {
+        if (elapsedTime >= fadeStartTime)
+        {
+            AlphaChanged(fadeStartTime, elapsedTime, element2);
+            //PlayAnim(_loadingAnimPng, _animElement , fadeStartTime);
+        }
+            
+    }
+
+    private async void PlayAnim(List<Texture2D> listTextures, VisualElement animElement , float fadeStartTime)
+    {
+        if (!_isStartAnim)
+        {
+            animElement.style.display = DisplayStyle.Flex;
+            //offset 32x32 icon up 10px
+            animElement.style.marginTop = -14;
+            _isStartAnim = true;
+            foreach (Texture2D texture in listTextures)
             {
-
-                // Пропорция времени
-                float t = elapsedTime / moveDuration;
-
-                float left1 = Mathf.Lerp(startPos1.x, intersectionPoint.x, t);
-                // Интерполяция позиций
-                element1.style.left = left1;
-                //element1.style.top = Mathf.Lerp(startPos1.y, intersectionPoint.y, t);
-                float left2 = Mathf.Lerp(startPos2.x, intersectionPoint.x, t);
-
-                // float top = Mathf.Lerp(startPos2.y, intersectionPoint.y, t);
-                //Debug.Log("Start posirion left1 " + left1);
-                Debug.Log("Start posirion left2 " + left2);
-                Debug.Log("Start posirion left2 resolved " + element2.resolvedStyle.left);
-                var cur_left2 = left2 - element2.resolvedStyle.left;
-                Debug.Log("Start posirion left2 current " + element2.style.left);
-                Debug.Log("Start posirion left2 left " + cur_left2);
-                //Debug.Log("Start posirion 2_3 " + top);
-                //element2.style.left = cur_left2;
-                // element2.style.top = top
-
-                elapsedTime += Time.deltaTime;
-                yield return null; // Ждем следующего кадра
+                animElement.style.backgroundImage = new StyleBackground(texture);
+                float delayPerIteration = fadeStartTime / listTextures.Count * 1000;
+                await Task.Delay((int)delayPerIteration);
             }
+            animElement.style.display = DisplayStyle.None;
+            animElement.style.marginTop = 0;
+        }
 
-        isRun = false;
+    }
+
+
+    private void AlphaChanged(float fadeStartTime , float elapsedTime , VisualElement element1)
+    {
+        if (elapsedTime >= fadeStartTime)
+        {
+            float fadeT = (elapsedTime - fadeStartTime) / (_moveDuration - fadeStartTime);
+            float alpha = Mathf.Lerp(1f, 0f, fadeT);
+            element1.style.opacity = alpha; 
+        }
+    }
+
+    private void SetOpacity0(VisualElement element1)
+    {
+        element1.style.opacity = 0;
     }
 }
+
