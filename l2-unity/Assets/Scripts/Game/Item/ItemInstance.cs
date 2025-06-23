@@ -232,6 +232,10 @@ public class ItemInstance : AbstractServerItem
         return null;
     }
 
+    public ItemGrade GetItemGrade()
+    {
+        return _itemData.Itemgrp.Grade;
+    }
     private Texture2D GetGradeImage(ItemGrade grade)
     {
         if(grade == ItemGrade.none)

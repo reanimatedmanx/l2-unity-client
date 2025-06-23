@@ -182,6 +182,11 @@ public class FilterAccessType
         {
             return true;
         }
+        else if (type == GSInterludeCombatPacketType.EnchantResult)
+        {
+            Debug.Log("Enchanted inventory 1");
+            return true;
+        }
         else if (type == GSInterludeCombatPacketType.MagicSkillLaunched)
         {
             return true;
@@ -198,6 +203,7 @@ public class FilterAccessType
 
         if (type == GSInterludeMessagePacketType.SystemMessage)
         {
+            Debug.Log("Enchanted inventory 2");
             return true;
         }
         else if (type == GSInterludeMessagePacketType.CreatureSay)

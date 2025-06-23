@@ -26,6 +26,11 @@ public class CreatorPacketsUser
         return new RequestDestroyItem(_objectId, _count);
     }
 
+    public static RequestEnchantItem CreateEnchantItem(int _objectId)
+    {
+        return new RequestEnchantItem(_objectId);
+    }
+
     public static RequestBuyItem CreateRequestBuyItem(int listId, List<Product> buyList)
     {
         return new RequestBuyItem(listId,  buyList);

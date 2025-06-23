@@ -48,6 +48,7 @@ public class InventorySlot : L2DraggableSlot
         _itemInstance = null;
         _product = null;
         _objectId = 0;
+        _enchantLevel = 0;
         if (_slotElement != null)
         {
             StyleBackground background = new StyleBackground(IconManager.Instance.GetInvetoryDefaultBackground());
@@ -144,6 +145,7 @@ public class InventorySlot : L2DraggableSlot
         _itemInstance = item;
         _count = item.Count;
         _objectId = item.ObjectId;
+        _enchantLevel = item.EnchantLevel;
         _id = item.ItemId;
         _remainingTime = item.RemainingTime;
         _empty = false;
@@ -171,6 +173,7 @@ public class InventorySlot : L2DraggableSlot
         _id = item.ItemId;
         _remainingTime = item.RemainingTime;
         _empty = false;
+        _enchantLevel = item.EnchantLevel;
 
         if (_slotElement != null)
         {
@@ -194,6 +197,7 @@ public class InventorySlot : L2DraggableSlot
         _objectId = item.ObjectId;
         _id = item.ItemId;
         _remainingTime = item.RemainingTime;
+        _enchantLevel = item.EnchantLevel;
         _empty = false;
 
         if (_slotElement != null)
@@ -217,6 +221,7 @@ public class InventorySlot : L2DraggableSlot
             _description = item.ItemData.ItemName.Description;
             _icon = item.ItemData.Icon;
             _objectId = item.ObjectId;
+
             
             _itemCategory = item.Category;
         }
@@ -247,8 +252,6 @@ public class InventorySlot : L2DraggableSlot
             if (SlotBg == null) return;
             StyleBackground background = new StyleBackground(IconManager.Instance.GetIcon(_id));
             _slotBg.style.backgroundImage = background;
-
-
         }
     }
 

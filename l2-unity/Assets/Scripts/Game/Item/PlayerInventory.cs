@@ -65,6 +65,15 @@ public class PlayerInventory : MonoBehaviour
         return null;
     }
 
+    public ItemInstance GetItem(int objId)
+    {
+        if (_playerInventory.ContainsKey(objId))
+        {
+            return _playerInventory[objId];
+        }
+        return null;
+    }
+
     public bool IsItemEquipByItemId(int itemId)
     {
         foreach (var item in _playerEquipInventory)
@@ -149,11 +158,11 @@ public class PlayerInventory : MonoBehaviour
 
             try
             {
-                Debug.Log("start Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
+                //Debug.Log("start Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
                 UpdatePlayerInventory(_tempForRemoveAndAdd, _tempForModified , listEquip);
                 ModifiedEquip(_playerInventory, _playerEquipInventory, listEquip);
-                Debug.Log("Equip " + equipitems.Count + " inventory " + items.Count);
-                Debug.Log("end Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
+               // Debug.Log("Equip " + equipitems.Count + " inventory " + items.Count);
+                //Debug.Log("end Equip " + _playerEquipInventory.Count + " inventory " + _playerInventory.Count);
                 int adenaCount = GetAdenaCount(_playerInventory.Values.ToList());
                 int useSlot = _playerInventory.Count + _playerEquipInventory.Count;
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
@@ -271,6 +280,9 @@ public class PlayerInventory : MonoBehaviour
         {
             if (!item.Equipped)
             {
+                
+                StorageVariable.getInstance().AddS1Items(new VariableItem(item.Count.ToString(), item.ObjectId));
+                StorageVariable.getInstance().AddS2Items(new VariableItem(item.ItemData.ItemName.Name, item.ObjectId));
                 AddInventory(item); 
             }
         }
@@ -278,7 +290,11 @@ public class PlayerInventory : MonoBehaviour
         {
             
             ItemInstance oldItem = playerInventory[item.ObjectId];
+            int count = item.Count - oldItem.Count;
             item.SetSlot(oldItem.Slot);
+            
+            StorageVariable.getInstance().AddS1Items(new VariableItem(count.ToString(), item.ObjectId));
+            StorageVariable.getInstance().AddS2Items(new VariableItem(item.ItemData.ItemName.Name, item.ObjectId));
             oldItem.Update(item);
         }
     }
@@ -421,7 +437,7 @@ public class PlayerInventory : MonoBehaviour
         {
 
             ItemInstance item = _playerInventory[objectId];
-            StorageVariable.getInstance().AddS1Items(new VariableItem(item.ItemData.ItemName.Name, objectId));
+            SetVariableInfoS1(item);
             var sendPaket = CreatorPacketsUser.CreateUseItem(objectId, 0);
             bool enable = GameClient.Instance.IsCryptEnabled();
             SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
@@ -432,6 +448,20 @@ public class PlayerInventory : MonoBehaviour
             Debug.Log("Not found use items");
             return false;
         }
+
+    }
+
+    private async void SetVariableInfoS1(ItemInstance item)
+    {
+       // if (item.Category == ItemCategory.Item)
+       // {
+            StorageVariable.getInstance().AddS1Items(new VariableItem(item.ItemData.ItemName.Name, item.ObjectId));
+            StorageVariable.getInstance().AddS2Items(new VariableItem(item.Count.ToString(), item.ObjectId));
+       // }
+       // else
+       // {
+            //StorageVariable.getInstance().AddS1Items(new VariableItem(item.ItemData.ItemName.Name, item.ObjectId));
+       // }
 
     }
 

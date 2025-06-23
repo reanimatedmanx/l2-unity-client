@@ -50,12 +50,16 @@ public class GsInterludeCombatHandler : ServerPacketHandler
             case GSInterludeCombatPacketType.InventoryUpdate:
                 OnInventoryUpdate(itemQueue.DecodeData());
                 break;
+            case GSInterludeCombatPacketType.EnchantResult:
+                OnEnchantResult(itemQueue.DecodeData());
+                break;
             case GSInterludeCombatPacketType.ItemList:
                 OnCharItemList(itemQueue.DecodeData());
                 break;
             case GSInterludeCombatPacketType.ChooseInventoryItem:
                 OnChooseInventoryItem(itemQueue.DecodeData());
                 break;
+
 
         }
 
@@ -106,8 +110,22 @@ public class GsInterludeCombatHandler : ServerPacketHandler
         if (!InitPacketsLoadWord.getInstance().IsInit)
         {
             ChooseInventoryItem packet = new ChooseInventoryItem(data);
+
             EventProcessor.Instance.QueueEvent(() => {
-                EnchantWindow.Instance.ShowWindow();
+                EnchantWindow.Instance.ShowWindow(packet.Item);
+            });
+        }
+
+    }
+
+    private void OnEnchantResult(byte[] data)
+    {
+        if (!InitPacketsLoadWord.getInstance().IsInit)
+        {
+            EnchantResult packet = new EnchantResult(data);
+            
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                EnchantWindow.Instance.EnchantResult(packet.Result);
             });
         }
 

@@ -1,5 +1,7 @@
 
 using System.Collections.Generic;
+using UnityEngine;
+using static UnityEditor.Progress;
 
 
 public class InventoryUpdate : ServerPacket
@@ -57,8 +59,11 @@ public class InventoryUpdate : ServerPacket
    
                 var itemInstance  = new ItemInstance(objectId, displayId, location, indexItems++, count, category, equipped == 1, slot, enchant, 9999);
                 itemInstance.LastChange = type;
+                Debug.Log("Inventory Update s1 " + displayId + " count " + count + " flag modified " + type);
                 items.Add(objectId, itemInstance);
             }
+
+            
         }
     }
 

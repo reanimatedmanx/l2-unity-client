@@ -86,7 +86,7 @@ public class L2SlotManager : L2PopupWindow
 
     public void ReleaseDrag()
     {
-        Debug.Log("Event Hide Windows");
+
         HideWindow();
 
         if (!IsValidDrag() || IsSameSlot())
@@ -177,6 +177,9 @@ public class L2SlotManager : L2PopupWindow
             case L2Slot.SlotType.SkillBar:
                 AddItemToSkillbar();
                 break;
+            case L2Slot.SlotType.Enchant:
+                AddItemToEnchant();
+                break;
             default:
                 if (!L2GameUI.Instance.MouseOverUI)
                 {
@@ -207,6 +210,11 @@ public class L2SlotManager : L2PopupWindow
         {
             case L2Slot.SlotType.SkillBar:
                 MoveSkillbarSlot();
+                break;
+            case L2Slot.SlotType.Enchant:
+                int oldSlot = _draggedSlot.Id;
+                int newSlot = _hoverSlot.Id;
+                Debug.LogWarning($"Moving skillbar enchant from slot {oldSlot} to slot {newSlot}.");
                 break;
             default:
                 if (!L2GameUI.Instance.MouseOverUI)
@@ -321,6 +329,15 @@ public class L2SlotManager : L2PopupWindow
         Debug.LogWarning($"Add item {itemId} to skillbar slot {slot}.");
 
         PlayerShortcuts.Instance.AddShortcut(slot, itemId, Shortcut.TYPE_ITEM, 0);
+    }
+
+
+    private void AddItemToEnchant()
+    {
+        int _objectId = ((InventorySlot)_draggedSlot).ObjectId;
+        int slot = _hoverSlot.Position;
+        Debug.LogWarning($"Add _objectId {_objectId} to EnchantWindow slot {slot}.");
+        EnchantWindow.Instance.AddEnchantItem(_objectId);
     }
 
     private void MoveSkillbarSlot()

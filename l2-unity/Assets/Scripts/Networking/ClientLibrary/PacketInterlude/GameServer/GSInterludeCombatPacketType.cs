@@ -14,6 +14,7 @@ public enum GSInterludeCombatPacketType : byte
     SetupGauge = 0x6D,
     ItemList = 0x1B,
     ChooseInventoryItem = 0x6f,
+    EnchantResult = 0x81,
     InventoryUpdate = 0x27,
     MagicSkillLaunched = 0x76,
     ActionFailed = 0x25,

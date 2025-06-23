@@ -26,11 +26,13 @@ public class L2Slot
     protected string _name;
     protected string _description;
     protected string _icon;
+    protected int _enchantLevel;
     protected VisualElement _slotElement;
     protected VisualElement _slotBg;
     protected TooltipManipulator _tooltipManipulator;
     protected SlotHoverDetectManipulator _hoverManipulator;
 
+    public int EnchantLevel { get { return _enchantLevel; } set { _enchantLevel = value; } }
     public int Id { get { return _id; } set { _id = value; } }
     public int Position { get { return _position; } set { _position = value; } }
     public SlotType Type { get { return _slotType; } set { _slotType = value; } }

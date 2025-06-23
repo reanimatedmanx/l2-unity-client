@@ -33,6 +33,7 @@ public class SlotDragManipulator : PointerManipulator
 
     public void PointerDownHandler(PointerDownEvent evt)
     {
+        Debug.Log("Drop target1 ");
         if (!enabled)
         {
             return;
@@ -82,6 +83,7 @@ public class SlotDragManipulator : PointerManipulator
 
     public void PointerUpHandler(PointerUpEvent evt)
     {
+        Debug.Log("Drop target2 up target");
         if (_root.HasPointerCapture(evt.pointerId))
         {
             _root.ReleasePointer(evt.pointerId);

@@ -82,8 +82,8 @@ public class AsynchronousClient {
         {
             SendGameDataQueue.Instance().SetPacketHandler(_clientPacketHandler);
             IncomingGameDataQueue.Instance().SetPacketHandler(_serverPacketHandler);
-            IncomingGameMessageQueue.Instance().SetPacketHandler(new GSInterludeMessageHandler());
             IncomingGameCombatQueue.Instance().SetPacketHandler(new GsInterludeCombatHandler());
+            IncomingGameMessageQueue.Instance().SetPacketHandler(new GSInterludeMessageHandler());
         }
     }
 

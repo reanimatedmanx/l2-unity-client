@@ -109,8 +109,7 @@ public class IncomingGameCombatQueue : IQueue
     {
         if (_queue.TryDequeue(out ItemServer item))
         {
-            Debug.Log("Inventory update часть 3_1");
-            Debug.Log("Inventory update часть 3_2");
+            
             _serverPacketHandler.HandlePacket(item);
         }
 

@@ -120,7 +120,7 @@ public class GSInterludeMessageHandler : ServerPacketHandler
         if (messageData != null)
         {
             if(messageData.Id == (int)StorageVariable.MessageID.ADD_INVENTORY 
-            | messageData.Id == (int)StorageVariable.MessageID.ADD_EXP_SP 
+            | messageData.Id == (int)StorageVariable.MessageID.ADD_EXP_SP
             | messageData.Id == (int)StorageVariable.MessageID.USE_SKILL)
             {
                 SystemMessage systemMessage = new SystemMessage(smParams, messageData);
@@ -134,7 +134,13 @@ public class GSInterludeMessageHandler : ServerPacketHandler
             else
             {
                 SystemMessage systemMessage = new SystemMessage(smParams, messageData);
-                EventProcessor.Instance.QueueEvent(() => ChatWindow.Instance.ReceiveSystemMessage(systemMessage));
+
+                
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    ChatWindow.Instance.ReceiveSystemMessage(systemMessage);
+                });
+                //EventProcessor.Instance.QueueEvent(() => ChatWindow.Instance.ReceiveSystemMessage(systemMessage));
             }
            
         }

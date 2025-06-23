@@ -20,6 +20,7 @@ public class StorageVariable
     {
         ADD_INVENTORY = 52,
         ADD_EXP_SP = 95,
+        ENCHANT_FAIL = 65,
         USE_SKILL = 936,
         NOT_HAVE_ADENA = 279,
     }
@@ -86,8 +87,8 @@ public class StorageVariable
 
     public VariableItem GetVariable(int index)
     {
-        lock (_sync)
-        {
+        //lock (_sync)
+        //{
             if(index >= 10) return null;
 
             if (variables[index] != null)
@@ -95,14 +96,14 @@ public class StorageVariable
                 return variables[index];
             }
             return null;
-        }
+       //// }
 
     }
 
     public VariableItem GetVariableByName(string l2j)
     {
-        lock (_sync)
-        {
+        //lock (_sync)
+        //{
             if (l2j.Equals("$s1")) {
                 return variables[0];
             }else if (l2j.Equals("$s2"))
@@ -114,7 +115,7 @@ public class StorageVariable
                 return variables[3];
             }
             return null;
-        }
+       // }
 
     }
 
