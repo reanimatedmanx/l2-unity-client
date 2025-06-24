@@ -280,29 +280,22 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             {
                 case (int)SlotType.PriceSell:
                     Product productSell = ToolTipManager.GetInstance().FindProductInSellList(position);
-                    if (productSell != null)
-                    {
-                        return GetProductContainer(productSell);
-                    }
+                    if (productSell != null) return GetProductContainer(productSell);
                     break;
-
                 case (int)SlotType.PriceBuy:
                     Product productBuy = ToolTipManager.GetInstance().FindProductInBuyList(position);
-                    if (productBuy != null)
-                    {
-                        return GetProductContainer(productBuy);
-                    }
+                    if (productBuy != null) return GetProductContainer(productBuy);
                     break;
 
                 case (int)SlotType.Inventory:
                     ItemInstance item = InventoryWindow.Instance.GetItemByPosition(position);
-                    if (item != null)
-                    {
-                        return GetInventoryContainer(item);
-                    }
+                    if (item != null) return GetInventoryContainer(item);
+                    break;
+                case (int)SlotType.Enchant:
+                    ItemInstance enchantItem = EnchantWindow.Instance.GetItemByPosition(position);
+                    if (enchantItem != null) return GetInventoryContainer(enchantItem);
                     break;
                 case (int)SlotType.Gear:
- 
                     GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
                     return GetGearContainer(gearItem);
                     //break;
@@ -317,6 +310,8 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                     return SwitchToSimple();
 
                 case (int)SlotType.Inventory:
+                    return SwitchToString();
+                case (int)SlotType.Enchant:
                     return SwitchToString();
                 case (int)SlotType.Gear:
                     GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
@@ -518,7 +513,11 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             {
                 return InventoryWindow.Instance.GetItemByPosition(position);
             }
-            else if (type == (int)SlotType.Gear)
+            else if (type == (int)SlotType.Enchant)
+            {
+                return EnchantWindow.Instance.GetItemByPosition(position);
+            }
+        else if (type == (int)SlotType.Gear)
             {
                 GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
 
@@ -688,6 +687,10 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 ItemInstance itemInstance = InventoryWindow.Instance.GetItemByPosition(position);
                 SetSimpleItemSingleToolTip(itemInstance, template);
                 break;
+            case (int)SlotType.Enchant:
+                ItemInstance itemEnchant = EnchantWindow.Instance.GetItemByPosition(position);
+                SetSimpleItemSingleToolTip(itemEnchant, template);
+                break;
             case (int)SlotType.Gear:
                 GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
 
@@ -750,11 +753,11 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             string decription = text.GetPrice();
             if (!string.IsNullOrEmpty(decription))
             {
-                SetDataTooTip(_nameText, _descriptedText, text.GetName(), "Price: " + ToolTipsUtils.ConvertToPrice(Int32.Parse(decription)) + " Adena");
+                SetDataToolTip(_nameText, _descriptedText, text.GetName(), "Price: " + ToolTipsUtils.ConvertToPrice(Int32.Parse(decription)) + " Adena");
             }
             else
             {
-                SetDataTooTip(_nameText, _descriptedText, text.GetName(), "");
+                SetDataToolTip(_nameText, _descriptedText, text.GetName(), "");
             }
             
         }
@@ -774,17 +777,19 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             // var _nameText = (Label)template.Q<VisualElement>(null, "name");
             // var _gradeImg = template.Q<VisualElement>(null, "grade");
 
-            Label _nameText =(Label) template.Q<VisualElement>("name");
-            VisualElement _gradeImg = template.Q<VisualElement>("grade");
+            Label nameText =(Label) template.Q<VisualElement>("name");
+            VisualElement gradeImg = template.Q<VisualElement>("grade");
+            Label encahntText = template.Q<Label>("enchant");
 
             Texture2D grade = data.GetGradeTexture();
 
-            if (_nameText != null)
+            if (nameText != null)
             {
-                _nameText.text = data.GetName();
+                nameText.text = data.GetName();
             }
 
-            SetImageElement(_gradeImg, grade);
+            SetImageElement(gradeImg, grade);
+            SetTextEnchantIfNot0(item.EnchantLevel, encahntText);
         }
         else
         {
@@ -792,6 +797,8 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             _showToolTip.Hide(null);
         }
     }
+
+
 
     private void SetImageElement(VisualElement element , Texture2D texture)
     {
@@ -825,7 +832,19 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
        
     }
 
-    private void SetDataTooTip(Label labelName , Label descriptedText,  string name, string descripted)
+    public void SetTextEnchantIfNot0(int data , Label element)
+    {
+        if (data != 0)
+        {
+            element.style.display = DisplayStyle.Flex;
+            element.text = "+"+ data;
+        }
+        else
+        {
+            element.style.display = DisplayStyle.None;
+        }
+    }
+    private void SetDataToolTip(Label labelName , Label descriptedText,  string name, string descripted)
     {
         if (!string.IsNullOrEmpty(name))
         {

@@ -101,7 +101,7 @@ public class L2SlotManager : L2PopupWindow
 
     private void HandleDragRelease()
     {
-        Debug.Log("Event Hide Windows " + _draggedSlot.Type);
+
         switch (_draggedSlot.Type)
         {
             case L2Slot.SlotType.Gear:

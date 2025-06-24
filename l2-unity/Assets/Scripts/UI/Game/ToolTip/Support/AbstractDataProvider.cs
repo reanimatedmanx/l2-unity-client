@@ -10,14 +10,9 @@ public abstract class AbstractDataProvider
     {
         container.Q<Label>("nameWeapon").text = text.GetName();
 
-        if (ItemGrade.none != weapon.Grade)
-        {
-            var groupBoxGrade = container.Q<VisualElement>("typeTextS1");
-            var gradeWeapon = container.Q<Label>("gradeWeapon");
-
-            AddElementIfNotEmpty(groupBoxGrade, gradeWeapon, ItemGradeParser.Converter(weapon.Grade));
-
-        }
+        VisualElement gradeBox = container.Q<VisualElement>("grade");
+        Texture2D grade = text.GetGradeTexture();
+        SetImageElement(gradeBox, grade);
 
         VisualElement groupPriceLabel = container.Q<VisualElement>("PriceName");
         Label priceLabel = (Label)container.Q<Label>("priceLabel");
@@ -28,7 +23,8 @@ public abstract class AbstractDataProvider
         AddElementIfNotEmpty(groupType, typeWeapon, WeaponTypeParser.WeaponTypeName(weapon.WeaponType));
 
 
-
+        Label labelEnchant = container.Q<Label>("enchant");
+        AddElementEnchantifNot0(labelEnchant, labelEnchant, text.GetEnchant());
 
         VisualElement groupPhys = container.Q<VisualElement>("phisAtkText");
         Label physLabel = container.Q<Label>("physLabel");
@@ -83,11 +79,9 @@ public abstract class AbstractDataProvider
     {
         container.Q<Label>("nameAccessories").text = text.GetName();
 
-        if (ItemGrade.none != armor.Grade)
-        {
-            var gradeAccesories = container.Q<Label>("gradeAcs");
-            if (gradeAccesories != null) gradeAccesories.text = ItemGradeParser.Converter(armor.Grade);
-        }
+        VisualElement gradeBox = container.Q<VisualElement>("grade");
+        Texture2D grade = text.GetGradeTexture();
+        SetImageElement(gradeBox, grade);
 
         VisualElement groupBoxTypeS1 = container.Q<VisualElement>("typeTextS1");
         Label typeS1 = container.Q<Label>("typeLabelS1");
@@ -98,6 +92,10 @@ public abstract class AbstractDataProvider
         Texture2D texture = IconManager.Instance.LoadTextureByName(armor.Icon);
         AddElementIfNotNull(groupBoxIcon, icon, texture);
         AddElementIfNotEmpty(groupBoxTypeS1, typeS1, "");
+
+        Label labelEnchant = container.Q<Label>("enchant");
+        AddElementEnchantifNot0(labelEnchant, labelEnchant, text.GetEnchant());
+
 
         //EnabledRow(groupBoxMDef);
 
@@ -137,6 +135,14 @@ public abstract class AbstractDataProvider
             Texture2D texture = IconManager.Instance.LoadTextureByName(etcIcon);
             AddElementIfNotNull(groupBoxIcon, icon, texture);
 
+            VisualElement gradeBox = container.Q<VisualElement>("grade");
+            Texture2D grade = text.GetGradeTexture();
+            SetImageElement(gradeBox, grade);
+
+            Label labelEnchant = container.Q<Label>("enchant");
+            AddElementEnchantifNot0(labelEnchant, labelEnchant, text.GetEnchant());
+
+
             Label mpLabel = container.Q<Label>("mpLabel");
             VisualElement mpGroup = container.Q<VisualElement>("mpText");
             AddElementIfNot0(mpGroup, mpLabel, 0);
@@ -148,7 +154,7 @@ public abstract class AbstractDataProvider
             //price.text = ToolTipsUtils.ConvertToPrice(priceItem) + " Adena";
 
 
-        VisualElement groupBoxMdef = (VisualElement)container.Q<VisualElement>("mdeText");
+            VisualElement groupBoxMdef = (VisualElement)container.Q<VisualElement>("mdeText");
             Label lebelMdef = (Label)container.Q<Label>("mdefLabel");
 
             //set mdef
@@ -172,23 +178,27 @@ public abstract class AbstractDataProvider
     {
         //set icon
         VisualElement groupBoxIcon = container.Q<VisualElement>("GrowIcon");
+        
         VisualElement icon = container.Q<VisualElement>("icon");
         Texture2D texture = IconManager.Instance.LoadTextureByName(armor.Icon);
         AddElementIfNotNull(groupBoxIcon, icon, texture);
 
         container.Q<Label>("nameAccessories").text = text.GetName();
 
-        if (ItemGrade.none != armor.Grade)
-        {
-            var gradeAccesories = container.Q<Label>("gradeAcs");
-            if (gradeAccesories != null) gradeAccesories.text = ItemGradeParser.Converter(armor.Grade);
-        }
+        VisualElement gradeBox = container.Q<VisualElement>("grade");
+        Texture2D grade = text.GetGradeTexture();
+        SetImageElement(gradeBox, grade);
+    
 
         //VisualElement groupBoxType = container.Q<VisualElement>("typeText");
         //VisualElement groupBoxMDef = container.Q<VisualElement>("mdeText");
 
         //EnabledRow(groupBoxType);
         //EnabledRow(groupBoxMDef);
+
+
+        Label labelEnchant = container.Q<Label>("enchant");
+        AddElementEnchantifNot0(labelEnchant, labelEnchant, text.GetEnchant());
 
         VisualElement groupType = container.Q<VisualElement>("typeText");
         Label typeLabel = container.Q<Label>("typeLabel");
@@ -243,11 +253,9 @@ public abstract class AbstractDataProvider
 
         container.Q<Label>("nameAccessories").text = text.GetName();
 
-        if (ItemGrade.none != armor.Grade)
-        {
-            var gradeAccesories = container.Q<Label>("gradeAcs");
-            if (gradeAccesories != null) gradeAccesories.text = ItemGradeParser.Converter(armor.Grade);
-        }
+        VisualElement gradeBox = container.Q<VisualElement>("grade");
+        Texture2D grade = text.GetGradeTexture();
+        SetImageElement(gradeBox, grade);
 
         VisualElement groupBoxType = container.Q<VisualElement>("typeText");
         VisualElement groupBoxMDef = container.Q<VisualElement>("mdeText");
@@ -256,11 +264,15 @@ public abstract class AbstractDataProvider
         EnabledRow(groupBoxMDef);
 
 
+
         VisualElement groupType = container.Q<VisualElement>("typeText");
         Label typeLabel = container.Q<Label>("typeLabel");
 
         Label groupPriceLabel = (Label)container.Q<Label>("PriceName");
         Label priceLabel = (Label)container.Q<Label>("priceLabel");
+
+        Label labelEnchant = container.Q<Label>("enchant");
+        AddElementEnchantifNot0(labelEnchant, labelEnchant, text.GetEnchant());
 
         AddElementPriceifNot0(groupPriceLabel, priceLabel, price);
         AddElementIfNotEmpty(groupType, typeLabel, armorTypeName);
@@ -316,21 +328,41 @@ public abstract class AbstractDataProvider
         }
     }
 
+    protected void AddElementEnchantifNot0(VisualElement groupPriceLabel, Label priceLabel, int enchant)
+    {
+        if(groupPriceLabel != null)
+        {
+            if (enchant == 0)
+            {
+                AddElementIfNotEmpty(groupPriceLabel, priceLabel, null);
+            }
+            else
+            {
+                AddElementIfNotEmpty(groupPriceLabel, priceLabel, "+" + enchant);
+            }
+        }
+
+    }
+
 
 
 
     protected void AddElementIfNotEmpty(VisualElement groupElement, Label labelData, string text)
     {
-        if (!string.IsNullOrEmpty(text))
+        if(groupElement != null)
         {
-            labelData.text = text;
-            groupElement.style.display = DisplayStyle.Flex;
+            if (!string.IsNullOrEmpty(text))
+            {
+                labelData.text = text;
+                groupElement.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                groupElement.style.display = DisplayStyle.None;
+                labelData.text = "";
+            }
         }
-        else
-        {
-            groupElement.style.display = DisplayStyle.None;
-            labelData.text = "";
-        }
+    
     }
 
     protected void AddElementIfNot0(VisualElement groupElement, Label labelData, int addParam)
@@ -346,6 +378,23 @@ public abstract class AbstractDataProvider
             groupElement.style.display = DisplayStyle.None;
             labelData.text = "";
         }
+    }
+
+    protected void SetImageElement(VisualElement element, Texture2D texture)
+    {
+        if (element != null)
+        {
+            if (texture == null)
+            {
+                element.style.display = DisplayStyle.None;
+            }
+            else
+            {
+                element.style.display = DisplayStyle.Flex;
+                element.style.backgroundImage = texture;
+            }
+        }
+
     }
 
     protected void EnabledRow(VisualElement element)

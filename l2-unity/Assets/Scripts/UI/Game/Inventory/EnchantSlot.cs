@@ -9,8 +9,21 @@ public class EnchantSlot : InventorySlot
        
     }
 
+    protected override void HandleLeftClick()
+    {
+
+       SetSelected();
+
+    }
+
     protected override void HandleRightClick()
     {
-        UseItem();
+        SetSelected();
     }
+
+    public void UnSelectSlot()
+    {
+        UnSelect();
+    }
+
 }

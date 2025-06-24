@@ -15,4 +15,6 @@ public interface IDataTips
     string GetIcon();
 
     Texture2D GetGradeTexture();
+
+    int GetEnchant();
 }

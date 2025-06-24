@@ -133,7 +133,7 @@ public class EnchantWindow : L2PopupWindow
     private EnchantSlot ChangeSlotBoxType(VisualElement slotBox , EnchantSlot enchantSlot)
     {
         VisualElement slotElement = CretaVisualElement();
-        enchantSlot = CreateEnchantSlot(0, slotElement, SlotType.Enchant);
+        enchantSlot = CreateEnchantSlot(1, slotElement, SlotType.Enchant);
         enchantSlot.AssignEmpty();
         slotBox.Add(slotElement);
         return enchantSlot;
@@ -142,7 +142,7 @@ public class EnchantWindow : L2PopupWindow
     private EnchantSlot ChangeSlotBoxTypeChoice(VisualElement slotBox, EnchantSlot enchantSlot)
     {
         VisualElement slotElement = CretaVisualElementChoice();
-        enchantSlot = CreateEnchantSlot(0, slotElement, SlotType.Enchant);
+        enchantSlot = CreateEnchantSlot(1, slotElement, SlotType.Enchant);
         enchantSlot.AssignEmpty();
         slotBox.Add(slotElement);
         return enchantSlot;
@@ -159,7 +159,7 @@ public class EnchantWindow : L2PopupWindow
     private void InitSlotElement2(VisualElement slotBox)
     {
         VisualElement slotElement = CretaVisualElementChoice();
-        _enchant2 = CreateEnchantSlot(0, slotElement, SlotType.Enchant);
+        _enchant2 = CreateEnchantSlot(1, slotElement, SlotType.Enchant);
         _enchant2.AssignEmpty();
         slotBox.Add(slotElement);
     }
@@ -382,6 +382,18 @@ public class EnchantWindow : L2PopupWindow
             
     }
 
+    public ItemInstance GetItemByPosition(int position)
+    {
+        if(position == 0)
+        {
+           return  _enchant1.ItemInstance;
+        }else if (position == 1)
+        {
+            return _enchant2.ItemInstance;
+        }
+
+        return null;
+    }
     private async void WorkerAnim(VisualElement animElement, float fadeStartTime, bool isSuccess)
     {
         if (!_isStartAnim)

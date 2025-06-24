@@ -8,6 +8,7 @@ public class SimpleToolTipData : IDataTips
     private string _item_description;
     private Product _product;
     private ItemInstance _itemInstance;
+    private int _enchant;
     public SimpleToolTipData(object data)
     {
         if(data.GetType() == typeof(Product))
@@ -16,12 +17,15 @@ public class SimpleToolTipData : IDataTips
             _name = _product.GetName();
             _description = _product.GetDescription();
             _item_description = _product.GetItemDescription();
-        }else if (data.GetType() == typeof(ItemInstance))
+            _enchant = 0;
+        }
+        else if (data.GetType() == typeof(ItemInstance))
         {
             _itemInstance = (ItemInstance)data;
             _name = _itemInstance.GetName();
             _description = _itemInstance.GetDescription();
             _item_description = _itemInstance.GetItemDescription();
+            _enchant = _itemInstance.EnchantLevel;
         }
     }
     public string GetName()
@@ -110,6 +114,11 @@ public class SimpleToolTipData : IDataTips
     public string GetIcon()
     {
         throw new System.NotImplementedException();
+    }
+
+    public int GetEnchant()
+    {
+        return _enchant;
     }
 
    
