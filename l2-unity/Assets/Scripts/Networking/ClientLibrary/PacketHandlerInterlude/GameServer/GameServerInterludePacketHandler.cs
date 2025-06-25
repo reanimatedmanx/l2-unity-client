@@ -22,131 +22,128 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         switch (item.PaketType())
         {
             case GameInterludeServerPacketType.InterludeKeyPacket:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки InterludeKeyPacket ");
+       
                 OnKeyReceive(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.CharSelectionInfo:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки CharSelectionInfo ");
+            
                 OnCharSelectionInfo(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.CharTemplate:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки CharTemplate ");
+           
                 OnCharTemplate(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.CharCreateOk:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки CharCreateOk ");
+         
                 OnCharCreateOk(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.CharSelected:
-               // Debug.Log("GameServerPacket NpcInfo  : начало обработки CharSelected ");
+       
                 OnCharSelected((itemQueue.DecodeData()));
                 break;
             case GameInterludeServerPacketType.CharCreateFail:
-               // Debug.Log("GameServerPacket NpcInfo  : начало обработки CharCreateFail ");
+          
                 OnCharCreateFail((itemQueue.DecodeData()));
                 break;
             case GameInterludeServerPacketType.SkillList:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки SkillList ");
+         
                 OnCharSkillList(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.UserInfo:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки UserInfo ");
+
                 OnCharUserInfo(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.SkillCoolTime:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки SkillCoolTime ");
+             
                 OnCharSkillCoolTime(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.MacroList:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
+            
                 OnCharMacroList(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.NpcHtmlMessage:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
+              
                 OnNpcHtmlMessage(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.TutorialShowHtml:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
+            
                 OnTutorialShowHtml(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.BuyList:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
+              
                 OnBuyList(itemQueue.DecodeData());
                 break;
+            case GameInterludeServerPacketType.MultiSellList:
+           
+                OnMultisellList(itemQueue.DecodeData());
+                break;
             case GameInterludeServerPacketType.SellList:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки MacroList ");
+           
                 OnSellList(itemQueue.DecodeData());
                 break;
-            //case GameInterludeServerPacketType.ItemList:
-               // Debug.Log("GameServerPacket NpcInfo  : начало обработки ItemList ");
-                //OnCharItemList(itemQueue.DecodeData());
-                //break;
             case GameInterludeServerPacketType.ShortCutInit:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки ShortCutInit ");
+    
                 OnCharShortCutInit(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.ShortCutRegister:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки ShortCutInit ");
+           
                 OnCharShortCutRegister(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.SocialAction:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки OnSocialAction ");
+            
                 OnSocialAction(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.TeleportToLocation:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки OnSocialAction ");
+             
                 OnTeleportToLocation(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.Revive:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки OnSocialAction ");
+        
                 OnRevive(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.HennaInfo:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки HennaInfo ");
+          
                 OnCharHennaInfo(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.QuestList:
-               // Debug.Log("GameServerPacket NpcInfo  : начало обработки QuestList ");
+           
                 OnCharQuestList(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.NpcInfo:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки NpcInfo ");
+        
                 OnCharNpcInfo(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.DeleteObject:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки NpcInfo ");
+          
                 OnDeleteObject(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.CharMoveToLocation:
-               // Debug.Log("GameServerPacket NpcInfo  : начало обработки CharMoveToLocation ");
+       
                 OnMoveToLocation(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.ValidateLocation:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки ValidateLocation ");
+     
                 OnValidateLocation(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.FriendList:
-               // Debug.Log("GameServerPacket NpcInfo  : начало обработки FriendList ");
+   
                 OnFriendList(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.EtcStatusUpdate:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
+
                 OnEtcStatusUpdate(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.StatusUpdate:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
+
                 OnStatusUpdate(itemQueue.DecodeData());
                 break;
-            //case GameInterludeServerPacketType.InventoryUpdate:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
-                //OnInventoryUpdate(itemQueue.DecodeData());
-                //break;
+
             case GameInterludeServerPacketType.TargetUnselected:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
+
                 OnTargetUnselected(itemQueue.DecodeData());
                 break;
             case GameInterludeServerPacketType.AbnormalStatusUpdate:
-                //Debug.Log("GameServerPacket NpcInfo  : начало обработки EtcStatusUpdate ");
+
                 OnAbnormalStatusUpdate(itemQueue.DecodeData());
                 break;
 
@@ -387,7 +384,16 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             DealerWindow.Instance.UpdateDataForm(buyList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
             DealerWindow.Instance.ShowWindowToCenter();
         });
-        Debug.Log($"Buy list: {buyList}");
+
+    }
+
+    private void OnMultisellList(byte[] data)
+    {
+        MultiSellList multiSellList = new MultiSellList(data);
+
+        EventProcessor.Instance.QueueEvent(() => {
+            MultiSellWindow.Instance.ShowWindow();
+        });
     }
 
 

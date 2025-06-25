@@ -1692,6 +1692,321 @@
 .bar-label {
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.merchant-window {
+    width: 574px;
+    height: 416px;
+}
+
+.merchant-window.expanded {
+    width: 682px;
+}
+
+.merchant-window .l2-scroll-view .unity-scroll-view__content-and-vertical-scroll-container {
+    flex-direction: row;
+}
+
+.merchant-window .unity-tab__header-label {
+    color: rgb(220, 220, 220);
+    font-size: 11px;
+    padding-bottom: 2px;
+    margin: 0;
+}
+
+.merchant-window .unity-tab__content-container {
+    flex-grow: 1;
+}
+
+.merchant-window .unity-tab {
+    flex-grow: 1;
+    height: 1px;
+    margin-bottom: -2px;
+}
+
+.merchant-window .unity-scroll-view {
+    font-size: 12px;
+}
+
+.merchant-window .unity-base-slider__dragger-border {
+    border-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.merchant-window .unity-disabled {
+    opacity: 1;
+}
+
+.merchant-window .unity-tab-view__header-container {
+    margin-left: 23px;
+}
+
+.merchant-window #tab-header-container {
+    margin-left: 23px;
+}
+
+
+
+.merchant-window .unity-tab-view__content-container {
+    flex-grow: 1;
+}
+
+.merchant-window #tab-content-container {
+    flex-grow: 1;
+}
+
+.merchant-window .unity-tab__header-underline {
+    width: 0;
+}
+
+.merchant-window .unity-tab__header {
+    background-image: resource('Data/UI/Assets/Tab/Tab_DF_Tab_Unselected');
+    background-color: transparent;
+    -unity-slice-top: 24;
+    -unity-slice-left: 5;
+    -unity-slice-bottom: 0;
+    -unity-slice-right: 5;
+    -unity-slice-scale: 1px;
+    rotate: 180deg;
+    height: 25px;
+    padding: 0;
+    width: 64px;
+    justify-content: center;
+}
+
+.merchant-window .tab-header {
+    background-image: resource('Data/UI/Assets/Tab/Tab_DF_Tab_Unselected');
+    background-color: transparent;
+    -unity-slice-top: 24;
+    -unity-slice-left: 5;
+    -unity-slice-bottom: 0;
+    -unity-slice-right: 5;
+    -unity-slice-scale: 1px;
+    height: 25px;
+    padding: 0;
+    width: 64px;
+    justify-content: center;
+}
+
+.merchant-window .unity-tab__header:checked {
+    background-image: resource('Data/UI/Assets/Tab/Tab_DF_Tab_Selected');
+    -unity-slice-top: 24;
+    -unity-slice-left: 5;
+    -unity-slice-bottom: 0;
+    -unity-slice-right: 5;
+    -unity-slice-scale: 1px;
+}
+
+.merchant-window .tab-header.active {
+    background-image: resource('Data/UI/Assets/Tab/Tab_DF_Tab_Selected');
+    -unity-slice-top: 24;
+    -unity-slice-left: 5;
+    -unity-slice-bottom: 0;
+    -unity-slice-right: 5;
+    -unity-slice-scale: 1px;
+}
+
+.merchant-window .unity-tab__header:checked:hover {
+    background-image: resource('Data/UI/Assets/Tab/Tab_DF_Tab_Selected');
+    -unity-slice-top: 24;
+    -unity-slice-left: 5;
+    -unity-slice-bottom: 0;
+    -unity-slice-right: 5;
+    -unity-slice-scale: 1px;
+}
+
+.merchant-window .tab-header.active:hover {
+    background-image: resource('Data/UI/Assets/Tab/Tab_DF_Tab_Selected');
+    -unity-slice-top: 24;
+    -unity-slice-left: 5;
+    -unity-slice-bottom: 0;
+    -unity-slice-right: 5;
+    -unity-slice-scale: 1px;
+}
+
+.merchant-window .unity-tab__header:hover {
+    background-image: resource('Data/UI/Assets/Tab/Tab_DF_Tab_Unselected_Over');
+}
+
+.merchant-window .tab-header:hover {
+    background-image: resource('Data/UI/Assets/Tab/Tab_DF_Tab_Unselected_Over');
+}
+
+
+
+.merchant-windoww .unity-tab__header-label {
+    color: rgb(220, 220, 220);
+    font-size: 11px;
+    padding-bottom: 2px;
+    margin: 0;
+    -unity-text-align: middle-center;
+}
+
+.merchant-window #unity-content-viewport {
+    margin: 0;
+    padding: 0;
+}
+
+.merchant-window .tab-header-label {
+    color: rgb(220, 220, 220);
+    font-size: 11px;
+    padding-bottom: 2px;
+    margin: 0;
+    -unity-text-align: middle-center;
+}
+
+
+
+.merchant-window .unselected-tab {
+    display: none;
+}
+
+.merchant-window #AdenaDistribBtn #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/adenacalculate_recipe');
+}
+
+.merchant-window #AdenaDistribBtn:active #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/adenacalculate_recipe');
+}
+
+.merchant-window #AdenaDistribBtn:active:hover #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/adenacalculate_recipe');
+}
+
+.merchant-window #AdenaDistribBtn:hover #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/adenacalculate_recipe_over');
+}
+
+.merchant-window #CompoundBtn #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/inventory_compound');
+}
+
+.merchant-window #CompoundBtn:active #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/inventory_compound');
+}
+
+.merchant-window #CompoundBtn:active:hover #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/inventory_compound');
+}
+
+.merchant-window #CompoundBtn:hover #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/inventory_compound_drag');
+}
+
+.merchant-window #TrashBtn #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/inventory_trash');
+}
+
+.merchant-window #TrashBtn:active #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/inventory_trash');
+}
+
+.merchant-window #TrashBtn:active:hover #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/inventory_trash');
+}
+
+.merchant-window #TrashBtn:hover #ButtonBg {
+    background-image: resource('Data/UI/Assets/Inventory/inventory_trash_over');
+}
+
+.merchant-window .l2-scroll-view .unity-scroller {
+    width: 14px;
+    margin-right: 2px;
+    margin-left: 2px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .inventory-window {
     width: 574px;
     height: 416px;
@@ -1743,6 +2058,8 @@
 .inventory-window #tab-header-container {
     margin-left: 23px;
 }
+
+
 
 .inventory-window .unity-tab-view__content-container {
     flex-grow: 1;
@@ -1829,6 +2146,13 @@
     background-image: resource('Data/UI/Assets/Tab/Tab_DF_Tab_Unselected_Over');
 }
 
+
+
+
+
+
+
+
 .inventory-windoww .unity-tab__header-label {
     color: rgb(220, 220, 220);
     font-size: 11px;
@@ -1849,6 +2173,8 @@
     margin: 0;
     -unity-text-align: middle-center;
 }
+
+
 
 .inventory-window .unselected-tab {
     display: none;

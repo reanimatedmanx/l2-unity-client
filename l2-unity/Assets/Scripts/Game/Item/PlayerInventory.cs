@@ -24,7 +24,7 @@ public class PlayerInventory : MonoBehaviour
 
     public List<ItemInstance> FilterInventory(List<ItemCategory> filteredCategories)
     {
-        if(_playerInventory != null)
+        if(_playerInventory != null && filteredCategories != null)
         {
                 var filteredItemsInventory = _playerInventory
                .Where(kvp => filteredCategories.Contains(kvp.Value.Category))

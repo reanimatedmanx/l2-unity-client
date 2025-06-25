@@ -176,7 +176,6 @@ public class InventoryTab : L2Tab
 
         if (i_slot1 != null)
         {
-            Debug.Log("Delete item slot use success " + item.ItemId + " item objectId " + item.ObjectId);
             i_slot1.AssignEmpty();
             ShiftElements.ShiftElementsLeft(_inventorySlots, i_slot1.Position);
         }
@@ -242,23 +241,19 @@ public class InventoryTab : L2Tab
             {
                 InventorySlot oldSlot = GetInventorySlot(currentItem.ObjectId);
                 //Replace Inventory->Equip and Equip->Inventory elsewhere in the code, we skip it here
-                Debug.Log("Modified ->1 " + currentItem.ObjectId);
                 if(!changeInventoryData.IsReplaceSourceItem(currentItem.ObjectId))
                 {
                     if (oldSlot != null)
                     {
                         UpdateSlot(oldSlot, currentItem);
-                        Debug.Log("Modified ->4 " + currentItem.ObjectId);
-                        Debug.Log(" Modified upd slot " + oldSlot.Position);
+
                     }
                     else
                     {
                         InventorySlot i_slot = _inventorySlots[currentItem.Slot];
-                        Debug.Log("Modified ->2 " + currentItem.ObjectId);
+
                         if (i_slot != null)
                         {
-                            Debug.Log("Modified ->3 " + currentItem.ObjectId);
-                            Debug.Log(" Modified new assign  slot " + i_slot.Position);
                             i_slot.AssignItem(currentItem);
                         }
                     }
@@ -360,10 +355,6 @@ public class InventoryTab : L2Tab
         _selectedSlot = -1;
     }
 
-    private bool IsValidIndex(Array array, int index)
-    {
-        return index >= 0 && index < array.Length;
-    }
 
     protected override void OnGeometryChanged()
     {
@@ -379,5 +370,15 @@ public class InventoryTab : L2Tab
 
     protected override void RegisterAutoScrollEvent()
     {
+    }
+
+    public void SetSelectedSlot(int selected)
+    {
+        _selectedSlot = selected;
+    }
+
+    public void SetFilterCategories(List<ItemCategory> filteredCategories)
+    {
+        _filteredCategories = filteredCategories;
     }
 }

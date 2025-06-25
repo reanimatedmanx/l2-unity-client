@@ -12,6 +12,8 @@ public abstract class L2Tab
     private VisualElement _tabHeader;
     protected VisualElement _windowEle;
     public string TabName { get { return _tabName; } }
+
+
     public VisualElement TabContainer { get { return _tabContainer; } }
     public VisualElement TabHeader { get { return _tabHeader; } }
     public Scroller Scroller { get { return _scroller; } }
@@ -125,4 +127,14 @@ public abstract class L2Tab
     }
 
     public virtual void SelectSlot(int slot) { }
+
+    public void SetTabName(string tabName)
+    {
+        _tabName = tabName;
+    }
+
+    public void SetAutoScroll(bool autoscroll)
+    {
+        _autoscroll = autoscroll;
+    }
 }

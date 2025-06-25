@@ -313,11 +313,9 @@ public class InventoryWindow : L2PopupWindow
         //Quest
         if (!switchTo.TabName.Equals("All"))
         {
-            //Debug.Log("Switch to root tab  1 " + switchTo.TabName);
             List<ItemInstance> filterList = PlayerInventory.Instance.FilterInventory(switchTo.GetFilterCategories);
             if (filterList != null && filterList.Count > 0)
             {
-                //Debug.Log("Switch to root tab  2 " + switchTo.TabName + " filter list " + filterList.Count);
                 switchTo.SetItemList(filterList);
             }
             else
@@ -327,7 +325,6 @@ public class InventoryWindow : L2PopupWindow
         }
         else
         {
-            //Debug.Log("Switch to root tab " + switchTo.TabName);
             List<ItemInstance> items_collect = PlayerInventory.Instance.GetPlayerInvetoryToList();
             switchTo.SetItemList(items_collect);
         }
