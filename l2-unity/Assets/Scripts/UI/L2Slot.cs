@@ -10,6 +10,7 @@ public class L2Slot
         Other,
         Inventory,
         Enchant,
+        Multisell,
         InventoryBis, //other tab slots
         Gear,
         Skill,

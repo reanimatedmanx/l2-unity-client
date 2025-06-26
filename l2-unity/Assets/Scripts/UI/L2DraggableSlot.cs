@@ -5,15 +5,6 @@ public class L2DraggableSlot : L2ClickableSlot
 {
     protected SlotDragManipulator _slotDragManipulator;
 
-    public L2DraggableSlot(int position, VisualElement slotElement, SlotType slotType) : base(slotElement, position, slotType)
-    {
-        if (_slotDragManipulator == null)
-        {
-            _slotDragManipulator = new SlotDragManipulator(_slotElement, this);
-            _slotElement.AddManipulator(_slotDragManipulator);
-        }
-    }
-
     public L2DraggableSlot(int position, VisualElement slotElement, SlotType slotType, bool leftMouseUp, bool rightMouseup)
     : base(slotElement, position, slotType, leftMouseUp, rightMouseup)
     {
@@ -22,10 +13,38 @@ public class L2DraggableSlot : L2ClickableSlot
             return;
         }
 
-        if (_slotDragManipulator == null)
+        CreateDragManipulator(ref _slotDragManipulator, ref slotElement);
+    }
+
+    public L2DraggableSlot(int position, VisualElement slotElement, SlotType slotType)
+         : base(slotElement, position, slotType, true, false)
+    {
+        if (slotElement == null)
         {
-            _slotDragManipulator = new SlotDragManipulator(_slotElement, this);
-            _slotElement.AddManipulator(_slotDragManipulator);
+            return;
+        }
+
+        CreateDragManipulator(ref _slotDragManipulator, ref slotElement);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void CreateDragManipulator(ref SlotDragManipulator slotDragManipulator , ref VisualElement slotElement)
+    {
+        if (slotDragManipulator == null)
+        {
+             slotDragManipulator = new SlotDragManipulator(slotElement, this);
+             slotElement.AddManipulator(slotDragManipulator);
         }
     }
 

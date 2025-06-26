@@ -8,7 +8,8 @@ using UnityEngine;
 public class MultiSellList : ServerPacket
 {
     private List<MultiSellData> _listMultisell;
-    
+    private List<ItemInstance> _listOnlyItem;
+
     private int _listId;
     private int _page;
     private int _pageSize;
@@ -17,8 +18,10 @@ public class MultiSellList : ServerPacket
     private int _size;
 
     public List<MultiSellData> GetMultiSell() { return _listMultisell; }
+    public List<ItemInstance> GetOnlyItems() { return _listOnlyItem; }
     public MultiSellList(byte[] d) : base(d)
     {
+        _listOnlyItem = new List<ItemInstance>();
         _listMultisell = new List<MultiSellData>();
         Parse();
     }
@@ -41,17 +44,18 @@ public class MultiSellList : ServerPacket
             int sizeProducts = ReadSh();
             int sizeIngredients = ReadSh();
 
-            List<Product> listProducts = CreateProductList(sizeProducts);
+            List<ItemInstance> listProducts = CreateItemList(sizeProducts);
             List<Ingredient> listIngredient = CreateIngredientList(sizeIngredients);
+
             _listMultisell.Add(new MultiSellData(listProducts, listIngredient));
         }
         UnityEngine.Debug.Log("");
 
     }
 
-    private List<Product> CreateProductList(int sizeProducts)
+    private List<ItemInstance> CreateItemList(int sizeProducts)
     {
-        List < Product > list = new List < Product >(sizeProducts);
+        List < ItemInstance > list = new List <ItemInstance>(sizeProducts);
         for (int pIndex = 0; pIndex < sizeProducts; pIndex++)
         {
             int itemId = ReadSh();
@@ -59,13 +63,15 @@ public class MultiSellList : ServerPacket
             int type2 = ReadSh();
             int itemCount = ReadI();
             int enchantLevel = ReadSh();
-
+            ItemCategory category = ItemsType.ParceCategory(type2);
+            ItemSlot itemSlot = ItemsType.ParceSlot(bodyPart);
             //not working. server send 0
             int augmentId = ReadI();
             int manaLeft = ReadI();
 
-            Product product = new Product(0, 0, itemCount, type2, 0, bodyPart, enchantLevel, 0, itemId);
-            list.Add(product);
+            ItemInstance item = new ItemInstance(0, itemId, ItemLocation.Trade, pIndex, itemCount, category, false, itemSlot, enchantLevel , 9999);
+            _listOnlyItem.Add(item);
+            list.Add(item);
         }
 
         return list;
@@ -98,14 +104,14 @@ public class MultiSellList : ServerPacket
 public class MultiSellData
 {
     private List<Ingredient> _ingredients;
-    private List<Product> _products;
-    public MultiSellData(List<Product> products , List<Ingredient> ingredients)
+    private List<ItemInstance> _itemInstance;
+    public MultiSellData(List<ItemInstance> itemInstance , List<Ingredient> ingredients)
     {
         _ingredients = ingredients;
-        _products = products;
+        _itemInstance = itemInstance;
     }
     public List<Ingredient> IngredientList { get => _ingredients; }
-    public List<Product> ProductList { get => _products; }
+    public List<ItemInstance> ProductList { get => _itemInstance; }
 }
 
 public class Ingredient

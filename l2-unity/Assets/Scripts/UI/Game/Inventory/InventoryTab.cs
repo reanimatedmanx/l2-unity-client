@@ -8,18 +8,15 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static L2Slot;
 using static PlayerInventory;
-using static UnityEditor.Progress;
+
 
 [System.Serializable]
 public class InventoryTab : L2Tab
 {
     private InventorySlot[] _inventorySlots;
     [SerializeField] private int _selectedSlot = -1;
-    private int _itemCount = 0;
-
     private VisualElement _contentContainer;
     public List<ItemCategory> _filteredCategories;
-
     public List<ItemCategory> GetFilterCategories {  get { return _filteredCategories; } }
     public bool MainTab { get; internal set; }
 

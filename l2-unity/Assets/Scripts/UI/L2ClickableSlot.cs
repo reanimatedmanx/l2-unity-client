@@ -22,10 +22,10 @@ public class L2ClickableSlot : L2Slot
         RegisterClickableCallback();
     }
 
-    public L2ClickableSlot(VisualElement slotElement, int position, SlotType type) : base(slotElement, position,  type)
-    {
+   /// public L2ClickableSlot(VisualElement slotElement, int position, SlotType type) : base(slotElement, position,  type)
+   //{
         
-    }
+   // }
 
     protected void RegisterClickableCallback()
     {
@@ -52,7 +52,6 @@ public class L2ClickableSlot : L2Slot
     public void SetSelected()
     {
         Debug.Log($"Slot {_position} {Id}selected.");
-        //_slotElement.AddToClassList("inventory-selected-cell");
 
         if (slotFrame == null) slotFrame = _slotElement.Q(className: "slot-frame");
 
@@ -64,7 +63,6 @@ public class L2ClickableSlot : L2Slot
         ToolTipManager.GetInstance().EventLeftClickSlot(_slotElement);
         EventLeftDoubleClick(_slotElement);
 
-        //Debug.Log("");
     }
 
     private void EventLeftDoubleClick(VisualElement slotElement)
@@ -88,7 +86,6 @@ public class L2ClickableSlot : L2Slot
     {
         Debug.Log($"Slot {_position} unselected.");
         if(slotFrame == null ) slotFrame = _slotElement.Q(className: "slot-frame");
-        //slotFrame = _slotElement.Q(className: "slot-frame");
 
         if (slotFrame != null)
         {
