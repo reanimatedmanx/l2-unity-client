@@ -20,6 +20,8 @@ public class TradeTab
     private VisualElement _tabHeader;
     private VisualElement _contentContainer;
     public event Action<TradeTab> EventSwitch;
+    public event Action<int , ItemCategory> EventLeftClick;
+    private int _selectedSlot = -1;
     public TradeTab(string tabName , int countSlot , VisualElement tabContainer, VisualElement tabHeader, bool initEmpty)
     {
         _createScroller = new CreateScroller();
@@ -63,6 +65,7 @@ public class TradeTab
 
             VisualElement slotElement = CretaVisualElement();
             TradingSlot slot = CreateTradeSlot(new TradingSlotModel(i, this, slotElement, SlotType.Multisell));
+            slot.EventLeftClick += OnClickLeftEvent;
             contentContainer.Add(slotElement);
             tradeSlots[i] = slot;
         }
@@ -74,14 +77,50 @@ public class TradeTab
         {
             ItemInstance item = allItems[i];
             item.SetSlot(i);
-            //Debug.Log("AssignItem Set Inventory>>>> " + item.ItemId + " ObjectId " + item.ObjectId + " Add Slot " + item.Slot);
             _tradeSlots[i].AssignItem(item);
         }
     }
 
+    private void OnClickLeftEvent(int position)
+    {
+        SelectSlot(position);
+        SetEventOutside(position);
+    }
 
 
+    public void SelectSlot(int slotPosition)
+    {
+        if (_selectedSlot != -1)
+        {
+            //It happens that the panel will become smaller and the index may be larger than the current panel, so you need to check
+            if (IsValidIndex(_tradeSlots, _selectedSlot))
+            {
+                _tradeSlots[_selectedSlot].UnSelect();
+            }
 
+        }
+        _tradeSlots[slotPosition].SetSelected();
+        _selectedSlot = slotPosition;
+    }
+
+
+    private void SetEventOutside(int slotPosition)
+    {
+        if (slotPosition != -1)
+        {
+            TradingSlot slot = _tradeSlots[slotPosition];
+            if (slot != null)
+            {
+                EventLeftClick?.Invoke(slot.GetItemId() , slot.GetItemCategory());
+            }
+            
+        }
+    }
+
+    private bool IsValidIndex(object[] array, int index)
+    {
+        return index >= 0 && index < array.Length;
+    }
 
 
 

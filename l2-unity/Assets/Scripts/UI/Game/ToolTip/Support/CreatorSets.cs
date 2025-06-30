@@ -56,17 +56,26 @@ public class CreatorSets
 
             if (weapon != null)
             {
-                container.Insert(i, CreateVisualElement(i, weapon, itemName.Name, setsTemplate , isEquip));
+                if(setsTemplate != null)
+                {
+                    container.Insert(i, CreateVisualElement(i, weapon, itemName.Name, setsTemplate, isEquip));
+                }
             }
             else if (armor != null)
             {
-
-                container.Insert(i, CreateVisualElement(i, armor, itemName.Name, setsTemplate, isEquip));
+                if (setsTemplate != null)
+                {
+                    container.Insert(i, CreateVisualElement(i, armor, itemName.Name, setsTemplate, isEquip));
+                }
+                    
             }
             else if (item != null)
             {
-
-                container.Insert(i, CreateVisualElement(i, item, itemName.Name, setsTemplate, isEquip));
+                if (setsTemplate != null)
+                {
+                    container.Insert(i, CreateVisualElement(i, item, itemName.Name, setsTemplate, isEquip));
+                }
+                    
             }
 
             index = i;
@@ -77,14 +86,18 @@ public class CreatorSets
 
     private void CreateSetsEffect(int lastIndex, VisualElement container, VisualTreeAsset effectTemplate, ItemSets[] setsEffect)
     {
-        for (int i = 0; i < setsEffect.Length; i++)
+        if(effectTemplate != null)
         {
-            
-            ItemSets itemName = setsEffect[i];
-            string peace = GetTextPeace(itemName);
-            container.Insert(lastIndex, CreateVisualElementEffect(peace, itemName.GetDescription(), effectTemplate));
-            lastIndex++;
+            for (int i = 0; i < setsEffect.Length; i++)
+            {
+
+                ItemSets itemName = setsEffect[i];
+                string peace = GetTextPeace(itemName);
+                container.Insert(lastIndex, CreateVisualElementEffect(peace, itemName.GetDescription(), effectTemplate));
+                lastIndex++;
+            }
         }
+   
     }
 
     private string GetTextPeace(ItemSets itemName)

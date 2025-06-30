@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,6 +10,8 @@ public interface ICreatorTrading
 
     public void AddDataTrade(List<ItemInstance> allItems);
 
-    //public TradeTab GetMainTab();
-    //void SetMainTab(int index, bool main);
+    public event Action<int , ItemCategory> EventLeftClick;
+
+
+
 }

@@ -4,7 +4,7 @@
     <engine:Instance name="WindowTemplate" template="WindowTemplate" style="overflow: hidden; width: 627px; height: 530px; bottom: 0; position: absolute; max-width: 627px; max-height: none;">
         <AttributeOverrides element-name="windows-name-label" text="Shop" />
         <engine:GroupBox name="Content" class="merchant-window" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; position: absolute; align-self: center; width: 595px; height: 475px; flex-direction: column; left: 17px; top: 41px;">
-            <engine:GroupBox name="Body" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 100%; height: 90%;">
+            <engine:GroupBox name="Body" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 100%; height: 90%; flex-direction: row;">
                 <engine:GroupBox name="LeftBox" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 50%; flex-grow: 1;">
                     <engine:VisualElement name="InventoryTabView" focusable="true" style="flex-grow: 1; flex-shrink: 0; flex-direction: column; padding-left: 0; padding-top: 5px; padding-right: 0; padding-bottom: 0; display: flex;">
                         <engine:VisualElement name="tab-header-container" style="flex-direction: row-reverse; margin-left: 8px; margin-bottom: -4px;">
@@ -13,14 +13,30 @@
                         <engine:VisualElement focusable="true" name="tab-content-container" style="flex-grow: 1; flex-shrink: 0; flex-direction: column-reverse; background-image: resource(&apos;Data/UI/Tab/Tab_DF_bg 1&apos;); -unity-slice-left: 10; -unity-slice-top: 10; -unity-slice-right: 10; -unity-slice-bottom: 10; padding-top: 7px; padding-right: 4px; padding-bottom: 8px; padding-left: 6px; margin-bottom: 0;" />
                     </engine:VisualElement>
                 </engine:GroupBox>
-                <engine:GroupBox name="CenterBox" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; height: auto; width: 1%;" />
-                <engine:GroupBox name="RightBox" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 50%;" />
+                <engine:GroupBox name="CenterBox" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; height: auto; width: 1px;" />
+                <engine:GroupBox name="RightBox" style="margin-top: 3px; margin-right: 3px; margin-bottom: 3px; margin-left: 3px; padding-top: 0; padding-bottom: 0; padding-left: 0; width: 48%; background-color: rgba(0, 0, 0, 0.21); -unity-slice-right: 0; align-self: auto; justify-content: center; flex-shrink: 0; flex-grow: 1; height: auto;">
+                    <engine:GroupBox name="1Panel" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; height: 37%;">
+                        <engine:Label text="Item" name="labelItem" style="margin-top: 2%; margin-right: 0; margin-bottom: 1%; margin-left: 2%; padding-top: 0; padding-right: 0; padding-left: 0; padding-bottom: 0; color: rgb(223, 222, 222); font-size: 12px;" />
+                        <engine:VisualElement name="1Panel-Back" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.03); width: auto; height: 50%; max-height: none; margin-top: 3px; margin-right: 3px; margin-bottom: 0; margin-left: 3px; border-left-color: rgba(44, 42, 34, 0.6); border-right-color: rgba(44, 42, 34, 0.6); border-top-color: rgba(44, 42, 34, 0.6); border-bottom-color: rgba(44, 42, 34, 0.6); border-top-left-radius: 1px; border-top-right-radius: 1px; border-bottom-right-radius: 1px; border-bottom-left-radius: 1px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;">
+                            <engine:ScrollView vertical-scroller-visibility="AlwaysVisible" horizontal-page-size="1" name="1Panel-ScrollView" horizontal-scroller-visibility="Hidden" mouse-wheel-scroll-size="4.833333" touch-scroll-type="Clamped" class="l2-scroll-view" style="flex-grow: 1; margin-left: 1%; margin-top: 1%;">
+                                <engine:VisualElement name="Content" style="flex-grow: 1; padding-right: 0; flex-shrink: 0; flex-direction: column; flex-wrap: wrap; padding-top: 0; padding-bottom: 0; padding-left: 0; height: auto; max-height: none; min-height: 129px;" />
+                            </engine:ScrollView>
+                        </engine:VisualElement>
+                    </engine:GroupBox>
+                    <engine:GroupBox name="2Panel" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; height: 37%;">
+                        <engine:Label text="Necessary" name="labelNecessary" style="margin-top: 2%; margin-right: 0; margin-bottom: 1%; margin-left: 2%; padding-top: 0; padding-right: 0; padding-left: 0; padding-bottom: 0; color: rgb(223, 222, 222); font-size: 12px;" />
+                        <engine:VisualElement name="2Panel-Back" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.03); width: auto; height: 50%; max-height: none; margin-top: 3px; margin-right: 3px; margin-bottom: 3px; margin-left: 3px; border-left-color: rgba(44, 42, 34, 0.6); border-right-color: rgba(44, 42, 34, 0.6); border-top-color: rgba(44, 42, 34, 0.6); border-bottom-color: rgba(44, 42, 34, 0.6); border-top-left-radius: 1px; border-top-right-radius: 1px; border-bottom-right-radius: 1px; border-bottom-left-radius: 1px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;">
+                            <engine:ScrollView vertical-scroller-visibility="AlwaysVisible" horizontal-page-size="1" name="2Panel-ScrollView" horizontal-scroller-visibility="Hidden" mouse-wheel-scroll-size="4.833333" touch-scroll-type="Clamped" class="l2-scroll-view" style="flex-grow: 1;">
+                                <engine:VisualElement name="Content" style="flex-grow: 1; padding-right: 0; flex-shrink: 0; flex-direction: row; flex-wrap: wrap; padding-top: 0; padding-bottom: 0; padding-left: 0;" />
+                            </engine:ScrollView>
+                        </engine:VisualElement>
+                    </engine:GroupBox>
+                    <engine:GroupBox name="3Panel" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; height: 25%;">
+                        <engine:VisualElement name="3Panel-Back" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.03); width: auto; height: 50%; max-height: none; margin-top: 3px; margin-right: 3px; margin-bottom: 3px; margin-left: 3px; border-left-color: rgba(44, 42, 34, 0.6); border-right-color: rgba(44, 42, 34, 0.6); border-top-color: rgba(44, 42, 34, 0.6); border-bottom-color: rgba(44, 42, 34, 0.6); border-top-left-radius: 1px; border-top-right-radius: 1px; border-bottom-right-radius: 1px; border-bottom-left-radius: 1px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;" />
+                    </engine:GroupBox>
+                </engine:GroupBox>
             </engine:GroupBox>
             <engine:GroupBox name="FooterBotton" style="margin-top: 2%; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; flex-direction: row; align-self: center;">
-                <engine:Button text="SuccessButton" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SuccessButton" class="l2-button" style="height: 20px; background-color: rgba(188, 188, 188, 0);">
-                    <engine:VisualElement name="ButtonBg" class="l2-button-bg" />
-                    <engine:Label text="Success" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0;" />
-                </engine:Button>
                 <engine:Button text="CloseButton" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CloseButton" class="l2-button" style="height: 20px; background-color: rgba(188, 188, 188, 0);">
                     <engine:VisualElement name="ButtonBg" class="l2-button-bg" />
                     <engine:Label text="Cancel" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonLabel" picking-mode="Ignore" class="button-label" style="letter-spacing: 0;" />

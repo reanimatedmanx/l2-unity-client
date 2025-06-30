@@ -1,5 +1,7 @@
 using System.Globalization;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ToolTipsUtils 
 {
@@ -34,5 +36,11 @@ public class ToolTipsUtils
     public static string ConvertPriceToNormal(string wholeNumber)
     {
         return wholeNumber.Replace(",", "");
+    }
+
+    public static VisualElement CloneOne(VisualTreeAsset vta)
+    {
+        var e = vta.CloneTree();
+        return e.Children().First();
     }
 }

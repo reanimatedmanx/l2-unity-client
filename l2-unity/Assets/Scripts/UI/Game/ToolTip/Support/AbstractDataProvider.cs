@@ -6,7 +6,7 @@ using static UnityEditor.Rendering.FilterWindow;
 public abstract class AbstractDataProvider
 {
 
-    protected void SetDataWeaponInTemplate(TemplateContainer container, Weapongrp weapon, int price , IDataTips text)
+    protected void SetDataWeaponInTemplate(VisualElement container, Weapongrp weapon, int price , IDataTips text)
     {
         container.Q<Label>("nameWeapon").text = text.GetName();
 
@@ -75,7 +75,7 @@ public abstract class AbstractDataProvider
     }
 
 
-    public void SetDataAccessoriesInTemplate(TemplateContainer container, Armorgrp armor, IDataTips text , int price , string accessoriesName)
+    public void SetDataAccessoriesInTemplate(VisualElement container, Armorgrp armor, IDataTips text , int price , string accessoriesName)
     {
         container.Q<Label>("nameAccessories").text = text.GetName();
 
@@ -124,7 +124,7 @@ public abstract class AbstractDataProvider
     }
 
 
-    protected void SetOther(TemplateContainer container , IDataTips text , string etcIcon , int priceItem ,  string accessoriesName , string weight)
+    protected void SetOther(VisualElement container , IDataTips text , string etcIcon , int priceItem ,  string accessoriesName , string weight)
     {
      
             container.Q<Label>("nameAccessories").text = text.GetName();
@@ -169,12 +169,14 @@ public abstract class AbstractDataProvider
             Label weightLabel = container.Q<Label>("weightlabel");
             AddElementIfNotEmpty(groupBoxWeight, weightLabel, weight);
 
-            container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
+            Label descriptionLabel = container.Q<Label>("descriptedLabel");
+            AddElementIfNotEmpty(descriptionLabel, descriptionLabel, text.GetItemDiscription());
+        //container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
 
         
     }
 
-    protected void AddArmor(TemplateContainer container, int price, string armorTypeName ,  IDataTips text, Armorgrp armor, VisualTreeAsset setsElements, VisualTreeAsset setsEffects, CreatorSets creator)
+    protected void AddArmor(VisualElement container, int price, string armorTypeName ,  IDataTips text, Armorgrp armor, VisualTreeAsset setsElements, VisualTreeAsset setsEffects, CreatorSets creator)
     {
         //set icon
         VisualElement groupBoxIcon = container.Q<VisualElement>("GrowIcon");
@@ -240,10 +242,14 @@ public abstract class AbstractDataProvider
 
 
         container.Q<Label>("weightlabel").text = armor.Weight.ToString();
-        container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
+
+        Label descriptionLabel = container.Q<Label>("descriptedLabel");
+        AddElementIfNotEmpty(descriptionLabel, descriptionLabel, text.GetItemDiscription());
+
+        //container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
     }
 
-    protected void AddArmorShield(TemplateContainer container, int price, string armorTypeName , IDataTips text, Weapongrp armor)
+    protected void AddArmorShield(VisualElement container, int price, string armorTypeName , IDataTips text, Weapongrp armor)
     {
         //set icon
         VisualElement groupBoxIcon = container.Q<VisualElement>("GrowIcon");
@@ -299,7 +305,12 @@ public abstract class AbstractDataProvider
         AddElementIfNot0(dexGroup, dexLabel, armor.Dex);
 
         container.Q<Label>("weightlabel").text = armor.Weight.ToString();
-        container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
+
+        Label descriptionLabel = container.Q<Label>("descriptedLabel");
+        AddElementIfNotEmpty(descriptionLabel, descriptionLabel, text.GetItemDiscription());
+
+
+        //container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
     }
 
     protected void AddElementIfNotNull(VisualElement groupElement, VisualElement icon, Texture2D texture)

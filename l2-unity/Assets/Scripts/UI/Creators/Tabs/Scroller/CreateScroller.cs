@@ -20,7 +20,7 @@ public class CreateScroller
         }
     }
 
-    private void RegisterPlayerScrollEvent(ScrollView scrollView, Scroller scroller)
+    public void RegisterPlayerScrollEvent(ScrollView scrollView, Scroller scroller)
     {
         if (scroller != null)
         {

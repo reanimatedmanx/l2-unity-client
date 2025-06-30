@@ -96,8 +96,6 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 AddData(data, template);
             }
         }
-
-        
     }
 
 
@@ -139,19 +137,15 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
         switch (item.Category)
         {
             case ItemCategory.Weapon:
-                Debug.Log("Weapon");
                 _dataProvider.AddDataWeapon(template, item);
                 break;
             case ItemCategory.Jewel:
-                Debug.Log("Jewel");
                 _dataProvider.AddDataAccessories(template, item);
                 break;
             case ItemCategory.Item:
-                Debug.Log("Item");
                 _dataProvider.AddDataOther(template, item);
                 break;
             case ItemCategory.ShieldArmor:
-                Debug.Log("ShieldArmor");
                 _dataProvider.AddDataArmor(template, item, _setsElements, _setsEffects);
                 break;
         }
@@ -338,6 +332,21 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
     }
 
     private TemplateContainer GetInventoryContainer(ItemInstance item)
+    {
+        switch (item.Category)
+        {
+            case ItemCategory.Weapon:
+                return SwitchToWeapon();
+            case ItemCategory.Jewel:
+            case ItemCategory.Item:
+                return SwitchToAccessories();
+            case ItemCategory.ShieldArmor:
+                return SwitchToArmor();
+        }
+        return null;
+    }
+
+    public TemplateContainer GetContainer(ItemInstance item)
     {
         switch (item.Category)
         {

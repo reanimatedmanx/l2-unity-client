@@ -11,7 +11,7 @@ public class TooltipDataProvider : AbstractDataProvider
     {
         _creator = new CreatorSets();
     }
-    public  void AddDataWeapon(TemplateContainer container, object item)
+    public  void AddDataWeapon(VisualElement container, object item)
     {
 
         if (item != null)
@@ -36,7 +36,7 @@ public class TooltipDataProvider : AbstractDataProvider
 
  
 
-    public void AddDataAccessories(TemplateContainer container, object item)
+    public void AddDataAccessories(VisualElement container, object item)
     {
         if (item != null)
         {
@@ -57,7 +57,7 @@ public class TooltipDataProvider : AbstractDataProvider
         }
     }
 
-    public void AddDataOther(TemplateContainer container, object item)
+    public void AddDataOther(VisualElement container, object item)
     {
         if (item != null)
         {
@@ -81,7 +81,7 @@ public class TooltipDataProvider : AbstractDataProvider
     }
 
 
-    public void AddDataArmor(TemplateContainer container, object item , VisualTreeAsset setsElements, VisualTreeAsset setsEffect)
+    public void AddDataArmor(VisualElement container, object item , VisualTreeAsset setsElements, VisualTreeAsset setsEffect)
     {
         if (item != null)
         {

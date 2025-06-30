@@ -59,7 +59,7 @@ public abstract class AbstractServerItem
     public string GetItemDescription()
     {
         ItemName item = ItemNameTable.Instance.GetItemName(itemId);
-        if (string.IsNullOrEmpty(item.Description)) return "Not Found description";
+        //if (string.IsNullOrEmpty(item.Description)) return "Not Found description";
         return item.Description;
     }
 
