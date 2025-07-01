@@ -10,7 +10,7 @@ public class CreatorTradingWindows : ICreatorTrading
     private string[] _nameTabs;
     private TradeTab _activeTab;
 
-    public event Action<int , ItemCategory> EventLeftClick;
+    public event Action<int , ItemCategory , int> EventLeftClick;
 
     public void InitTabs(string[] nameTabs)
     {
@@ -62,6 +62,14 @@ public class CreatorTradingWindows : ICreatorTrading
         SetMainTab(0, true);
     }
 
+    public void SetClickActiveTab(int position)
+    {
+        if(_activeTab != null)
+        {
+            _activeTab.OnClickLeftEvent(position);
+        }
+    }
+
     public void SwitchTab(TradeTab switchTo)
     {
         if (_activeTab != switchTo)
@@ -85,9 +93,9 @@ public class CreatorTradingWindows : ICreatorTrading
  
     }
 
-    private void OnLeftClick(int itemId , ItemCategory category)
+    private void OnLeftClick(int itemId , ItemCategory category , int position)
     {
-        EventLeftClick?.Invoke(itemId , category);
+        EventLeftClick?.Invoke(itemId , category , position);
     }
     public TradeTab GetMainTab()
     {

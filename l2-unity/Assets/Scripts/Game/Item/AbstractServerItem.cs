@@ -4,7 +4,7 @@ using static UnityEditor.Progress;
 public abstract class AbstractServerItem 
 {
     protected int itemId;
-
+    protected bool _isMultisellData = false;
     public void SetItemId(int itemId)
     {
         this.itemId = itemId;
@@ -55,11 +55,14 @@ public abstract class AbstractServerItem
         return "";
     }
 
-
+    public void SetMultiSell(bool data)
+    {
+        _isMultisellData = data;
+    }
     public string GetItemDescription()
     {
         ItemName item = ItemNameTable.Instance.GetItemName(itemId);
-        //if (string.IsNullOrEmpty(item.Description)) return "Not Found description";
+        if (string.IsNullOrEmpty(item.Description) && !_isMultisellData) return "Not Found description";
         return item.Description;
     }
 

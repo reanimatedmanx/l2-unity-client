@@ -1,9 +1,11 @@
 using FMOD;
+using System;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
+using static UnityEditor.FilePathAttribute;
 
 public class MultiSellList : ServerPacket
 {
@@ -49,8 +51,6 @@ public class MultiSellList : ServerPacket
 
             _listMultisell.Add(new MultiSellData(listProducts, listIngredient));
         }
-        UnityEngine.Debug.Log("");
-
     }
 
     private List<ItemInstance> CreateItemList(int sizeProducts)
@@ -117,7 +117,7 @@ public class MultiSellData
 public class Ingredient
 {
     private int _itemId;
-
+    private ItemInstance _itemInstance;
     private int _type2;
     private int _itemCount;
     private int _enchantLevel;
@@ -128,5 +128,10 @@ public class Ingredient
         _type2 = type2;
         _itemCount = itemCount;
         _enchantLevel = enchantLevel;
+        ItemCategory category = ItemsType.ParceCategory(type2);
+
+        _itemInstance = new ItemInstance(0, itemId, ItemLocation.Trade, 0, itemCount, category, false, ItemSlot.none, _enchantLevel, 9999);
     }
+
+    public ItemInstance GetItemInstance() { return _itemInstance; }
 }

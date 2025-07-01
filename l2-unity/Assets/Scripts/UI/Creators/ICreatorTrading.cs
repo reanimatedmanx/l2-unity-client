@@ -10,7 +10,9 @@ public interface ICreatorTrading
 
     public void AddDataTrade(List<ItemInstance> allItems);
 
-    public event Action<int , ItemCategory> EventLeftClick;
+    public event Action<int , ItemCategory , int> EventLeftClick;
+
+    public void SetClickActiveTab(int position);
 
 
 

@@ -392,7 +392,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         MultiSellList multiSellList = new MultiSellList(data);
 
         EventProcessor.Instance.QueueEvent(() => {
-            MultiSellWindow.Instance.AddData(multiSellList.GetOnlyItems());
+            MultiSellWindow.Instance.AddData(multiSellList.GetOnlyItems()  , multiSellList);
             MultiSellWindow.Instance.ShowWindow();
         });
     }

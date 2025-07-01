@@ -1,4 +1,7 @@
 
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +9,7 @@ using System.Linq;
 using UnityEngine;
 
 using UnityEngine.UIElements;
+using static UnityEditor.Progress;
 
 
 public class MultiSellWindow : L2PopupWindow
@@ -19,13 +23,16 @@ public class MultiSellWindow : L2PopupWindow
     private ScrollView _scrollView1;
     private ScrollView _scrollView2;
     private VisualElement _contentPanel1;
+    private VisualElement _contentPanel2;
 
     private VisualTreeAsset _windowTemplateWeapon;
     private VisualTreeAsset _windowTemplateAcccesories;
     private VisualTreeAsset _windowTemplateArmor;
-
+    private VisualTreeAsset _itemTemplateIngredient;
+    private MultiSellList _listMultisell;
     private TooltipDataProvider _dataProvider;
-    private CreateScroller _createScroller;
+    private MultiSellToolTips _toolTips;
+    // private CreateScroller _createScroller;
     private VisualElement _selectContainer;
     public static MultiSellWindow Instance { get { return _instance; } }
 
@@ -36,7 +43,8 @@ public class MultiSellWindow : L2PopupWindow
             _instance = this;
             _creatorWindow = new CreatorTradingWindows();
             _dataProvider = new TooltipDataProvider();
-            _createScroller = new CreateScroller();
+            _toolTips = new MultiSellToolTips(_dataProvider);
+
         }
         else
         {
@@ -54,6 +62,7 @@ public class MultiSellWindow : L2PopupWindow
         _windowTemplateWeapon = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipWeapon");
         _windowTemplateAcccesories = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipAccessories");
         _windowTemplateArmor = LoadAsset("Data/UI/_Elements/Game/ToolTips/ToolTipArmor");
+        _itemTemplateIngredient = LoadAsset("Data/UI/_Elements/Template/Merchant/ItemsIngredient");
     }
 
 
@@ -72,9 +81,9 @@ public class MultiSellWindow : L2PopupWindow
         _scrollView2 = (ScrollView)GetElementById("2Panel-ScrollView");
    
 
-        _createScroller.RegisterPlayerScrollEvent(_scrollView1, _scrollView1.verticalScroller);
+        //_createScroller.RegisterPlayerScrollEvent(_scrollView1, _scrollView1.verticalScroller);
         _contentPanel1 = _scrollView1.contentContainer;
-
+        _contentPanel2 = _scrollView2.contentContainer;
 
         var dragArea = GetElementByClass("drag-area");
         DragManipulator drag = new DragManipulator(dragArea, _windowEle);
@@ -84,47 +93,65 @@ public class MultiSellWindow : L2PopupWindow
         RegisterCloseWindowEventByName("CloseButton");
 
         OnCenterScreen(_root);
+
         _creatorWindow.EventLeftClick += OnEventLeftClick;
+        _toolTips.SetTemplate(_windowTemplateWeapon, _windowTemplateAcccesories, _windowTemplateArmor, _itemTemplateIngredient);
+
         yield return new WaitForEndOfFrame();
     }
 
 
-    public void AddData(List<ItemInstance> allItems)
+    public void AddData(List<ItemInstance> allItems , MultiSellList listMultisell)
     {
-        _creatorWindow.AddDataTrade(allItems);
+        if(allItems.Count > 0 && listMultisell != null)
+        {
+            _listMultisell = listMultisell;
+            _creatorWindow.AddDataTrade(allItems);
+        }
+
+        _creatorWindow.SetClickActiveTab(0);
     }
 
-    private void OnDestroy()
-    {
-        _instance = null;
-    }
-    public void OnEventLeftClick(int itemId , ItemCategory category)
+
+    public void OnEventLeftClick(int itemId , ItemCategory category, int position)
     {
         ItemInstance itemInstance = new ItemInstance(0, itemId, ItemLocation.Trade, 0, 1, category, false, ItemSlot.none, 0, 999);
-        _selectContainer = GetContainer(itemInstance);
+        itemInstance.SetMultiSell(true);
+        _contentPanel1.Clear();
+        _selectContainer = _toolTips.GetContainer(itemInstance);
 
         if(_selectContainer != null)
         {
-            UseItem(itemInstance, _selectContainer);
+            _toolTips.UseItem(itemInstance, _selectContainer);
             _contentPanel1.Add(_selectContainer);
             _selectContainer.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+
+
+            _contentPanel2.Clear();
+
+            List<MultiSellData> data = _listMultisell.GetMultiSell();
+            List<Ingredient> ingredients = null;
+
+            if (!IfMore1Item( data, itemId))
+            {
+                ingredients = GetIngredient(data, itemInstance.ItemId);
+            }
+            else
+            {
+                ingredients = GetIngredientByIndex(data, position);
+            }
+            
+            Debug.Log("Select position " + position);
+            
+           if(ingredients != null)
+           {
+                _toolTips.AddIngredient(ingredients, _contentPanel2);
+           }
+            
         }
     }
 
-    public VisualElement GetContainer(ItemInstance item)
-    {
-        switch (item.Category)
-        {
-            case ItemCategory.Weapon:
-                return SwitchToWeapon();
-            case ItemCategory.Jewel:
-            case ItemCategory.Item:
-                return SwitchToAccessories();
-            case ItemCategory.ShieldArmor:
-                return SwitchToArmor();
-        }
-        return null;
-    }
+   
 
     public void OnGeometryChanged(GeometryChangedEvent evt)
     {
@@ -132,99 +159,51 @@ public class MultiSellWindow : L2PopupWindow
         _selectContainer.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
     }
 
-
-    private void UseItem(ItemInstance item, VisualElement template)
+    private List<Ingredient> GetIngredient(List<MultiSellData> data , int itemId)
     {
-        switch (item.Category)
+        foreach (MultiSellData item in data)
         {
-            case ItemCategory.Weapon:
-                _dataProvider.AddDataWeapon(template, item);
-                break;
-           case ItemCategory.Jewel:
-                _dataProvider.AddDataAccessories(template, item);
-                break;
-            case ItemCategory.Item:
-                _dataProvider.AddDataOther(template, item);
-                break;
-           case ItemCategory.ShieldArmor:
-                _dataProvider.AddDataArmor(template, item, null, null);
-                break;
+            List<ItemInstance> listItem = item.ProductList;
+            bool result =  listItem.Any(x => x.ItemId == itemId);
+            if (result)
+            {
+                return item.IngredientList;
+            }
         }
+
+        return null;
     }
 
-
-    private VisualElement SwitchToWeapon()
+    public bool IfMore1Item(List<MultiSellData> data, int itemId)
     {
-        _contentPanel1.Clear();
-        VisualElement weapon = ToolTipsUtils.CloneOne(_windowTemplateWeapon);
-        var boxBackground = weapon.Q<VisualElement>("Box");
-        var topBackground = weapon.Q<VisualElement>("Top");
-        var centerBackground = weapon.Q<VisualElement>("Center");
-        var growIcon = weapon.Q<VisualElement>("GrowIcon");
-        ClearBorder(boxBackground, topBackground, centerBackground, growIcon);
-        return weapon;
-    }
+        List<MultiSellData>  list = data.Where(x => x.ProductList[0].ItemId == itemId).ToList();
 
-
-
-
-    private VisualElement SwitchToAccessories()
-    {
-        _contentPanel1.Clear();
-
-        var accessories = ToolTipsUtils.CloneOne(_windowTemplateAcccesories); 
-        var boxBackground = accessories.Q<VisualElement>("Box");
-        var topBackground = accessories.Q<VisualElement>("Top");
-        var centerBackground = accessories.Q<VisualElement>("Center");
-        var growIcon = accessories.Q<VisualElement>("GrowIcon");
-        ClearBorder(boxBackground, topBackground, centerBackground, growIcon);
-
-        return accessories;
-    }
-
-    private VisualElement SwitchToArmor()
-    {
-        _contentPanel1.Clear();
-
-        var armor = ToolTipsUtils.CloneOne(_windowTemplateArmor);
-        var boxBackground = armor.Q<VisualElement>("Box");
-        var topBackground = armor.Q<VisualElement>("Top");
-        var centerBackground = armor.Q<VisualElement>("Center");
-        var growIcon= armor.Q<VisualElement>("GrowIcon");
-        ClearBorder(boxBackground, topBackground, centerBackground , growIcon);
-
-        return armor;
-
-    }
-
-
-    private void ClearBorder(VisualElement boxBackground, VisualElement topBackground, VisualElement centerBackground , VisualElement growIcon)
-    {
-        StyleColor currentColor = boxBackground.style.backgroundColor;
-        boxBackground.style.backgroundColor = new Color(currentColor.value.r, currentColor.value.g, currentColor.value.b, 0);
-
-        ResetBorder(boxBackground);
-
-        topBackground.style.borderBottomWidth = 0;
-        centerBackground.style.borderBottomWidth = 0;
-
-        if(growIcon != null)
+        if(list.Count > 1)
         {
-            ResetBorder(growIcon);
+            return true;
         }
+        return false;
     }
 
-    private void ResetBorder(VisualElement element)
+    private List<Ingredient> GetIngredientByIndex(List<MultiSellData> data, int index)
     {
-        element.style.borderBottomWidth = 0;
-        element.style.borderLeftWidth = 0;
-        element.style.borderRightWidth = 0;
-        element.style.borderTopWidth = 0;
+        if(IsValidIndex(data, index))
+        {
+            return data[index].IngredientList;
+        }
+        return null;
+    }
+
+    private bool IsValidIndex(List<MultiSellData> array, int index)
+    {
+        return index >= 0 && index < array.Count;
     }
 
 
-
-
+    private void OnDestroy()
+    {
+        _instance = null;
+    }
 
 
 }

@@ -313,6 +313,26 @@ public abstract class AbstractDataProvider
         //container.Q<Label>("descriptedLabel").text = text.GetItemDiscription();
     }
 
+    protected void SetDataIngredient(VisualElement container, IDataTips text, string icon, int count, string name)
+    {
+
+        VisualElement gradeBox = container.Q<VisualElement>("grade");
+        Texture2D grade = text.GetGradeTexture();
+        SetImageElement(gradeBox, grade);
+
+        VisualElement groupIcon = container.Q<VisualElement>("GrowIcon");
+        var iconElement = container.Q<VisualElement>("icon");
+        AddElementIfNotNull(groupIcon, iconElement, IconManager.Instance.LoadTextureByName(icon));
+
+        VisualElement groupPriceLabel = container.Q<VisualElement>("GrowPrice");
+        Label priceLabel = (Label)container.Q<Label>("price");
+        AddElementCountXifNot0(groupPriceLabel, priceLabel, count);
+
+        VisualElement groupName = container.Q<VisualElement>("GrowName");
+        Label labelName = container.Q<Label>("nameLabel");
+        AddElementIfNotEmpty(groupName, labelName, name);
+    }
+
     protected void AddElementIfNotNull(VisualElement groupElement, VisualElement icon, Texture2D texture)
     {
         if (texture != null)
@@ -336,6 +356,18 @@ public abstract class AbstractDataProvider
         else
         {
             AddElementIfNotEmpty(groupPriceLabel, priceLabel, ToolTipsUtils.ConvertToPrice(price) + " Adena");
+        }
+    }
+
+    protected void AddElementCountXifNot0(VisualElement groupPriceLabel, Label priceLabel, int price)
+    {
+        if (price == 0)
+        {
+            AddElementIfNotEmpty(groupPriceLabel, priceLabel, null);
+        }
+        else
+        {
+            AddElementIfNotEmpty(groupPriceLabel, priceLabel, ToolTipsUtils.ConvertToPrice(price));
         }
     }
 

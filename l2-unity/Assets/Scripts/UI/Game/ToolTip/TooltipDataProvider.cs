@@ -11,6 +11,8 @@ public class TooltipDataProvider : AbstractDataProvider
     {
         _creator = new CreatorSets();
     }
+
+    
     public  void AddDataWeapon(VisualElement container, object item)
     {
 
@@ -120,6 +122,32 @@ public class TooltipDataProvider : AbstractDataProvider
             }
         }
     }
+
+    public void AddDataIngredient(VisualElement container , ItemInstance item)
+    {
+        //set icon
+        IDataTips text = ToolTipManager.GetInstance().GetProductText(item);
+
+        if (item.GetArmor() != null)
+        {
+            Armorgrp armor = item.GetArmor();
+            SetDataIngredient(container, text, armor.Icon , item.Count , item.GetName());
+        }
+        else if (item.GetWeapon() != null)
+        {
+            Weapongrp weapon = item.GetWeapon();
+            SetDataIngredient(container, text, weapon.Icon, item.Count, item.GetName());
+        }
+        else if (item.GetEtcItem() != null)
+        {
+            EtcItemgrp etcItem = item.GetEtcItem();
+            SetDataIngredient(container, text, etcItem.Icon, item.Count, item.GetName());
+        }
+
+
+    }
+
+    
 
     private void  SetDataInfo(object item , ref int price , ref string armorTypeName , ref Abstractgrp data)
     {

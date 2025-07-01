@@ -20,7 +20,7 @@ public class TradeTab
     private VisualElement _tabHeader;
     private VisualElement _contentContainer;
     public event Action<TradeTab> EventSwitch;
-    public event Action<int , ItemCategory> EventLeftClick;
+    public event Action<int , ItemCategory , int > EventLeftClick;
     private int _selectedSlot = -1;
     public TradeTab(string tabName , int countSlot , VisualElement tabContainer, VisualElement tabHeader, bool initEmpty)
     {
@@ -81,7 +81,7 @@ public class TradeTab
         }
     }
 
-    private void OnClickLeftEvent(int position)
+    public void OnClickLeftEvent(int position)
     {
         SelectSlot(position);
         SetEventOutside(position);
@@ -111,7 +111,7 @@ public class TradeTab
             TradingSlot slot = _tradeSlots[slotPosition];
             if (slot != null)
             {
-                EventLeftClick?.Invoke(slot.GetItemId() , slot.GetItemCategory());
+                EventLeftClick?.Invoke(slot.GetItemId() , slot.GetItemCategory() , slotPosition);
             }
             
         }
