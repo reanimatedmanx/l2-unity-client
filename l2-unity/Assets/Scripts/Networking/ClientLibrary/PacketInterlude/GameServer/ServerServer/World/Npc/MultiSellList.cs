@@ -19,6 +19,7 @@ public class MultiSellList : ServerPacket
     private bool _isStackable;
     private int _size;
 
+    public int GetListId() { return _listId;  }
     public List<MultiSellData> GetMultiSell() { return _listMultisell; }
     public List<ItemInstance> GetOnlyItems() { return _listOnlyItem; }
     public MultiSellList(byte[] d) : base(d)

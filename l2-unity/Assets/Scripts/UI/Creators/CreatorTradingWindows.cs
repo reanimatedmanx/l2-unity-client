@@ -121,4 +121,15 @@ public class CreatorTradingWindows : ICreatorTrading
             _activeTab.AddDataTrade(allItems);
         }
     }
+
+    public ItemInstance GetActiveByPosition(int position)
+    {
+        if(_activeTab != null)
+        {
+           return _activeTab.GetSlotByPosition(position);
+        }
+
+        return null;
+    }
+
 }

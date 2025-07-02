@@ -9,7 +9,9 @@ using System.Linq;
 using UnityEngine;
 
 using UnityEngine.UIElements;
+using UnityEngine.Windows;
 using static UnityEditor.Progress;
+using static UnityEngine.EventSystems.EventTrigger;
 
 
 public class MultiSellWindow : L2PopupWindow
@@ -32,6 +34,9 @@ public class MultiSellWindow : L2PopupWindow
     private MultiSellList _listMultisell;
     private TooltipDataProvider _dataProvider;
     private MultiSellToolTips _toolTips;
+    private TextField _userInput;
+    private int _listId;
+    private int _entryId = -1;
     // private CreateScroller _createScroller;
     private VisualElement _selectContainer;
     public static MultiSellWindow Instance { get { return _instance; } }
@@ -71,7 +76,9 @@ public class MultiSellWindow : L2PopupWindow
         InitWindow(root);
         yield return new WaitForEndOfFrame();
 
-
+        _userInput = (TextField)GetElementById("UserInputField");
+         var deleteButton = (Button)GetElementById("DeleteButton");
+         var exchangeButton = (Button)GetElementById("ExchangeButton");
         _inventoryTabView = GetElementById("InventoryTabView");
 
         _creatorWindow.InitTabs(new string[] { "ALL" , "Other" });
@@ -79,9 +86,9 @@ public class MultiSellWindow : L2PopupWindow
 
         _scrollView1 = (ScrollView)GetElementById("1Panel-ScrollView");
         _scrollView2 = (ScrollView)GetElementById("2Panel-ScrollView");
-   
+        
 
-        //_createScroller.RegisterPlayerScrollEvent(_scrollView1, _scrollView1.verticalScroller);
+             //_createScroller.RegisterPlayerScrollEvent(_scrollView1, _scrollView1.verticalScroller);
         _contentPanel1 = _scrollView1.contentContainer;
         _contentPanel2 = _scrollView2.contentContainer;
 
@@ -91,6 +98,11 @@ public class MultiSellWindow : L2PopupWindow
         RegisterCloseWindowEvent("btn-close-frame");
         RegisterClickWindowEvent(_windowEle, dragArea);
         RegisterCloseWindowEventByName("CloseButton");
+
+        _userInput.value = "1";
+        _userInput.RegisterValueChangedCallback(evt => OnValueChanged(evt));
+        deleteButton.RegisterCallback<ClickEvent>((evt) => OnClick(evt));
+        exchangeButton.RegisterCallback<ClickEvent>((evt) => OnSendServer(evt));
 
         OnCenterScreen(_root);
 
@@ -106,12 +118,19 @@ public class MultiSellWindow : L2PopupWindow
         if(allItems.Count > 0 && listMultisell != null)
         {
             _listMultisell = listMultisell;
+            _listId = listMultisell.GetListId();
             _creatorWindow.AddDataTrade(allItems);
         }
 
         _creatorWindow.SetClickActiveTab(0);
+        _entryId = 1;
     }
 
+    public void ShowWindow()
+    {
+        _userInput.value = "1";
+        base.ShowWindow();
+    }
 
     public void OnEventLeftClick(int itemId , ItemCategory category, int position)
     {
@@ -131,27 +150,37 @@ public class MultiSellWindow : L2PopupWindow
 
             List<MultiSellData> data = _listMultisell.GetMultiSell();
             List<Ingredient> ingredients = null;
+            ingredients = GetIngredient(data  , itemId, itemInstance, position);
 
-            if (!IfMore1Item( data, itemId))
+            if (ingredients != null)
             {
-                ingredients = GetIngredient(data, itemInstance.ItemId);
-            }
-            else
-            {
-                ingredients = GetIngredientByIndex(data, position);
-            }
-            
-            Debug.Log("Select position " + position);
-            
-           if(ingredients != null)
-           {
                 _toolTips.AddIngredient(ingredients, _contentPanel2);
-           }
-            
+            }
+
+        }
+        else
+        {
+            _entryId = -1;
         }
     }
 
-   
+    public ItemInstance GetItemByPosition(int position)
+    {
+        return _creatorWindow.GetActiveByPosition(position);
+    }
+
+
+    private List<Ingredient> GetIngredient(List<MultiSellData> data , int itemId , ItemInstance itemInstance , int position)
+    {
+        if (!IfMore1Item(data, itemId))
+        {
+            return  GetIngredient(data, itemInstance.ItemId);
+        }
+        else
+        {
+            return  GetIngredientByIndex(data, position);
+        }
+    }
 
     public void OnGeometryChanged(GeometryChangedEvent evt)
     {
@@ -161,15 +190,20 @@ public class MultiSellWindow : L2PopupWindow
 
     private List<Ingredient> GetIngredient(List<MultiSellData> data , int itemId)
     {
+        int index = 1;
         foreach (MultiSellData item in data)
         {
             List<ItemInstance> listItem = item.ProductList;
             bool result =  listItem.Any(x => x.ItemId == itemId);
             if (result)
             {
+                _entryId = index;
                 return item.IngredientList;
             }
+            index++;
         }
+
+        
 
         return null;
     }
@@ -189,6 +223,7 @@ public class MultiSellWindow : L2PopupWindow
     {
         if(IsValidIndex(data, index))
         {
+            _entryId = index;
             return data[index].IngredientList;
         }
         return null;
@@ -199,6 +234,56 @@ public class MultiSellWindow : L2PopupWindow
         return index >= 0 && index < array.Count;
     }
 
+
+    private void OnValueChanged(ChangeEvent<string> evt)
+    {
+
+        _userInput.UnregisterValueChangedCallback(OnValueChanged);
+
+        if (evt.newValue.Length == 0 & evt.previousValue.Length >= 1)
+        {
+            _userInput.SetValueWithoutNotify("0");
+            _userInput.RegisterValueChangedCallback(OnValueChanged);
+            return;
+        }
+
+
+        string digitsOnly = ToolTipsUtils.ConvertPriceToNormal(evt.newValue);
+        if (digitsOnly.Length > 20) return;
+        if (string.IsNullOrEmpty(digitsOnly) || !long.TryParse(digitsOnly, out long newValue))
+        {
+            _userInput.SetValueWithoutNotify(evt.previousValue);
+            _userInput.RegisterValueChangedCallback(OnValueChanged);
+            return;
+        }
+
+        digitsOnly = digitsOnly.Trim();
+
+        string formattedValue = ToolTipsUtils.ConvertToPrice(long.Parse(digitsOnly));
+
+        _userInput.SetValueWithoutNotify(formattedValue);
+
+        if (formattedValue.Length > 1) SetCursorToEnd(formattedValue);
+        _userInput.RegisterValueChangedCallback(OnValueChanged);
+    }
+
+    private void SetCursorToEnd(string formattedValue)
+    {
+        _userInput.cursorIndex = formattedValue.Length + 1;
+    }
+
+    private void OnClick(ClickEvent evt)
+    {
+        _userInput.value = "1";
+    }
+
+    private void OnSendServer(ClickEvent evt)
+    {
+        string value = ToolTipsUtils.ConvertPriceToNormal(_userInput.value);
+        var sendPaket = CreatorPacketsUser.CreateMultiSellChoose(_listId, _entryId, int.Parse(value));
+        bool enable = GameClient.Instance.IsCryptEnabled();
+        SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
+    }
 
     private void OnDestroy()
     {

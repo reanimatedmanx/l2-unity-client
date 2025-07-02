@@ -10,6 +10,7 @@ public class MultiSellToolTips
     private VisualTreeAsset _windowTemplateAcccesories;
     private VisualTreeAsset _windowTemplateArmor;
     private VisualTreeAsset _itemTemplateIngredient;
+    
     public MultiSellToolTips(TooltipDataProvider dataProvider)
     {
         _dataProvider = dataProvider;
@@ -195,5 +196,7 @@ public class MultiSellToolTips
     {
         return ToolTipsUtils.CloneOne(itemTemplateIngredient);
     }
+
+   
 
 }

@@ -31,6 +31,11 @@ public class CreatorPacketsUser
         return new RequestEnchantItem(_objectId);
     }
 
+    public static MultiSellChoose CreateMultiSellChoose(int listId, int entryId, int amoun)
+    {
+        return new MultiSellChoose(listId , entryId , amoun);
+    }
+
     public static RequestBuyItem CreateRequestBuyItem(int listId, List<Product> buyList)
     {
         return new RequestBuyItem(listId,  buyList);

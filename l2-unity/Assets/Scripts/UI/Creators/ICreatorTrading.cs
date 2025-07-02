@@ -14,6 +14,8 @@ public interface ICreatorTrading
 
     public void SetClickActiveTab(int position);
 
+    public ItemInstance GetActiveByPosition(int position);
+
 
 
 }

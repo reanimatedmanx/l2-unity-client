@@ -56,6 +56,10 @@ public class AssignData
         return _itemInstance.ItemId;
     }
 
+    public ItemInstance GetItemInstance()
+    {
+        return _itemInstance;
+    }
 
 
 

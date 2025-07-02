@@ -289,6 +289,10 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                     ItemInstance enchantItem = EnchantWindow.Instance.GetItemByPosition(position);
                     if (enchantItem != null) return GetInventoryContainer(enchantItem);
                     break;
+                case (int)SlotType.Multisell:
+                    ItemInstance multiSelltItem = MultiSellWindow.Instance.GetItemByPosition(position);
+                    if (multiSelltItem != null) return GetInventoryContainer(multiSelltItem);
+                    break;
                 case (int)SlotType.Gear:
                     GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
                     return GetGearContainer(gearItem);
@@ -306,6 +310,8 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
                 case (int)SlotType.Inventory:
                     return SwitchToString();
                 case (int)SlotType.Enchant:
+                    return SwitchToString();
+                case (int)SlotType.Multisell:
                     return SwitchToString();
                 case (int)SlotType.Gear:
                     GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
@@ -526,6 +532,10 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             {
                 return EnchantWindow.Instance.GetItemByPosition(position);
             }
+            else if (type == (int)SlotType.Multisell)
+            {
+                return MultiSellWindow.Instance.GetItemByPosition(position);
+            }
         else if (type == (int)SlotType.Gear)
             {
                 GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);
@@ -699,6 +709,10 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
             case (int)SlotType.Enchant:
                 ItemInstance itemEnchant = EnchantWindow.Instance.GetItemByPosition(position);
                 SetSimpleItemSingleToolTip(itemEnchant, template);
+                break;
+            case (int)SlotType.Multisell:
+                ItemInstance itemMultisell = MultiSellWindow.Instance.GetItemByPosition(position);
+                SetSimpleItemSingleToolTip(itemMultisell, template);
                 break;
             case (int)SlotType.Gear:
                 GearItem gearItem = InventoryWindow.Instance.GetGearPosition(position);

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static L2Slot;
 
-public class TradingSlot: L2DraggableSlot
+public class TradingSlot : L2DraggableSlot
 {
     private TradingSlotModel model;
     protected bool _empty = true;
@@ -25,7 +25,7 @@ public class TradingSlot: L2DraggableSlot
 
         if (_slotElement != null)
         {
-            AddImage(SlotBg , SlotElement , _data.GetItemId());
+            AddImage(SlotBg, SlotElement, _data.GetItemId());
         }
         else
         {
@@ -41,6 +41,11 @@ public class TradingSlot: L2DraggableSlot
     public ItemCategory GetItemCategory()
     {
         return _data.GetItemCategory();
+    }
+
+    public ItemInstance GetItemInstance()
+    {
+        return _data.GetItemInstance();
     }
 
     public void AssignEmpty()
@@ -122,19 +127,11 @@ public class TradingSlotModel
     public TradingSlotModel(int position , TradeTab currentTab , VisualElement slotElement , SlotType slotType)
     {
         _position = position;
-       // _currentTab = currentTab;
         _slotElement = slotElement;
         _slotType = slotType;
     }
 
-    //public TradeTab GetTab()
-   // {
-        //return _currentTab;
-    //}
-
-    
-
-
+ 
     public VisualElement GetSlotElement(){ return _slotElement;}
 
     public SlotType GetSlotType() { return _slotType;}

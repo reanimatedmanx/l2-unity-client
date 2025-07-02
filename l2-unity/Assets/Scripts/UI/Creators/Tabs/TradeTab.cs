@@ -87,6 +87,15 @@ public class TradeTab
         SetEventOutside(position);
     }
 
+    public ItemInstance GetSlotByPosition(int position)
+    {
+        if(IsValidIndex(_tradeSlots, position))
+        {
+            return _tradeSlots[position].GetItemInstance();
+        }
+
+        return null;
+    }
 
     public void SelectSlot(int slotPosition)
     {
