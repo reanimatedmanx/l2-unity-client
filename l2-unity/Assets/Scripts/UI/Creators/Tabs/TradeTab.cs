@@ -89,7 +89,7 @@ public class TradeTab
 
     public ItemInstance GetSlotByPosition(int position)
     {
-        if(IsValidIndex(_tradeSlots, position))
+        if(ArrayUtils.IsValidIndexArray(_tradeSlots, position))
         {
             return _tradeSlots[position].GetItemInstance();
         }
@@ -102,7 +102,7 @@ public class TradeTab
         if (_selectedSlot != -1)
         {
             //It happens that the panel will become smaller and the index may be larger than the current panel, so you need to check
-            if (IsValidIndex(_tradeSlots, _selectedSlot))
+            if (ArrayUtils.IsValidIndexArray(_tradeSlots, _selectedSlot))
             {
                 _tradeSlots[_selectedSlot].UnSelect();
             }
@@ -125,19 +125,6 @@ public class TradeTab
             
         }
     }
-
-    private bool IsValidIndex(object[] array, int index)
-    {
-        return index >= 0 && index < array.Length;
-    }
-
-
-
-
-
-
-
-
 
 
 

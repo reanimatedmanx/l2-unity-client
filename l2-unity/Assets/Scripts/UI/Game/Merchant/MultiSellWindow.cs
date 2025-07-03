@@ -136,12 +136,14 @@ public class MultiSellWindow : L2PopupWindow
     {
         ItemInstance itemInstance = new ItemInstance(0, itemId, ItemLocation.Trade, 0, 1, category, false, ItemSlot.none, 0, 999);
         itemInstance.SetMultiSell(true);
-        _contentPanel1.Clear();
+        
         _selectContainer = _toolTips.GetContainer(itemInstance);
 
         if(_selectContainer != null)
         {
+            _contentPanel1.Clear();
             _toolTips.UseItem(itemInstance, _selectContainer);
+
             _contentPanel1.Add(_selectContainer);
             _selectContainer.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
 
@@ -160,6 +162,8 @@ public class MultiSellWindow : L2PopupWindow
         }
         else
         {
+            _contentPanel1.Clear();
+            _contentPanel2.Clear();
             _entryId = -1;
         }
     }
@@ -221,7 +225,7 @@ public class MultiSellWindow : L2PopupWindow
 
     private List<Ingredient> GetIngredientByIndex(List<MultiSellData> data, int index)
     {
-        if(IsValidIndex(data, index))
+        if(ArrayUtils.IsValidIndexList(data, index))
         {
             _entryId = index;
             return data[index].IngredientList;
@@ -229,11 +233,7 @@ public class MultiSellWindow : L2PopupWindow
         return null;
     }
 
-    private bool IsValidIndex(List<MultiSellData> array, int index)
-    {
-        return index >= 0 && index < array.Count;
-    }
-
+  
 
     private void OnValueChanged(ChangeEvent<string> evt)
     {
@@ -279,10 +279,18 @@ public class MultiSellWindow : L2PopupWindow
 
     private void OnSendServer(ClickEvent evt)
     {
+
+        SystemMessageWindow.Instance.OnButtonOk += OkExchange;
+        SystemMessageWindow.Instance.ShowWindowDialogYesOrNot("Are you sure you want to exchange?");
+    }
+
+    private void OkExchange()
+    {
         string value = ToolTipsUtils.ConvertPriceToNormal(_userInput.value);
         var sendPaket = CreatorPacketsUser.CreateMultiSellChoose(_listId, _entryId, int.Parse(value));
         bool enable = GameClient.Instance.IsCryptEnabled();
         SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
+        SystemMessageWindow.Instance.OnButtonOk -= OkExchange;
     }
 
     private void OnDestroy()

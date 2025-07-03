@@ -34,6 +34,7 @@ public class DealerWindow : L2PopupWindow
     private VisualElement _weiBarBg;
     private int _currentDataWeight = 0;
     private int _maxWeight = 0;
+    private ProductType _productType;
 
     private bool _isModifySell = false;
 
@@ -109,6 +110,7 @@ public class DealerWindow : L2PopupWindow
         _weiBarBg = GetElementById("WeightGauge");
         OnCenterScreen(root);
         CreateInitBuy();
+        _productType = ProductType.NONE;
     }
 
 
@@ -137,6 +139,12 @@ public class DealerWindow : L2PopupWindow
     {
         _panelBuyHeaderName.text = headerName;
     }
+
+    public void SetProductType(ProductType type)
+    {
+        _productType = type;
+    }
+
     public void EventDoubleClick(VisualElement slotElement)
     {
         string[] ids = GetUniquePosition(slotElement);
@@ -428,39 +436,63 @@ public class DealerWindow : L2PopupWindow
         _inventorySlotsBuy = _shopCellCreator.CreateEmptyBuy(_tabBuy, _defaultCount, _contentBuy, GetInventorySlotTemplate());
     }
 
-    //var sendPaket = CreatorPacketsUser.CreateDestroyItem(objectId, quantity);
-    //bool enable = GameClient.Instance.IsCryptEnabled();
-    //SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
-
-    //not found adena
-    // Charge buyer and add tax to castle treasury if not owned by npc clan
-    //if (subTotal< 0 || !player.reduceAdena("Buy", (int) subTotal, player.getCurrentFolk(), false))
-    //{
-    //sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
-    //return;
-    //}
-
-    /**
- * ID: 279<br>
- * Message: You do not have enough adena.
- */
+  
     private void HandleSuccessButtonClick()
     {
         HideWindow();
 
         if (!_isModifySell)
         {
-            var sendPaket = CreatorPacketsUser.CreateRequestBuyItem(_listId, _listSell);
-            SendGameDataQueue.Instance().AddItem(sendPaket, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
+            if (_productType == ProductType.BUY)
+            {
+                var packet = CreatorPacketsUser.CreateRequestBuyItem(_listId, _listSell);
+                SendServer(packet);
+            }
+            else if (_productType == ProductType.WEAR)
+            {
+                SystemMessageWindow.Instance.OnButtonOk += OkWear;
+                SystemMessageWindow.Instance.OnButtonClosed += On—ancel;
+                SystemMessageWindow.Instance.ShowWindowDialogYesOrNot("The try-on state lasts only 5 seconds. When the character's state changes, it can be canceled.");
+
+            }
+              
         }
         else
         {
-            var sendPaket = CreatorPacketsUser.CreateRequestSellItem(_listId, _listSell);
-            SendGameDataQueue.Instance().AddItem(sendPaket, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
+            if(_productType == ProductType.SELL)
+            {
+                var packet = CreatorPacketsUser.CreateRequestSellItem(_listId, _listSell);
+                SendServer(packet);
+            }
+
         }
        
     }
 
+    private void SendServer(ClientPacket packet)
+    {
+        SendGameDataQueue.Instance().AddItem(packet, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
+    }
+
+    private void OkWear()
+    {
+        var packet = CreatorPacketsUser.CreateRequestPreviewList(_listId, _listSell);
+        SendServer(packet);
+        CancelEvent();
+    }
+
+    private void On—ancel()
+    {
+        _listSell.Clear();
+        _listId = 0;
+        CancelEvent();
+    }
+
+    private void CancelEvent()
+    {
+        SystemMessageWindow.Instance.OnButtonOk -= OkWear;
+        SystemMessageWindow.Instance.OnButtonClosed -= On—ancel;
+    }
 
     protected override IEnumerator BuildWindow(VisualElement root)
     {

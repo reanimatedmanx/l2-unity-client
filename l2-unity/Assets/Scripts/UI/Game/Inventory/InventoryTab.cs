@@ -282,17 +282,13 @@ public class InventoryTab : L2Tab
 
     public ItemInstance GetInventorySlotByPosition(int position)
     {
-        if(IsValidIndex(_inventorySlots, position))
+        if(ArrayUtils.IsValidIndexArray(_inventorySlots, position))
         {
             return _inventorySlots[position].ItemInstance;
         }
        return null;
     }
 
-    private bool IsValidIndex(InventorySlot[] array, int index)
-    {
-        return index >= 0 && index < array.Length;
-    }
 
     public InventorySlot GetInventorySlotByBodyPart(ItemSlot bodyPart)
     {
@@ -330,7 +326,7 @@ public class InventoryTab : L2Tab
         if (_selectedSlot != -1)
         {
             //It happens that the panel will become smaller and the index may be larger than the current panel, so you need to check
-            if (IsValidIndex(_inventorySlots, _selectedSlot)){
+            if (ArrayUtils.IsValidIndexArray(_inventorySlots, _selectedSlot)){
                 _inventorySlots[_selectedSlot].UnSelect();
             }
 

@@ -41,6 +41,11 @@ public class CreatorPacketsUser
         return new RequestBuyItem(listId,  buyList);
     }
 
+    public static RequestPreviewItem CreateRequestPreviewList(int listId, List<Product> buyList)
+    {
+        return new RequestPreviewItem(listId, buyList);
+    }
+
     public static RequestSellItem CreateRequestSellItem(int listId, List<Product> buyList)
     {
         return new RequestSellItem(listId, buyList);

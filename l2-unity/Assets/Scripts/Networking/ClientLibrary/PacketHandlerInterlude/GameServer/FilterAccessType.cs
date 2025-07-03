@@ -61,6 +61,14 @@ public class FilterAccessType
         {
             return true;
         }
+        else if (item.PaketType() == GameInterludeServerPacketType.ShopPreviewList)
+        {
+            return true;
+        }
+        else if (item.PaketType() == GameInterludeServerPacketType.ShopPreviewInfo)
+        {
+            return true;
+        }
         else if (item.PaketType() == GameInterludeServerPacketType.MultiSellList)
         {
             return true;

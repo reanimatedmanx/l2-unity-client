@@ -7,7 +7,7 @@
             <engine:GroupBox name="Content" style="position: absolute; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px; padding-top: 0; padding-bottom: 0; padding-left: 0; height: 100%; width: 100%; max-width: 280px; max-height: 110px;">
                 <engine:GroupBox name="Header" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0;">
                     <engine:GroupBox name="Info1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; flex-direction: row; height: 50px; width: 268px;">
-                        <engine:VisualElement style="flex-grow: 1; width: 32px; height: 32px; max-height: 32px; max-width: 32px; background-image: resource(&apos;Data/UI/Assets/Calculator/ICON_DF_Exclamation&apos;);" />
+                        <engine:VisualElement style="flex-grow: 1; width: 32px; height: 32px; max-height: 32px; max-width: 32px; background-image: resource(&apos;Data/UI/Assets/Calculator/ICON_DF_Exclamation&apos;); min-width: 32px; min-height: 32px;" />
                         <engine:Label text="You do not have enough Adena" name="labelText" class="calculator-header-label" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 8px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; color: rgb(206, 206, 206); font-size: 11px; -unity-font-definition: resource(&apos;Data/UI/Font/tahoma&apos;);" />
                     </engine:GroupBox>
                 </engine:GroupBox>

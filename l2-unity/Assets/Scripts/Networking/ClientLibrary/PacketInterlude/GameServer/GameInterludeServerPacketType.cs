@@ -15,6 +15,8 @@ public enum GameInterludeServerPacketType : byte
     SkillCoolTime = 0xC1,
     MacroList = 0xE7,
     BuyList = 0x11,
+    ShopPreviewList = 0xef,
+    ShopPreviewInfo = 0xf0,
     MultiSellList = 0xd0,
     SellList = 0x10,
     NpcHtmlMessage = 0x0F,

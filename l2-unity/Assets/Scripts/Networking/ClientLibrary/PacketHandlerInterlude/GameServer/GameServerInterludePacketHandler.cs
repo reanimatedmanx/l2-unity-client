@@ -73,6 +73,12 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
               
                 OnBuyList(itemQueue.DecodeData());
                 break;
+            case GameInterludeServerPacketType.ShopPreviewList:
+                OnShopPreviewList(itemQueue.DecodeData());
+                break;
+            case GameInterludeServerPacketType.ShopPreviewInfo:
+                OnShopPreviewInfo(itemQueue.DecodeData());
+                break;
             case GameInterludeServerPacketType.MultiSellList:
            
                 OnMultisellList(itemQueue.DecodeData());
@@ -380,11 +386,32 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             UserInfo info = StorageNpc.getInstance().GetFirstUser();
             DealerWindow.Instance.SetHeaderNameSellPanel("Sell");
             DealerWindow.Instance.SetHeaderNameBuyPanel("Buy");
+            DealerWindow.Instance.SetProductType(ProductType.BUY);
             DealerWindow.Instance.UpdateBuyData(buyList.Products, false , buyList.ListID);
             DealerWindow.Instance.UpdateDataForm(buyList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
             DealerWindow.Instance.ShowWindowToCenter();
         });
 
+    }
+
+    public void OnShopPreviewList(byte[] data)
+    {
+        ShopPreviewList shopPreviewList = new ShopPreviewList(data);
+        EventProcessor.Instance.QueueEvent(() => {
+            UserInfo info = StorageNpc.getInstance().GetFirstUser();
+            DealerWindow.Instance.SetHeaderNameSellPanel("Attempt");
+            DealerWindow.Instance.SetHeaderNameBuyPanel("Selection list");
+            DealerWindow.Instance.SetProductType(ProductType.WEAR);
+            DealerWindow.Instance.UpdateBuyData(shopPreviewList.Products, false, shopPreviewList.ListID);
+            DealerWindow.Instance.UpdateDataForm(shopPreviewList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
+            DealerWindow.Instance.ShowWindowToCenter();
+        });
+    }
+
+    public void OnShopPreviewInfo(byte[] data)
+    {
+        ShopPreviewInfo shopPreviewList = new ShopPreviewInfo(data);
+        Debug.Log("There is no implementation of this package.> OnShopPreviewInfo");
     }
 
     private void OnMultisellList(byte[] data)
@@ -406,11 +433,12 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             UserInfo info = StorageNpc.getInstance().GetFirstUser();
             DealerWindow.Instance.SetHeaderNameSellPanel("Inventory");
             DealerWindow.Instance.SetHeaderNameBuyPanel("Sell");
+            DealerWindow.Instance.SetProductType(ProductType.SELL);
             DealerWindow.Instance.UpdateBuyData(sellList.Products, true, sellList.ListID);
             DealerWindow.Instance.UpdateDataForm(sellList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
             DealerWindow.Instance.ShowWindow();
         });
-        Debug.Log($"Buy list: {sellList}");
+
     }
 
    

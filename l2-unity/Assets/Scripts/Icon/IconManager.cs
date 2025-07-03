@@ -187,7 +187,7 @@ public class IconManager
             return _noImageIcon;
         }
 
-        if(IsValidIndex(alIcon, indexIcon))
+        if(ArrayUtils.IsValidIndexArray(alIcon, indexIcon))
         {
             return alIcon[indexIcon];
         }
@@ -195,10 +195,7 @@ public class IconManager
         return null;
     }
 
-    private bool IsValidIndex(Array array, int index)
-    {
-        return index >= 0 && index < array.Length;
-    }
+
     private Texture2D GetNoImageIcon()
     {
         return Resources.Load<Texture2D>(_iconFolder + "\\" + "NOIMAGE");
