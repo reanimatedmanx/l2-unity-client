@@ -5,8 +5,8 @@ using UnityEngine.UIElements;
 
 public class ButtonSkillLearn
 {
-    private SkillLearn _skill;
-    public ButtonSkillLearn(SkillLearn skill)
+    private SkillListWindow _skill;
+    public ButtonSkillLearn(SkillListWindow skill)
     {
         this._skill = skill;
     }

@@ -1,0 +1,20 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:GroupBox name="BoxContent" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0;">
+        <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
+            <engine:GroupBox name="GrowIcon" style="min-width: auto; min-height: auto; width: 36px; height: 36px; max-width: 36px; max-height: 36px; margin-top: 0; margin-right: 0; margin-bottom: 1%; margin-left: 3px; padding-top: 0; padding-bottom: 0; padding-left: 0; background-image: none; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-left-color: rgba(0, 0, 0, 0.45); border-right-color: rgba(0, 0, 0, 0.45); border-top-color: rgba(0, 0, 0, 0.45); border-bottom-color: rgba(0, 0, 0, 0.45); opacity: 1; color: rgb(27, 27, 27);">
+                <engine:GroupBox name="icon" class="Icon" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; background-image: resource(&apos;Data/SysTextures/Icon/etc_equip_item_box_i00&apos;); width: 100%; height: 100%; min-width: 32px; min-height: 32px; max-width: none; max-height: none; align-self: auto; align-items: auto; align-content: auto; justify-content: space-evenly; flex-shrink: 1; flex-grow: 1;" />
+            </engine:GroupBox>
+            <engine:GroupBox name="GrowBoxText" style="margin-top: 0.3%; margin-right: 0; margin-bottom: 0; margin-left: 1%; padding-top: 0; padding-bottom: 0; padding-left: 0;">
+                <engine:GroupBox name="GrowName" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; flex-direction: row; height: 50%;">
+                    <engine:Label text="Подкласс - фокусировка мастера" name="nameLabel" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; font-size: 12px; color: rgb(223, 222, 222); -unity-text-outline-width: 0.1px; -unity-font-style: normal; -unity-font-definition: resource(&apos;Data/UI/Assets/Font/tahoma&apos;);" />
+                </engine:GroupBox>
+                <engine:GroupBox name="GrowSetting" style="margin-top: -1%; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-bottom: 0; padding-left: 0; flex-direction: row;">
+                    <engine:Label text="Lvl:" parse-escape-sequences="true" name="lvlHeader" selectable="true" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 2px; padding-bottom: 0; padding-left: 0; font-size: 11px; color: rgb(149, 149, 149);" />
+                    <engine:Label text="1" parse-escape-sequences="true" name="settingLevel" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 10%; padding-bottom: 0; padding-left: 0; font-size: 11px; color: rgb(149, 149, 149);" />
+                    <engine:Label text="Required SP:" parse-escape-sequences="true" name="spHeader" double-click-selects-word="true" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 2px; padding-bottom: 0; padding-left: 0; font-size: 11px; color: rgb(149, 149, 149);" />
+                    <engine:Label text="240" name="settingSp" emoji-fallback-support="true" parse-escape-sequences="true" style="font-size: 11px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; color: rgb(149, 149, 149); -unity-text-outline-width: 0.2px; height: 50%;" />
+                </engine:GroupBox>
+            </engine:GroupBox>
+        </engine:VisualElement>
+    </engine:GroupBox>
+</engine:UXML>

@@ -1732,6 +1732,8 @@
     flex-direction: row;
 }
 
+
+
 .merchant-window .unity-tab__header-label {
     color: rgb(220, 220, 220);
     font-size: 11px;
@@ -1942,6 +1944,9 @@
 }
 
 
+.right-scroll-view .l2-scroll-view .unity-scroll-view__content-and-vertical-scroll-container {
+    flex-direction: row;
+}
 
 
 

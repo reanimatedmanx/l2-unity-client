@@ -158,6 +158,12 @@ public class L2GameUI : L2UI
             MultiSellWindow.Instance.AddWindow(_rootVisualContainer);
             MultiSellWindow.Instance.HideWindow();
         }
+
+        if (SkillLearnWindow.Instance != null)
+        {
+            SkillLearnWindow.Instance.AddWindow(_rootVisualContainer);
+            SkillLearnWindow.Instance.HideWindow();
+        }
     }
 
     public void EnableMouse()

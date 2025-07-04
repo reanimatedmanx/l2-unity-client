@@ -138,6 +138,10 @@ public class FilterAccessType
         {
             return true;
         }
+        else if (item.PaketType() == GameInterludeServerPacketType.AcquireSkillList)
+        {
+            return true;
+        }
         return false;
     }
     public static bool IsAccessTypeCombat(ItemServer item)

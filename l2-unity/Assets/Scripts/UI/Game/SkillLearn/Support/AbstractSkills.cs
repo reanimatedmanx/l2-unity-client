@@ -15,7 +15,7 @@ public class AbstractSkills
         Texture2D iconDfNoraml = LoadTextureDF(texture);
         setBackgroundDf(btn, iconDfNoraml);
     }
-    protected void HideSkillbar(bool hide, VisualElement content , SkillLearn _skillLearn)
+    protected void HideSkillbar(bool hide, VisualElement content , SkillListWindow _skillLearn)
     {
         var skillBar = GetSkillBar(content);
         _skillLearn.HideElement(hide, skillBar);

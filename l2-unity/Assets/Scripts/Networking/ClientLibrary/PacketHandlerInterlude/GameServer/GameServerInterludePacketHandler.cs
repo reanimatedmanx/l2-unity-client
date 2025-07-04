@@ -152,6 +152,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
                 OnAbnormalStatusUpdate(itemQueue.DecodeData());
                 break;
+            case GameInterludeServerPacketType.AcquireSkillList:
+
+                OnAcquireSkillList(itemQueue.DecodeData());
+                break;
 
 
         }
@@ -221,6 +225,15 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             {
                 BufferPanel.Instance.AddDataCellToTime(item._id, item._value, item._duration);
             }
+        });
+    }
+
+    public void OnAcquireSkillList(byte[] data)
+    {
+        AcquireSkillList packet = new AcquireSkillList(data);
+        EventProcessor.Instance.QueueEvent(() => {
+            SkillLearnWindow.Instance.AddData(packet.AcquireList);
+            SkillLearnWindow.Instance.ShowWindow();
         });
     }
 

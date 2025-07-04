@@ -5,8 +5,8 @@ using UnityEngine.UIElements;
 
 public class PassiveSkillsHide : AbstractSkills
 {
-    private SkillLearn _skillLearn;
-    public PassiveSkillsHide(SkillLearn _skillLearn)
+    private SkillListWindow _skillLearn;
+    public PassiveSkillsHide(SkillListWindow _skillLearn)
     {
         this._skillLearn = _skillLearn;
     }

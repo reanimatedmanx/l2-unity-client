@@ -20,7 +20,7 @@ public class MultiSellWindow : L2PopupWindow
     private VisualTreeAsset _tabTemplate;
     private VisualTreeAsset _tabHeaderTemplate;
     private VisualElement _inventoryTabView;
-    private ICreatorTrading _creatorWindow;
+    private ICreator _creatorWindow;
 
     private ScrollView _scrollView1;
     private ScrollView _scrollView2;
@@ -119,7 +119,7 @@ public class MultiSellWindow : L2PopupWindow
         {
             _listMultisell = listMultisell;
             _listId = listMultisell.GetListId();
-            _creatorWindow.AddDataTrade(allItems);
+            _creatorWindow.AddData(allItems);
         }
 
         _creatorWindow.SetClickActiveTab(0);
@@ -281,6 +281,7 @@ public class MultiSellWindow : L2PopupWindow
     {
 
         SystemMessageWindow.Instance.OnButtonOk += OkExchange;
+        SystemMessageWindow.Instance.OnButtonClosed += OnCancel;
         SystemMessageWindow.Instance.ShowWindowDialogYesOrNot("Are you sure you want to exchange?");
     }
 
@@ -290,7 +291,17 @@ public class MultiSellWindow : L2PopupWindow
         var sendPaket = CreatorPacketsUser.CreateMultiSellChoose(_listId, _entryId, int.Parse(value));
         bool enable = GameClient.Instance.IsCryptEnabled();
         SendGameDataQueue.Instance().AddItem(sendPaket, enable, enable);
+        CancelEvent();
+    }
+
+    public void OnCancel()
+    {
+        CancelEvent();
+    }
+    private void CancelEvent()
+    {
         SystemMessageWindow.Instance.OnButtonOk -= OkExchange;
+        SystemMessageWindow.Instance.OnButtonClosed -= OnCancel;
     }
 
     private void OnDestroy()

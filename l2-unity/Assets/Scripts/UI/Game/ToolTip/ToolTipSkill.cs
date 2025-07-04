@@ -95,7 +95,7 @@ public class ToolTipSkill : L2PopupWindow, IToolTips
         _windowEle.style.display = DisplayStyle.None;
     }
 
-    public void RegisterCallbackActive(Dictionary<int, VisualElement> dict, SkillLearn skillWindow)
+    public void RegisterCallbackActive(Dictionary<int, VisualElement> dict, SkillListWindow skillWindow)
     {
 
         foreach (var item in dict)
@@ -149,7 +149,7 @@ public class ToolTipSkill : L2PopupWindow, IToolTips
     }
 
 
-    public void RegisterCallbackPassive(Dictionary<int, VisualElement> dict, SkillLearn skillWindow)
+    public void RegisterCallbackPassive(Dictionary<int, VisualElement> dict, SkillListWindow skillWindow)
     {
 
         foreach (var item in dict)
@@ -232,7 +232,7 @@ public class ToolTipSkill : L2PopupWindow, IToolTips
     {
 
         var testPoint = checkBound(newPoint, _heightContent);
-        if (!SkillLearn.Instance.IsWindowContain(testPoint))
+        if (!SkillListWindow.Instance.IsWindowContain(testPoint))
         {
             float width = _heightContent;
             float newddfig = width;

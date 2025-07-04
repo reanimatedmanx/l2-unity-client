@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class CreatorTradingWindows : ICreatorTrading
+public class CreatorTradingWindows : ICreator
 {
     private TradeTab[] _tabs;
     private string[] _nameTabs;
@@ -114,11 +114,13 @@ public class CreatorTradingWindows : ICreatorTrading
         _tabs[index].SetMainTab(main);
     }
 
-    public void AddDataTrade(List<ItemInstance> allItems)
+    public void AddData(List<ItemInstance> allItems)
     {
-        if(_activeTab != null)
+        List<ItemInstance> allItemsInstance =  allItems.OfType<ItemInstance>().ToList();
+
+        if (_activeTab != null)
         {
-            _activeTab.AddDataTrade(allItems);
+            _activeTab.AddDataTrade(allItemsInstance);
         }
     }
 
@@ -132,4 +134,9 @@ public class CreatorTradingWindows : ICreatorTrading
         return null;
     }
 
+
+    public void AddOtherData(List<OtherModel> allItems)
+    {
+        throw new NotImplementedException();
+    }
 }

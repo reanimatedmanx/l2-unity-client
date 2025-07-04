@@ -279,18 +279,31 @@ public class L2SlotManager : L2PopupWindow
         else
         {
             SystemMessageWindow.Instance.OnButtonOk += OkDestroy;
+            SystemMessageWindow.Instance.OnButtonClosed += OnCancel;
             SystemMessageWindow.Instance.ShowWindowDialogYesOrNot("Do you want to destroy your " + slot.Name);
             
         }
-        Debug.Log($"Destroy {slot.Id}.");
-       
     }
 
     private void OkDestroy()
     {
         PlayerInventory.Instance.DestroyItem(_slotTemp.ObjectId, 1);
-        SystemMessageWindow.Instance.OnButtonOk -= OkDestroy;
+        //SystemMessageWindow.Instance.OnButtonOk -= OkDestroy;
+        CancelEvent();
     }
+
+    public void OnCancel()
+    {
+        CancelEvent();
+    }
+
+    private void CancelEvent()
+    {
+        SystemMessageWindow.Instance.OnButtonOk -= OkDestroy;
+        SystemMessageWindow.Instance.OnButtonClosed -= OnCancel;
+    }
+
+
     private void PauseAndShowQuantity(int count)
     {
         QuantityInput.Instance.ShowWindow(count);

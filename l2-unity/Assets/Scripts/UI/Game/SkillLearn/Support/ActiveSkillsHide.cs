@@ -8,8 +8,8 @@ public class ActiveSkillsHide : AbstractSkills
 {
 
     
-    private SkillLearn _skillLearn;
-    public ActiveSkillsHide(SkillLearn _skillLearn)
+    private SkillListWindow _skillLearn;
+    public ActiveSkillsHide(SkillListWindow _skillLearn)
     {
         this._skillLearn = _skillLearn;
     }
