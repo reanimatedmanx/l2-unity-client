@@ -14,11 +14,15 @@ public class OtherModel
 
     public OtherModel(int id , string count , int price)
     {
-        _id = _id;
+        _id = id;
         _count = count;
         _price = price;
     }
 
+    public int GetId()
+    {
+        return _id;
+    }
     public object GetOtherModel()
     {
         return _otherData;

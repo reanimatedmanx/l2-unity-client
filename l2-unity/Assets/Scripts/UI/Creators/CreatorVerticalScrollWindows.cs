@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.Progress;
 
 public class CreatorVerticalScrollWindows : ICreator
 {
@@ -71,10 +72,26 @@ public class CreatorVerticalScrollWindows : ICreator
             {
                 AcquireData item = (AcquireData)allItems[i].GetOtherModel();
 
-                VisualElement element = CloneTemplte(_templateItems);
-                _dataProvider.AddLearnSkill(item.GetId(), item.GetCost(), item.GetValue1(), element);
-                _content.Add(element);
+                VisualElement _slotElement = CloneTemplte(_templateItems);
+                _dataProvider.AddLearnSkill(item.GetId(), item.GetCost(), item.GetValue1(), _slotElement);
+                _slotElement.RegisterCallback<MouseDownEvent>(evt => HandleClickDown(evt, item), TrickleDown.TrickleDown);
+                _content.Add(_slotElement);
             }
         }
+    }
+
+    public void HandleClickDown(MouseDownEvent evt , AcquireData item)
+    {
+        if (evt.button == 0)
+        {
+            OnLeftClick(item.GetId(), ItemCategory.None , -1);
+        }
+
+
+    }
+
+    private void OnLeftClick(int itemId, ItemCategory category, int position)
+    {
+        EventLeftClick?.Invoke(itemId, category, position);
     }
 }

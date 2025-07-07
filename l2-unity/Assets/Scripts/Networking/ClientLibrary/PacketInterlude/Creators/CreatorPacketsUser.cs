@@ -74,6 +74,12 @@ public class CreatorPacketsUser
     {
         return new Appearing();
     }
+
+    public static RequestAcquireSkillInfo CreateRequestAcquireSkillInfo(int skillId, int skillLevel, int skillType)
+    {
+        return new RequestAcquireSkillInfo(skillId, skillLevel, skillType);
+    }
+
     public static ValidatePosition CreateValidatePosition(float x, float y, float z)
     {
         return new ValidatePosition(x, y, z);

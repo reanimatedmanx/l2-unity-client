@@ -156,7 +156,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
                 OnAcquireSkillList(itemQueue.DecodeData());
                 break;
+            case GameInterludeServerPacketType.AcquireSkillInfo:
 
+                OnAcquireSkillInfo(itemQueue.DecodeData());
+                break;
 
         }
 
@@ -237,6 +240,12 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
         });
     }
 
+    public void OnAcquireSkillInfo(byte[] data)
+    {
+        AcquireSkillInfo packet = new AcquireSkillInfo(data);
+        Debug.Log("");
+    }
+    
     private void OnCharTemplate(byte[] data)
     {
         CharTemplates templates = new CharTemplates(data);
