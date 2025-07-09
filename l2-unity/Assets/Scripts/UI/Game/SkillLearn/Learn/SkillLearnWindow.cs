@@ -1,10 +1,10 @@
-using NUnit.Framework;
+
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+
 using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
+
 
 public class SkillLearnWindow : L2PopupWindow
 {
@@ -42,7 +42,7 @@ public class SkillLearnWindow : L2PopupWindow
 
         var dragArea = GetElementByClass("drag-area");
         DragManipulator drag = new DragManipulator(dragArea, _windowEle);
-
+        dragArea.AddManipulator(drag);
         var content = (VisualElement)GetElementById("content");
         _spLabel = (Label)GetElementById("spCount");
 
@@ -59,6 +59,7 @@ public class SkillLearnWindow : L2PopupWindow
 
     public void AddData(List<OtherModel> list)
     {
+        if(_list != null ) _list.Clear();
         _list = list;
         _creatorWindow.AddOtherData(list);
     }
@@ -69,12 +70,14 @@ public class SkillLearnWindow : L2PopupWindow
 
        if(model != null)
        {
+            //base.OnlyHideWindow();
             RequestAcquireSkillInfo sendPaket = CreatorPacketsUser.CreateRequestAcquireSkillInfo(model.GetId(), model.GetValue1(), model.GetAcqType());
-           // bool enable = GameClient.Instance.IsCryptEnabled();
             SendGameDataQueue.Instance().AddItem(sendPaket, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
         }
 
     }
+
+    
 
     public AcquireData FilterBySKillId(List<OtherModel> list , int skillId)
     {

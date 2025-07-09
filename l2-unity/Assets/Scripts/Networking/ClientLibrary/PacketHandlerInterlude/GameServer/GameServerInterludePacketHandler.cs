@@ -243,7 +243,11 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
     public void OnAcquireSkillInfo(byte[] data)
     {
         AcquireSkillInfo packet = new AcquireSkillInfo(data);
-        Debug.Log("");
+        EventProcessor.Instance.QueueEvent(() => {
+            SkillLearnWindow.Instance.HideWindow();
+            DescriptionSkillWindow.Instance.AddData(packet);
+            DescriptionSkillWindow.Instance.ShowWindow();
+        });
     }
     
     private void OnCharTemplate(byte[] data)

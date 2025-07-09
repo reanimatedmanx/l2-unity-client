@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class SkillNameTable
 {
@@ -38,6 +40,8 @@ public class SkillNameTable
     {
         _names = new Dictionary<int, Dictionary<int, SkillNameData>>();
         ReadActions();
+        ReadNameInterlude();
+        Debug.Log("");
     }
 
     private void ReadActions()
@@ -128,5 +132,50 @@ public class SkillNameTable
     private void AddDict(Dictionary<int, SkillNameData> dataGrp, SkillNameData skillName)
     {
         dataGrp.TryAdd(skillName.Level, skillName);
+    }
+
+    private int indexDescription = 3;
+
+    public void ReadNameInterlude()
+    {
+        string dataPath = Path.Combine(Application.streamingAssetsPath, "Data/Meta/Skillname_interlude-e.txt");
+
+        using (StreamReader reader = new StreamReader(dataPath))
+        {
+            string line;
+            int index = 0;
+            while ((line = reader.ReadLine()) != null)
+            {
+                if (index != 0)
+                {
+                    string[] ids = line.Split('\t');
+
+
+                    int id = int.Parse(ids[0]);
+                    int level = int.Parse(ids[1]);
+                    string description = DatUtils.CleanupStringOldData(ids[indexDescription]);
+                    string description1 = description.Replace("Effect", "Power");
+
+                    ReplaceDescription(description1, id, level);
+                }
+
+                index++;
+            }
+
+        }
+    }
+
+    private void ReplaceDescription(string description , int id , int level)
+    {
+        if (_names.ContainsKey(id) == true)
+        {
+            Dictionary<int, SkillNameData> dataGrp = _names[id];
+            if (dataGrp.ContainsKey(level))
+            {
+                SkillNameData data = dataGrp[level];
+                data.Desc = description;
+            }
+         
+        }
     }
 }

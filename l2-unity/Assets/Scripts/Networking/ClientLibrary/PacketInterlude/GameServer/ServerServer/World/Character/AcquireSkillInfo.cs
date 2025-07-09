@@ -59,4 +59,19 @@ public class RequiredSkillInfo
         _count = count;
         _unk = unk1;
     }
+
+    public int GetItemId()
+    {
+        return _itemId;
+    }
+
+    public int GetCount()
+    {
+        return _count;
+    }
+
+    public int GetType()
+    {
+        return _type;
+    }
 }

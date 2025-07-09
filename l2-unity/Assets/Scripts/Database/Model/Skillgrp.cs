@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Skillgrp 
 {
+    private readonly string _activeSkillName = "Active Skill";
+    private readonly string _passiveSkillName = "Passive Skill";
+    
     [SerializeField] public int _id;
     [SerializeField] public int _level;
     [SerializeField] public int _subLevel;
@@ -60,4 +63,17 @@ public class Skillgrp
     public int HpConsume { get => _hp_consume; set => _hp_consume = value; }
     public int RumbleSelf { get => _rumble_self; set => _rumble_self = value; }
     public int RumbleTarget { get => _rumble_target; set => _rumble_target = value; }
+
+    public string GetActiveSkillNameOrNot()
+    {
+        if (_operate_type == 1 | _operate_type == 0)
+        {
+            return _activeSkillName;
+        }
+        else if (_operate_type == 2)
+        {
+            return _passiveSkillName;
+        }
+        return "";
+    }
 }

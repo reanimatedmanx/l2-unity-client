@@ -71,6 +71,10 @@ public abstract class L2PopupWindow : L2Window
         base.HideWindow();
     }
 
+    public override void OnlyHideWindow()
+    {
+        base.OnlyHideWindow();
+    }
     public override void BringToFront()
     {
         _windowEle.BringToFront();

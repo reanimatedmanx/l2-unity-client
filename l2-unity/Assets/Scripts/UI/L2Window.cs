@@ -118,6 +118,11 @@ public abstract class L2Window : MonoBehaviour
 
     }
 
+    public virtual void OnlyHideWindow()
+    {
+        _windowEle.style.display = DisplayStyle.None;
+    }
+
     public virtual void ShowWindow()
     {
         try

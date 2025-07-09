@@ -68,6 +68,7 @@ public class CreatorVerticalScrollWindows : ICreator
     {
         if (_content != null & allItems != null)
         {
+            _content.Clear();
             for (int i = 0; i < allItems.Count; i++)
             {
                 AcquireData item = (AcquireData)allItems[i].GetOtherModel();

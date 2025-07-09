@@ -410,7 +410,7 @@ public abstract class AbstractDataProvider
 
     protected void AddElementIfNot0(VisualElement groupElement, Label labelData, int addParam)
     {
-        if (addParam != 0)
+        if (addParam != 0 && addParam != -1)
         {
             labelData.text = addParam.ToString();
             groupElement.style.display = DisplayStyle.Flex;
@@ -419,6 +419,21 @@ public abstract class AbstractDataProvider
         {
             if (groupElement == null) { Debug.LogWarning(" ToolTipDataProvider: Не критическая ошибка мы не нашли элемент tooltips "); return; }
             groupElement.style.display = DisplayStyle.None;
+            labelData.text = "";
+        }
+    }
+
+    public void AddElementIfNotNullVisibleHide(VisualElement groupElement, Label labelData, int addParam)
+    {
+        if (addParam != 0 && addParam != -1)
+        {
+            labelData.text = addParam.ToString();
+            groupElement.style.visibility = Visibility.Visible;
+        }
+        else
+        {
+            if (groupElement == null) { Debug.LogWarning(" ToolTipDataProvider: Не критическая ошибка мы не нашли элемент tooltips "); return; }
+            groupElement.style.visibility = Visibility.Hidden;
             labelData.text = "";
         }
     }

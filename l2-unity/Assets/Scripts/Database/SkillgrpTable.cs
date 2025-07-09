@@ -45,6 +45,7 @@ public class SkillgrpTable
     }
 
   
+
     public Dictionary<int, Dictionary<int, Skillgrp>> Skills { get { return _skills; } }
 
     public void Initialize()
