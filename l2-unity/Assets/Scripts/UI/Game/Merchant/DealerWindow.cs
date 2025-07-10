@@ -46,6 +46,7 @@ public class DealerWindow : L2PopupWindow
     private Label _panelSellHeaderName;
     private Label _panelBuyHeaderName;
     private int _listId;
+    private Label _windowName;
     public static DealerWindow Instance
     {
         get { return _instance; }
@@ -110,6 +111,7 @@ public class DealerWindow : L2PopupWindow
         _weiBarBg = GetElementById("WeightGauge");
         OnCenterScreen(root);
         CreateInitBuy();
+        _windowName = (Label)GetElementById("windows-name-label");
         _productType = ProductType.NONE;
     }
 
@@ -134,6 +136,11 @@ public class DealerWindow : L2PopupWindow
    {
         _panelSellHeaderName.text = headerName;
    }
+
+    public void SetWindowName(string windowName)
+    {
+        _windowName.text = windowName;
+    }
 
     public void SetHeaderNameBuyPanel(string headerName)
     {

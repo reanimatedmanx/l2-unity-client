@@ -77,6 +77,10 @@ public class FilterAccessType
         {
             return true;
         }
+        else if (item.PaketType() == GameInterludeServerPacketType.WhDepositList)
+        {
+            return true;
+        }
 
         else if (item.PaketType() == GameInterludeServerPacketType.ShortCutInit)
         {

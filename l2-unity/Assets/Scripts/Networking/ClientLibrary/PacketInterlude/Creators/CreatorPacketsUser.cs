@@ -80,6 +80,11 @@ public class CreatorPacketsUser
         return new RequestAcquireSkillInfo(skillId, skillLevel, skillType);
     }
 
+    public static RequestAcquireSkill CreateRequestAcquireSkill(int skillId, int skillLevel, int skillType)
+    {
+        return new RequestAcquireSkill(skillId, skillLevel, skillType);
+    }
+
     public static ValidatePosition CreateValidatePosition(float x, float y, float z)
     {
         return new ValidatePosition(x, y, z);

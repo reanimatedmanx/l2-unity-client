@@ -23,6 +23,10 @@ public class StorageVariable
         ENCHANT_FAIL = 65,
         USE_SKILL = 936,
         NOT_HAVE_ADENA = 279,
+        NOT_ENOUGH_SP_TO_LEARN_SKILL = 278,
+        LEARNED_SKILL_S1 = 277,
+        ITEM_MISSING_TO_LEARN_SKILL = 276,
+        
     }
 
 

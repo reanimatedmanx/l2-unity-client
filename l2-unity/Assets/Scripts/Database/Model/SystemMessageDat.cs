@@ -16,4 +16,17 @@ public class SystemMessageDat
     public string OriginalMessage { get { return _original; } set { _original = value; } }
     public int Group { get { return _group; } set { _group = value; } }
     public string Color { get { return _color; } set { _color = value; } }
+
+    public string AddSkillName(string skilName)
+    {
+        string messageSkill = _original;
+        if (messageSkill.IndexOf("$s1.") == -1)
+        {
+            return  messageSkill + " " + skilName;
+        }
+        else
+        {
+            return  messageSkill.Replace("$s1.", skilName).Trim();
+        }
+    }
 }

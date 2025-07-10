@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using UnityEditor.Sprites;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,6 +14,7 @@ public class DescriptionSkillWindow : L2PopupWindow
     private Label _spLabel;
     private Button _backButton;
     private Button _okButton;
+    private AcquireSkillInfo _packet;
     private void Awake()
     {
         if (_instance == null)
@@ -45,7 +48,7 @@ public class DescriptionSkillWindow : L2PopupWindow
         _okButton = (Button)GetElementById("LearnButton");
         _backButton = (Button)GetElementById("BackButton");
         _backButton.RegisterCallback<ClickEvent>(OnBack);
-        _okButton.RegisterCallback<ClickEvent>(OnBack);
+        _okButton.RegisterCallback<ClickEvent>(OnLearnSkill);
 
         RegisterCloseWindowEvent("btn-close-frame");
         RegisterClickWindowEvent(_windowEle, dragArea);
@@ -55,6 +58,7 @@ public class DescriptionSkillWindow : L2PopupWindow
 
     public void AddData(AcquireSkillInfo packet)
     {
+        _packet = packet;
         _dataProvider.AddDescriptionSkill(packet.GetId(), packet.GetSpCoast(), packet.GetLevel(), _content);
         _dataProvider.AddRequiredSkillInfo(packet.RequiredSkillInfo, _content);
     }
@@ -70,6 +74,19 @@ public class DescriptionSkillWindow : L2PopupWindow
     {
         base.HideWindow();
         SkillLearnWindow.Instance.ShowWindow();
+    }
+
+    private void OnLearnSkill(ClickEvent evt)
+    {
+        // 0 - GeneralSkills
+        // 1 - Common skills.
+        // 2 - Pledge skills
+        if (_packet != null)
+        {
+            RequestAcquireSkill sendPaket = CreatorPacketsUser.CreateRequestAcquireSkill(_packet.GetId(), _packet.GetLevel(), 0);
+            SendGameDataQueue.Instance().AddItem(sendPaket, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
+        }
+        base.HideWindow();
     }
 
     private void OnDestroy()

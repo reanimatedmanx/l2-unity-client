@@ -349,7 +349,7 @@ public abstract class AbstractDataProvider
 
     protected void AddElementPriceifNot0(VisualElement groupPriceLabel, Label priceLabel, int price)
     {
-        if (price == 0)
+        if (price == 0 | price == -1)
         {
             AddElementIfNotEmpty(groupPriceLabel, priceLabel, null);
         }

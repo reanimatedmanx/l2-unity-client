@@ -22,6 +22,7 @@ public enum GameInterludeClientPacketType : byte
     RequestSellItem = 0x1e,
     ValidatePosition = 0x48,
     RequestAcquireSkillInfo = 0x6b,
+    RequestAcquireSkill = 0x6c,
     Appearing = 0x30,
     RequestShortCutDel = 0x35,
     RequestShortCutReg = 0x33,

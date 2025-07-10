@@ -87,6 +87,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
            
                 OnSellList(itemQueue.DecodeData());
                 break;
+            case GameInterludeServerPacketType.WhDepositList:
+
+                OnWhDepositList(itemQueue.DecodeData());
+                break;
             case GameInterludeServerPacketType.ShortCutInit:
     
                 OnCharShortCutInit(itemQueue.DecodeData());
@@ -410,6 +414,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
        
         EventProcessor.Instance.QueueEvent(() => {
             UserInfo info = StorageNpc.getInstance().GetFirstUser();
+            DealerWindow.Instance.SetWindowName("Shop");
             DealerWindow.Instance.SetHeaderNameSellPanel("Sell");
             DealerWindow.Instance.SetHeaderNameBuyPanel("Buy");
             DealerWindow.Instance.SetProductType(ProductType.BUY);
@@ -457,6 +462,7 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
         EventProcessor.Instance.QueueEvent(() => {
             UserInfo info = StorageNpc.getInstance().GetFirstUser();
+            DealerWindow.Instance.SetWindowName("Shop");
             DealerWindow.Instance.SetHeaderNameSellPanel("Inventory");
             DealerWindow.Instance.SetHeaderNameBuyPanel("Sell");
             DealerWindow.Instance.SetProductType(ProductType.SELL);
@@ -465,6 +471,21 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             DealerWindow.Instance.ShowWindow();
         });
 
+    }
+
+    private void OnWhDepositList(byte[] data)
+    {
+        WarehouseDepositList whList = new WarehouseDepositList(data);
+        EventProcessor.Instance.QueueEvent(() => {
+            UserInfo info = StorageNpc.getInstance().GetFirstUser();
+            DealerWindow.Instance.SetWindowName("Personal storage");
+            DealerWindow.Instance.SetHeaderNameSellPanel("Inventory");
+            DealerWindow.Instance.SetHeaderNameBuyPanel("Items in stock");
+            DealerWindow.Instance.SetProductType(ProductType.SELL);
+            DealerWindow.Instance.UpdateBuyData(whList.Products, true, -1);
+            DealerWindow.Instance.UpdateDataForm(whList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
+            DealerWindow.Instance.ShowWindow();
+        });
     }
 
    

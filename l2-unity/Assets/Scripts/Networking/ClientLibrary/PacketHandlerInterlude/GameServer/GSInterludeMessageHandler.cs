@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static SMParam;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 using static UnityEngine.Rendering.DebugUI;
 public class GSInterludeMessageHandler : ServerPacketHandler
@@ -116,7 +117,8 @@ public class GSInterludeMessageHandler : ServerPacketHandler
         int messageId = packet.Id;
         //Debug.Log("Добавлено TRY ADD" + messageId);
         SystemMessageDat messageData = SystemMessageTable.Instance.GetSystemMessage(messageId);
-        OpenMessageWindow(messageId, messageData);
+        OpenMessageWindow(messageId, messageData , smParams);
+
         if (messageData != null)
         {
             if(messageData.Id == (int)StorageVariable.MessageID.ADD_INVENTORY 
@@ -150,14 +152,41 @@ public class GSInterludeMessageHandler : ServerPacketHandler
         }
     }
     //279 - You do not have enough Adena
-    private void OpenMessageWindow(int messageId , SystemMessageDat messageData)
+    private void OpenMessageWindow(int messageId , SystemMessageDat messageData , SMParam[] smParams)
     {
-        if(messageId == (int)StorageVariable.MessageID.NOT_HAVE_ADENA & messageData != null)
+        if(messageId == (int)StorageVariable.MessageID.NOT_HAVE_ADENA & messageData != null 
+            | messageId == (int)StorageVariable.MessageID.ITEM_MISSING_TO_LEARN_SKILL
+            | messageId == (int)StorageVariable.MessageID.NOT_ENOUGH_SP_TO_LEARN_SKILL)
         {
             EventProcessor.Instance.QueueEvent(() => SystemMessageWindow.Instance.ShowWindow(messageData.Message));
-            
         }
+        else if (messageId == (int)StorageVariable.MessageID.LEARNED_SKILL_S1 & messageData != null)
+        {
+            if(smParams[0].Type == SMParamType.TYPE_SKILL_NAME)
+            {
+                int[] param = smParams[0].GetIntArrayValue();
+
+                if(smParams[0].GetIntArrayValue() != null)
+                {
+                    int skillId = param[0];
+                    int skilllvl = param[1];
+
+                    
+                    SkillNameData sNameData = SkillNameTable.Instance.GetName(skillId, skilllvl);
+                    string text = messageData.AddSkillName(sNameData.Name);
+
+
+
+                    EventProcessor.Instance.QueueEvent(() => SystemMessageWindow.Instance.ShowWindow(text));
+                }
+          
+            }
+       
+        }
+
     }
+
+   
 
     public void WaitDelayMessage()
     {

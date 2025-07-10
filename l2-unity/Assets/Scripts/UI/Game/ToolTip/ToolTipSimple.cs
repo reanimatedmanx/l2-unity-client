@@ -774,7 +774,8 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
 
             SetIcon(icon , groubBoxIcon , null);
             string decription = text.GetPrice();
-            if (!string.IsNullOrEmpty(decription))
+
+            if (!string.IsNullOrEmpty(decription) && decription.Equals("-1") != true)
             {
                 SetDataToolTip(_nameText, _descriptedText, text.GetName(), "Price: " + ToolTipsUtils.ConvertToPrice(Int32.Parse(decription)) + " Adena");
             }
@@ -890,6 +891,7 @@ public class ToolTipSimple : L2PopupWindow, IToolTips
 
         }
     }
+
 
 
 

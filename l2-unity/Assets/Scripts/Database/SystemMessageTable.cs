@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using static StorageVariable;
 
 
 public class SystemMessageTable {
@@ -81,10 +82,25 @@ public class SystemMessageTable {
     public SystemMessageDat GetSystemMessage(int id) {
         SystemMessageDat message;
         _systemMessages.TryGetValue(id, out message);
-        message.Message = GetVariableText(message.OriginalMessage);
+
+        if (IsReplaceS1(id))
+        {
+            message.Message = GetVariableText(message.OriginalMessage);
+        }
+
         return message;
     }
 
+
+    private bool IsReplaceS1(int id)
+    {
+        if (id != (int)StorageVariable.MessageID.LEARNED_SKILL_S1)
+        {
+            return false;
+        }
+
+        return true;
+    }
     private string GetVariableText(string text)
     {
         string finalStr = text;

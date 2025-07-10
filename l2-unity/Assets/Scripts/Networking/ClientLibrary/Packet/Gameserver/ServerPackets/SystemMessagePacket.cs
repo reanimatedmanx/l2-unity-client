@@ -17,13 +17,13 @@ public class SystemMessagePacket : ServerPacket {
         try {
             _smId = ReadI();
 
-            byte paramCount = ReadB();
+            int paramCount = ReadI();
 
             _params = new SMParam[paramCount];
 
             for (int i = 0; i < paramCount; i++) {
 
-                byte paramType = ReadB();
+                int paramType = ReadI();
 
                 SMParam param = new SMParam((SMParamType) paramType);
 
