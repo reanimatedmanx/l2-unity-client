@@ -11,7 +11,8 @@
 
 Видео базового функционала [video1](https://jmp.sh/70qYH2gU)   
 Видео синхронизации движения клиента и сервера (3 vs1 ) [video2](https://jmp.sh/GX3m6XIs)    
-UI Inventory (Полная реализация) [Картинки в примерах](https://github.com/gawric/Unity-Client-for-L2J/blob/main/Docs/Ui.md)      
+UI Inventory (Полная реализация) [Картинки в примерах](https://github.com/gawric/Unity-Client-for-L2J/blob/main/Docs/Ui.md)     
+UI Interface [Картинки в примерах](https://github.com/gawric/Unity-Client-for-L2J/blob/main/Docs/Ui_Interface.md)       
 ### Основные отличия:    
 Система движения персонажей как у оригинального клиента  
 Система синхронизации персонажа с сервером  
