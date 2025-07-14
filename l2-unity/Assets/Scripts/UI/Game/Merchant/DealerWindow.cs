@@ -450,30 +450,39 @@ public class DealerWindow : L2PopupWindow
 
         if (!_isModifySell)
         {
-            if (_productType == ProductType.BUY)
+            switch (_productType)
             {
-                var packet = CreatorPacketsUser.CreateRequestBuyItem(_listId, _listSell);
-                SendServer(packet);
-            }
-            else if (_productType == ProductType.WEAR)
-            {
-                SystemMessageWindow.Instance.OnButtonOk += OkWear;
-                SystemMessageWindow.Instance.OnButtonClosed += On—ancel;
-                SystemMessageWindow.Instance.ShowWindowDialogYesOrNot("The try-on state lasts only 5 seconds. When the character's state changes, it can be canceled.");
+                case ProductType.BUY:
+                    var packetBuy = CreatorPacketsUser.CreateRequestBuyItem(_listId, _listSell);
+                    SendServer(packetBuy);
+                    break;
 
+                case ProductType.WEAR:
+                    SystemMessageWindow.Instance.OnButtonOk += OkWear;
+                    SystemMessageWindow.Instance.OnButtonClosed += On—ancel;
+                    SystemMessageWindow.Instance.ShowWindowDialogYesOrNot("The try-on state lasts only 5 seconds. When the character's state changes, it can be canceled.");
+                    break;
             }
-              
         }
         else
         {
-            if(_productType == ProductType.SELL)
+            switch (_productType)
             {
-                var packet = CreatorPacketsUser.CreateRequestSellItem(_listId, _listSell);
-                SendServer(packet);
+                case ProductType.SELL:
+                    var packetSell = CreatorPacketsUser.CreateRequestSellItem(_listId, _listSell);
+                    SendServer(packetSell);
+                    break;
+                case ProductType.WHDepositList:
+                    var packetWhDp = CreatorPacketsUser.CreateWHDepositList(_listSell);
+                    SendServer(packetWhDp);
+                    break;
+                case ProductType.WHWithdrawList:
+                    var packetWhWd = CreatorPacketsUser.CreateWHWithdrawList(_listSell);
+                    SendServer(packetWhWd);
+                    break;
             }
-
         }
-       
+
     }
 
     private void SendServer(ClientPacket packet)

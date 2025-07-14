@@ -17,6 +17,8 @@ public enum GameInterludeClientPacketType : byte
     RequestDestroyItem = 0x59,
     RequestEnchantItem = 0x58,
     MultiSellChoose = 0xa7,
+    SendWarehouseDepositList = 0x31,
+    SendWarehouseWithdrawList = 0x32,
     RequestBuyItem = 0x1f,
     RequestPreviewItem = 0xc6,
     RequestSellItem = 0x1e,

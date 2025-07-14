@@ -5,5 +5,7 @@ public enum ProductType
     BUY,
     SELL,
     WEAR,
-    NONE,
+    WHDepositList,
+    WHWithdrawList,
+    NONE
 }

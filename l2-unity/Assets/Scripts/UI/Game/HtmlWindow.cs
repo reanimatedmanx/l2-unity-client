@@ -99,6 +99,7 @@ public class HtmlWindow : L2PopupWindow
                 Label label = new Label("<u>"+parce.Name+ "</u>");
                 label.name = parce.Name;
                 label.AddToClassList("html_link");
+                ChangeDefaultColor(parce, label);
                 _content.Add(label);
                 _actionsHtml.Add(parce.Name, parce.Action);
 
@@ -121,7 +122,14 @@ public class HtmlWindow : L2PopupWindow
     }
 
    
-
+    private void ChangeDefaultColor(ParseHref parce , Label label)
+    {
+        if (parce.Color != null)
+        {
+            ParseFontColor color = parce.Color;
+            label.style.color = color.GetColor();
+        }
+    }
     private void AddNewFontColot(ParseFontColor parce)
     {
         TextElement label1 = new TextElement();

@@ -20,6 +20,7 @@ public enum GameInterludeServerPacketType : byte
     MultiSellList = 0xd0,
     SellList = 0x10,
     WhDepositList = 0x41,
+    WhWithdrawList = 0x42,
     NpcHtmlMessage = 0x0F,
     TutorialShowHtml = 0xa0,
     ShortCutInit = 0x45,

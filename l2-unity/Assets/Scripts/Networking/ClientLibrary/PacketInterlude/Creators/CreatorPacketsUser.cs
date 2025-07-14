@@ -51,6 +51,17 @@ public class CreatorPacketsUser
         return new RequestSellItem(listId, buyList);
     }
 
+    public static SendWarehouseDepositList CreateWHDepositList(List<Product> depositList)
+    {
+        return new SendWarehouseDepositList(depositList);
+    }
+
+    public static SendWarehouseWithdrawList CreateWHWithdrawList(List<Product> withdrawList)
+    {
+        return new SendWarehouseWithdrawList(withdrawList);
+    }
+
+
     public static RequestShortCutDel CreateDestroyShortCut(int slot)
     {
         return new RequestShortCutDel(slot);

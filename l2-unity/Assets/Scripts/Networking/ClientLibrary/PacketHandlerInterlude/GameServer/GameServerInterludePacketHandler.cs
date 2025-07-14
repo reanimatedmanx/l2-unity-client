@@ -91,6 +91,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
                 OnWhDepositList(itemQueue.DecodeData());
                 break;
+            case GameInterludeServerPacketType.WhWithdrawList:
+
+                OnWhWithdrawList(itemQueue.DecodeData());
+                break;
             case GameInterludeServerPacketType.ShortCutInit:
     
                 OnCharShortCutInit(itemQueue.DecodeData());
@@ -481,7 +485,22 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             DealerWindow.Instance.SetWindowName("Personal storage");
             DealerWindow.Instance.SetHeaderNameSellPanel("Inventory");
             DealerWindow.Instance.SetHeaderNameBuyPanel("Items in stock");
-            DealerWindow.Instance.SetProductType(ProductType.SELL);
+            DealerWindow.Instance.SetProductType(ProductType.WHDepositList);
+            DealerWindow.Instance.UpdateBuyData(whList.Products, true, -1);
+            DealerWindow.Instance.UpdateDataForm(whList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
+            DealerWindow.Instance.ShowWindow();
+        });
+    }
+
+    public void OnWhWithdrawList(byte[] data)
+    {
+        WarehouseWithdrawList whList = new WarehouseWithdrawList(data);
+        EventProcessor.Instance.QueueEvent(() => {
+            UserInfo info = StorageNpc.getInstance().GetFirstUser();
+            DealerWindow.Instance.SetWindowName("Personal storage");
+            DealerWindow.Instance.SetHeaderNameSellPanel("Items in Warehouse");
+            DealerWindow.Instance.SetHeaderNameBuyPanel("Items taken away");
+            DealerWindow.Instance.SetProductType(ProductType.WHWithdrawList);
             DealerWindow.Instance.UpdateBuyData(whList.Products, true, -1);
             DealerWindow.Instance.UpdateDataForm(whList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
             DealerWindow.Instance.ShowWindow();

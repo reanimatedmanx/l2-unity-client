@@ -156,7 +156,8 @@ public class GSInterludeMessageHandler : ServerPacketHandler
     {
         if(messageId == (int)StorageVariable.MessageID.NOT_HAVE_ADENA & messageData != null 
             | messageId == (int)StorageVariable.MessageID.ITEM_MISSING_TO_LEARN_SKILL
-            | messageId == (int)StorageVariable.MessageID.NOT_ENOUGH_SP_TO_LEARN_SKILL)
+            | messageId == (int)StorageVariable.MessageID.NOT_ENOUGH_SP_TO_LEARN_SKILL
+            | messageId == (int)StorageVariable.MessageID.NO_ITEM_DEPOSITED_IN_WH)
         {
             EventProcessor.Instance.QueueEvent(() => SystemMessageWindow.Instance.ShowWindow(messageData.Message));
         }

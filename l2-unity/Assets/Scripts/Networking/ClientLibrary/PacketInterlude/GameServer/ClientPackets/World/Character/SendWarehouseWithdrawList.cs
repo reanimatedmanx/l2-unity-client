@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RequestSellItem : ClientPacket
+public class SendWarehouseWithdrawList : ClientPacket
 {
-    public RequestSellItem(int listId, List<Product> sellList) : base((byte)GameInterludeClientPacketType.RequestSellItem)
+    public SendWarehouseWithdrawList(List<Product> sellList) : base((byte)GameInterludeClientPacketType.SendWarehouseWithdrawList)
     {
-        WriteI(listId);
-
-        if(sellList == null || sellList.Count == 0)
+        if (sellList == null || sellList.Count == 0)
         {
             WriteI(0);
         }
@@ -18,7 +16,6 @@ public class RequestSellItem : ClientPacket
             foreach (var item in sellList)
             {
                 WriteI(item.ObjId);
-                WriteI(item.ItemId);
                 WriteI(item.Count);
             }
         }
