@@ -65,6 +65,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
               
                 OnNpcHtmlMessage(itemQueue.DecodeData());
                 break;
+            case GameInterludeServerPacketType.PackageToList:
+
+                OnPackageToList(itemQueue.DecodeData());
+                break;
             case GameInterludeServerPacketType.TutorialShowHtml:
             
                 OnTutorialShowHtml(itemQueue.DecodeData());
@@ -370,18 +374,28 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
             if(nsm != null)
             {
-                Debug.Log("NpcHtmlMessage 2 ");
+
                 nsm.ChangeIntention(NpcIntention.STARTED_TALKING, npcHtmlMessage);
             }
             else
             {
                 Vector3 position = PlayerEntity.Instance.transform.position;
-                Debug.Log("NpcHtmlMessage 1 ");
                 ManualRotate(npc.transform, position);
                 HtmlWindow.Instance.InjectToWindow(npcHtmlMessage.Elements());
                 HtmlWindow.Instance.ShowWindowToCenter();
             }
            
+        });
+    }
+
+    private void OnPackageToList(byte[] data)
+    {
+
+        PackageToList npcHtmlMessage = new PackageToList(data);
+
+        EventProcessor.Instance.QueueEvent(() => {
+          
+
         });
     }
 

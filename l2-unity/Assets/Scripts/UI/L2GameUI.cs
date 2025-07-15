@@ -170,6 +170,11 @@ public class L2GameUI : L2UI
             DescriptionSkillWindow.Instance.AddWindow(_rootVisualContainer);
             DescriptionSkillWindow.Instance.HideWindow();
         }
+        if (ShowListWindow.Instance != null)
+        {
+            ShowListWindow.Instance.AddWindow(_rootVisualContainer);
+            ShowListWindow.Instance.ShowWindow();
+        }
     }
 
     public void EnableMouse()

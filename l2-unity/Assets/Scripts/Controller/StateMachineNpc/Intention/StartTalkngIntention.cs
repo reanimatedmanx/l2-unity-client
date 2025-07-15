@@ -40,7 +40,7 @@ public class StartTalkingIntention : NpcIntentionBase
 
        HtmlWindow.Instance.InjectToWindow(packet.Elements());
        HtmlWindow.Instance.Test2();
-  
+
     }
 
 

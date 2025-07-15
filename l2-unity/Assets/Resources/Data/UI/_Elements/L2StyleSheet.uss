@@ -3927,4 +3927,80 @@
     font-size: 12px;
 }
 
+/* Прозрачный DropdownField с рамкой и размером текста 12 */
 
+.dropdown-field {
+    background-color: transparent; /* Прозрачный фон */
+    /*border-color: rgba(149, 149, 149 , 0.0);*/
+    font-size: 12px; /* Размер текста */
+
+
+
+
+}
+
+.dropdown-field .unity-text-field__input {
+     background-color: transparent; 
+ 
+}
+
+
+.dropdown-field .unity-base-field__input{
+    background-color: transparent; 
+     padding: 0px;
+    border-left: 92px solid black;
+    border-right: 12px solid black;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    border-width: 1px;
+    overflow: visibility;
+}
+.dropdown-field .unity-base-popup-field__input{
+   border-radius: 0px;
+   border:0px;
+   background-color: transparent; 
+       width: 18px;
+    height: 18px;
+ 
+}
+
+.dropdown-field .unity-text-element{
+  /* border-radius: 1px;
+   border-width: 1px;*/
+   margin: 0px;
+ 
+}
+.dropdown-field .unity-base-popup-field__text{
+    /* border-radius: 1px;
+   border-width: 1px; */
+   margin: 0px;
+
+}
+
+
+
+.dropdown-field .VisualElement{
+     background-color: transparent;
+}
+.dropdown-field .unity-base-popup-field__arrow{
+   /* position: absolute; /* Позволяет изображению быть позиционированным относительно контейнера 
+    margin-left:87%;
+    width: 17px;
+    height: 18px;*/
+    width: 16px;
+    height: 16px;
+    background-image: resource('Data/UI/Assets/Button/Button_DF_Down_Down');
+    background-color: transparent;
+    -unity-slice-top: 0;
+    -unity-slice-left: 0;
+    -unity-slice-bottom: 2;
+    -unity-slice-right: 2;
+    -unity-slice-scale: 0;
+    border-width: 0;
+    /* Он перекрывает фон кнопки!!!!! */
+    -unity-background-image-tint-color: rgb(255,255,255);
+}
+
+.dropdown-field .unity-base-popup-field__arrow:hover {
+    background-image: resource('Data/UI/Assets/Button/Button_DF_Down_Over');
+}
