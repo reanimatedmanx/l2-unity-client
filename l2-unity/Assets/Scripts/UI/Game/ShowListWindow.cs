@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -9,7 +11,8 @@ public class ShowListWindow : L2PopupWindow
     public static ShowListWindow Instance { get { return _instance; } }
     private Button _сancelButton;
     private Button _okButton;
-
+    private DropdownField dropdown;
+    private VisualTreeAsset _item;
     private void Awake()
     {
         if (_instance == null)
@@ -25,6 +28,7 @@ public class ShowListWindow : L2PopupWindow
     protected override void LoadAssets()
     {
         _windowTemplate = LoadAsset("Data/UI/_Elements/Game/ShowList/ShowListWindow");
+        _item = LoadAsset("Data/UI/_Elements/Template/DroplistItem");
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)
@@ -36,9 +40,9 @@ public class ShowListWindow : L2PopupWindow
         _okButton = _windowEle.Q<Button>("OkButton");
         var conent = _windowEle.Q<VisualElement>("content");
 
-        DropdownField dropdown = conent.Q<DropdownField>("comboBox");
-
-
+        dropdown = conent.Q<DropdownField>("comboBox");
+        //var item1 = ToolTipsUtils.CloneOne(_item);
+       
 
         dropdown.choices = new List<string>
         {
@@ -46,14 +50,44 @@ public class ShowListWindow : L2PopupWindow
             "Option 2",
             "Option 3",
             "Option 4"
-        };
+       };
 
-        // Установим текущее значение (по желанию)
-        dropdown.value = "Option 1"; // Устанавливаем значение по умолчанию
+
+    
+        // Подписка на события фокуса
+        dropdown.RegisterCallback<FocusInEvent>(OnDropdownFocusIn);
+        dropdown.RegisterCallback<FocusOutEvent>(OnDropdownFocusOut);
 
 
         RegisterClickWindowEvent(_windowEle, null);
         OnCenterScreen(_root);
+    }
+
+
+
+
+
+
+
+    private void OnDropdownFocusIn(FocusInEvent evt)
+    {
+        if(evt.currentTarget != null)
+        {
+
+            Debug.Log("");
+        }
+        Debug.Log("Dropdown gained focus.");
+        // Ваш код для обработки события фокуса
+    }
+
+    private void OnDropdownFocusOut(FocusOutEvent evt)
+    {
+        Debug.Log("Dropdown lost focus.");
+        if (evt.currentTarget != null)
+        {
+            Debug.Log("");
+        }
+        // Ваш код для обработки события потери фокуса
     }
 
     private void OnDestroy()

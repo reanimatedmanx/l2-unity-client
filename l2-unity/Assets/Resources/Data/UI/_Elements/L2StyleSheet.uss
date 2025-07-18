@@ -3933,10 +3933,6 @@
     background-color: transparent; /* Прозрачный фон */
     /*border-color: rgba(149, 149, 149 , 0.0);*/
     font-size: 12px; /* Размер текста */
-
-
-
-
 }
 
 .dropdown-field .unity-text-field__input {
@@ -3968,16 +3964,30 @@
   /* border-radius: 1px;
    border-width: 1px;*/
    margin: 0px;
+   background-color: rgb(149, 149, 149);
  
 }
 .dropdown-field .unity-base-popup-field__text{
-    /* border-radius: 1px;
-   border-width: 1px; */
-   margin: 0px;
+
+   margin-left:3px;
+   background-color: transparent; 
 
 }
 
 
+
+/* Стили для элементов списка */
+.dropdown-field .unity-base-popup-field__arrow {
+    color: black; /* Цвет текста элементов списка */
+}
+
+.dropdown-field .unity-base-field__input.selected  {
+    background-color: rgb(149, 149, 149);
+}
+
+.dropdown-field  .unity-base-dropdown__item:hover{
+    color: black; /* Цвет текста элементов списка */
+}
 
 .dropdown-field .VisualElement{
      background-color: transparent;
@@ -4002,5 +4012,5 @@
 }
 
 .dropdown-field .unity-base-popup-field__arrow:hover {
-    background-image: resource('Data/UI/Assets/Button/Button_DF_Down_Over');
+    background-image: resource('Data/UI/Assets/Button/Button_DF_Down');
 }
