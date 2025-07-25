@@ -1,25 +1,31 @@
+# Temporary & cache artifacts
+.cache
+FMODStudioCache.asset
+FMODStudioCache.asset.meta
+PlayerDataCache
+VirtualFlareTemp
+AssetServerCacheV3
+PackageCache
+ShaderCache
+ShaderCacheV5
+VideoCache
+il2cpp_cache
+cachefile
+[Tt]emp
+[Cc]ache
+
 # Unity generated
-l2-unity/[Tt]emp/
 l2-unity/[Oo]bj/
 l2-unity/[Bb]uild/
 l2-unity/[Ll]ibrary/
 l2-unity/[Ll]ibrary/ScriptAssemblies/
 l2-unity/[Mm]etadata/
-l2-unity/[Ll]ibrary/ShaderCache/
 l2-unity/[Ll]ibrary/AssetImportState/
-l2-unity/[Ll]ibrary/AssetServerCacheV3/
-l2-unity/[Ll]ibrary/ShaderCacheV5/
-l2-unity/[Ll]ibrary/il2cpp_cache/
-l2-unity/[Ll]ibrary/VideoCache/
-l2-unity/[Ll]ibrary/VirtualFlareTemp/
-l2-unity/[Ll]ibrary/PackageCache/
-l2-unity/[Ll]ibrary/cachefile
 l2-unity/[Ll]ibrary/2DxFX
 l2-unity/[Ll]ibrary/JobServer/
 l2-unity/[Ll]ibrary/AutoBuild/
 l2-unity/[Ll]ibrary/VFX/
 l2-unity/[Ll]ibrary/VFXVisualEffectResource/
-l2-unity/[Ll]ibrary/PlayerDataCache/
 l2-unity/[Ll]ibrary/ScriptMapper/
 l2-unity/[Ll]ogs/
 l2-unity/Assets/Resources/Scenes/Menu
@@ -70,8 +76,7 @@ LightingData.asset
 terraindata.dat
 default-2022.dwlt
 default-2023.dwlt
-FMODStudioCache.asset
-FMODStudioCache.asset.meta
+
 
 # FMOD Studio crash reports
 *.dmp
