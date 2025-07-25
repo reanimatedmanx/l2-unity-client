@@ -28,6 +28,19 @@ public class MouseOverDetectionManipulator : PointerManipulator
         _enabled = true;
     }
 
+    public void SetBlock(bool isblock)
+    {
+        if (isblock)
+        {
+            Block();
+        }
+        else
+        {
+            UnBlock();
+        }
+ 
+    }
+
     public void Disable()
     {
         _enabled = false;
@@ -64,17 +77,29 @@ public class MouseOverDetectionManipulator : PointerManipulator
 
     private void PointerOverHandler(PointerOverEvent evt)
     {
+        Block();
+    }
+
+    private void PointerOutHandler(PointerOutEvent evt)
+    {
+        UnBlock();
+    }
+
+    private void Block()
+    {
         if (_enabled)
         {
+
             _ui.MouseOverUI = true;
             _overThisManipulator = true;
         }
     }
 
-    private void PointerOutHandler(PointerOutEvent evt)
+    private void UnBlock()
     {
         if (_enabled)
         {
+
             _ui.MouseOverUI = false;
             _overThisManipulator = false;
         }

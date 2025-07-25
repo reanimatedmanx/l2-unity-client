@@ -173,7 +173,7 @@ public class L2GameUI : L2UI
         if (ShowListWindow.Instance != null)
         {
             ShowListWindow.Instance.AddWindow(_rootVisualContainer);
-            ShowListWindow.Instance.ShowWindow();
+            ShowListWindow.Instance.HideWindow();
         }
     }
 

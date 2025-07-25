@@ -95,6 +95,10 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
 
                 OnWhDepositList(itemQueue.DecodeData());
                 break;
+            case GameInterludeServerPacketType.PackageSendableList:
+
+                OnPackageSendableList(itemQueue.DecodeData());
+                break;
             case GameInterludeServerPacketType.WhWithdrawList:
 
                 OnWhWithdrawList(itemQueue.DecodeData());
@@ -391,11 +395,12 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
     private void OnPackageToList(byte[] data)
     {
 
-        PackageToList npcHtmlMessage = new PackageToList(data);
+        PackageToList packageToList = new PackageToList(data);
+        List<string> listName = packageToList.GetListName();
 
         EventProcessor.Instance.QueueEvent(() => {
-          
-
+            ShowListWindow.Instance.AddList(packageToList.Players);
+            ShowListWindow.Instance.ShowWindow();
         });
     }
 
@@ -504,6 +509,23 @@ public class GameServerInterludePacketHandler : ServerPacketHandler
             DealerWindow.Instance.UpdateDataForm(whList.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
             DealerWindow.Instance.ShowWindow();
         });
+    }
+
+    public void OnPackageSendableList(byte[] data)
+    {
+        PackageSendableList list = new PackageSendableList(data);
+
+        EventProcessor.Instance.QueueEvent(() => {
+            UserInfo info = StorageNpc.getInstance().GetFirstUser();
+            DealerWindow.Instance.SetWindowName("Send a parcel");
+            DealerWindow.Instance.SetHeaderNameSellPanel("Inventory");
+            DealerWindow.Instance.SetHeaderNameBuyPanel("Shipping list");
+            DealerWindow.Instance.SetProductType(ProductType.PackageSendableList);
+            DealerWindow.Instance.UpdateBuyData(list.Items, true, list.PlayerObject);
+            DealerWindow.Instance.UpdateDataForm(list.CurrentMoney, info.PlayerInfoInterlude.Stats.WeightPercent(), info.PlayerInfoInterlude.Stats.CurrWeight, info.PlayerInfoInterlude.Stats.MaxWeight);
+            DealerWindow.Instance.ShowWindow();
+        });
+
     }
 
     public void OnWhWithdrawList(byte[] data)

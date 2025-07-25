@@ -31,6 +31,11 @@ public class CreatorPacketsUser
         return new RequestEnchantItem(_objectId);
     }
 
+    public static RequestPackageSendableItemList CreateSendableItemList(int _objectId)
+    {
+        return new RequestPackageSendableItemList(_objectId);
+    }
+
     public static MultiSellChoose CreateMultiSellChoose(int listId, int entryId, int amoun)
     {
         return new MultiSellChoose(listId , entryId , amoun);
@@ -39,6 +44,11 @@ public class CreatorPacketsUser
     public static RequestBuyItem CreateRequestBuyItem(int listId, List<Product> buyList)
     {
         return new RequestBuyItem(listId,  buyList);
+    }
+
+    public static RequestPackageSend RequestPackageSend(int objectId, List<Product> productList)
+    {
+        return new RequestPackageSend(objectId, productList);
     }
 
     public static RequestPreviewItem CreateRequestPreviewList(int listId, List<Product> buyList)

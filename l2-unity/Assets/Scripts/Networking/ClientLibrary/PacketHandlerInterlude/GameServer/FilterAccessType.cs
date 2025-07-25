@@ -85,6 +85,10 @@ public class FilterAccessType
         {
             return true;
         }
+        else if (item.PaketType() == GameInterludeServerPacketType.PackageSendableList)
+        {
+            return true;
+        }
         else if (item.PaketType() == GameInterludeServerPacketType.WhWithdrawList)
         {
             return true;

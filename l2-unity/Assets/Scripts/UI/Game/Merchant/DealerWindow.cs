@@ -480,6 +480,11 @@ public class DealerWindow : L2PopupWindow
                     var packetWhWd = CreatorPacketsUser.CreateWHWithdrawList(_listSell);
                     SendServer(packetWhWd);
                     break;
+                case ProductType.PackageSendableList:
+                    int playerObjectId = _listId;
+                    var packetSendable = CreatorPacketsUser.RequestPackageSend(playerObjectId , _listSell);
+                    SendServer(packetSendable);
+                    break;
             }
         }
 

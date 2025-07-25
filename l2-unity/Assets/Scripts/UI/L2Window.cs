@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static UnityEditor.Rendering.FilterWindow;
 
 public abstract class L2Window : MonoBehaviour
 {
@@ -86,7 +88,7 @@ public abstract class L2Window : MonoBehaviour
             _windowEle = _windowTemplate.Instantiate()[0];
             _mouseOverDetection = new MouseOverDetectionManipulator(_windowEle);
             _windowEle.AddManipulator(_mouseOverDetection);
-
+            DisableEventOnOver(_windowEle);
             if (_isWindowHidden)
             {
                 _mouseOverDetection.Disable();
@@ -100,6 +102,39 @@ public abstract class L2Window : MonoBehaviour
         }
  
     }
+
+
+    protected void DisableEventOnOver(VisualElement _windowEle)
+    {
+        var dropdowns = _windowEle.Query<DropdownField>().ToList();
+
+        if(dropdowns != null)
+        {
+            foreach (var dropdown in dropdowns)
+            {
+                DisablePointerEvents(dropdown);
+                dropdown.RegisterValueChangedCallback(OnDropdownValueChanged);
+                dropdown.RegisterCallback<MouseEnterEvent>(OnMouseEnter);
+            }
+        }
+    
+    }
+    private void OnDropdownValueChanged(ChangeEvent<string> evt)
+    {
+        SetEnableMouseOver(false);
+    }
+    private void OnMouseEnter(MouseEnterEvent evt)
+    {
+        SetEnableMouseOver(true);
+    }
+
+    private void DisablePointerEvents(VisualElement element)
+    {
+        element.RegisterCallback<PointerOverEvent>(evt => evt.StopPropagation());
+        element.RegisterCallback<PointerOutEvent>(evt => evt.StopPropagation());
+    }
+
+
 
     protected abstract IEnumerator BuildWindow(VisualElement root);
 
@@ -197,5 +232,10 @@ public abstract class L2Window : MonoBehaviour
     public bool MouseOverThisWindow()
     {
         return _mouseOverDetection.MouseOver;
+    }
+
+    protected void SetEnableMouseOver(bool isBlock)
+    {
+        _mouseOverDetection.SetBlock(isBlock);
     }
 }

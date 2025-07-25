@@ -6,6 +6,7 @@ public enum ProductType
     SELL,
     WEAR,
     WHDepositList,
+    PackageSendableList,
     WHWithdrawList,
     NONE
 }

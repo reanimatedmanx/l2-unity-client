@@ -1,9 +1,13 @@
+using FMOD;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+
 using UnityEngine.UIElements;
+
 
 public class ShowListWindow : L2PopupWindow
 {
@@ -11,8 +15,9 @@ public class ShowListWindow : L2PopupWindow
     public static ShowListWindow Instance { get { return _instance; } }
     private Button _сancelButton;
     private Button _okButton;
-    private DropdownField dropdown;
-    private VisualTreeAsset _item;
+    private DropdownField _dropdown;
+    private Dictionary<string, int> _players;
+    private string _select = "";
     private void Awake()
     {
         if (_instance == null)
@@ -28,7 +33,7 @@ public class ShowListWindow : L2PopupWindow
     protected override void LoadAssets()
     {
         _windowTemplate = LoadAsset("Data/UI/_Elements/Game/ShowList/ShowListWindow");
-        _item = LoadAsset("Data/UI/_Elements/Template/DroplistItem");
+
     }
 
     protected override IEnumerator BuildWindow(VisualElement root)
@@ -37,58 +42,67 @@ public class ShowListWindow : L2PopupWindow
         yield return new WaitForEndOfFrame();
 
         _сancelButton = _windowEle.Q<Button>("CancelButton");
-        _okButton = _windowEle.Q<Button>("OkButton");
+        _okButton = _windowEle.Q<Button>("StartButton");
         var conent = _windowEle.Q<VisualElement>("content");
 
-        dropdown = conent.Q<DropdownField>("comboBox");
-        //var item1 = ToolTipsUtils.CloneOne(_item);
-       
+        _dropdown = conent.Q<DropdownField>("comboBox");
 
-        dropdown.choices = new List<string>
-        {
-            "Option 1",
-            "Option 2",
-            "Option 3",
-            "Option 4"
-       };
+        RegisterCloseWindowEvent("btn-close-frame");
+        var dragArea = GetElementByClass("drag-area");
+        DragManipulator drag = new DragManipulator(dragArea, _windowEle);
+        dragArea.AddManipulator(drag);
+        DisableEventOnOver(_dropdown);
 
 
-    
-        // Подписка на события фокуса
-        dropdown.RegisterCallback<FocusInEvent>(OnDropdownFocusIn);
-        dropdown.RegisterCallback<FocusOutEvent>(OnDropdownFocusOut);
+        _dropdown.RegisterValueChangedCallback(OnDropdownValueChanged);
 
+        _okButton.RegisterCallback<ClickEvent>((evt) => OnClick(evt));
+        _сancelButton.RegisterCallback<ClickEvent>((evt) => OnCancel(evt));
 
         RegisterClickWindowEvent(_windowEle, null);
         OnCenterScreen(_root);
     }
 
 
-
-
-
-
-
-    private void OnDropdownFocusIn(FocusInEvent evt)
+    public void AddList(Dictionary<string, int> players)
     {
-        if(evt.currentTarget != null)
-        {
-
-            Debug.Log("");
-        }
-        Debug.Log("Dropdown gained focus.");
-        // Ваш код для обработки события фокуса
+        _dropdown.value = "";
+        var list = players.Keys.ToList();
+        _dropdown.choices = list;
+        _players = players;
     }
 
-    private void OnDropdownFocusOut(FocusOutEvent evt)
+
+
+    private void OnDropdownValueChanged(ChangeEvent<string> evt)
     {
-        Debug.Log("Dropdown lost focus.");
-        if (evt.currentTarget != null)
-        {
-            Debug.Log("");
-        }
-        // Ваш код для обработки события потери фокуса
+        string playeName = evt.newValue;
+        _select = playeName;
+
+
     }
+
+    private async void OnClick(ClickEvent evt)
+    {
+
+        if (_players.ContainsKey(_select))
+        {
+            int objectId = _players[_select];
+            var sendPaket = CreatorPacketsUser.CreateSendableItemList(objectId);
+            SendGameDataQueue.Instance().AddItem(sendPaket, GameClient.Instance.IsCryptEnabled(), GameClient.Instance.IsCryptEnabled());
+            HideWindow();
+        }
+    }
+
+
+    private async void OnCancel(ClickEvent evt)
+    {
+        HideWindow();
+    }
+
+
+
+
 
     private void OnDestroy()
     {
